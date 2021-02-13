@@ -1,0 +1,3 @@
+*.webp
+/Cargo.lock
+/target
