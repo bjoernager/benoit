@@ -8,13 +8,18 @@ CXXFLAGS += -DLUMA__X=true
 endif
 CXXFLAGS += -std=c++20 -Wall -Wextra -Wpedantic
 CXXFLAGS += -march=native -mtune=native -O3
-LDFLAGS = -lfmt -lwebp
+LDFLAGS = -lfmt -lgmp -lmpfr -lpthread -lwebp
 HDRS_CXX = \
 	include/benoit.hh
 SRCS_CXX = \
+	src/benoit/arghandl.cc \
 	src/benoit/benoit.cc \
+	src/benoit/~benoit.cc \
+	src/benoit/exit.cc \
+	src/benoit/notiffunc.cc \
+	src/benoit/plotmandelbrot.cc \
 	src/benoit/print.cc \
-	src/benoit/strlen.cc \
+	src/benoit/t/pos/pos.cc \
 	src/main.cc
 SRCS=$(SRCS_CXX)
 OBJS=$(SRCS:.cc=.o)

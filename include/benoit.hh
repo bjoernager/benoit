@@ -1,26 +1,50 @@
 # if !defined(BENOIT__HEADER)
 # define BENOIT__HEADER
+# include <boost/multiprecision/mpfr.hpp>
 # include <cstddef>
 # include <cstdint>
+# include <string>
 # include <vector>
+using namespace std::literals::string_literals;
 class benoit {
 public:
-	benoit(int const argc,char const * * argv);
+	[[noreturn]] benoit(int const argc,char const * * argv) noexcept;
+	[[noreturn]] ~benoit() noexcept;
 private:
-	enum class imgfmt_t {
-		jpeg,
-		png,
-		ppm,
-		webp,
+	class t {
+	public:
+		enum class imgfmt {
+			jpeg,
+			png,
+			ppm,
+			webp,
+		};
+		class pos {
+		public:
+			boost::multiprecision::mpfr_float x = 0x0;
+			boost::multiprecision::mpfr_float y = 0x0;
+			pos(boost::multiprecision::mpfr_float x = 0x0,boost::multiprecision::mpfr_float y = 0x0);
+		};
 	};
-	benoit::imgfmt_t   imgfmt  = benoit::imgfmt_t::ppm;
-	long               resx    = 0x4000;
-	long               resy    = 0x4000;
-	long double        imag    = 0x0p0;
-	long double        real    = 0x0p0;
-	long double        zoom    = 0x1p0;
-	unsigned long long maxiter = 0x100;
-	void               print(char const * msg);
-	std::size_t        strlen(char const * str) noexcept;
+	benoit::t::imgfmt        imgfmt  = benoit::t::imgfmt::ppm;
+	benoit::t::pos           pos;
+	bool constexpr static    debug   =
+# if defined(NDEBUG)
+	false;
+# else
+	true;
+# endif
+	std::string               outimg  = "image";
+	long                      resx    = 0x2000;
+	long                      resy    = 0x2000;
+	long double               zoom    = 0x1p0;
+	long long                 ver     = 0x3;
+	unsigned long long        maxiter = 0x400;
+	std::vector<std::uint8_t> plotmandelbrot();
+	void                      arghandl(int const & argc,char const * * & argv);
+	[[noreturn]] void         exit(int code,std::string msg = ""s) noexcept;
+	void                      notiffunc(std::string const callfuncname);
+	void                      print(char const * msg,bool stderr = false);
+	void                      print(std::string msg,bool stderr = false);
 };
 # endif
