@@ -39,7 +39,7 @@ private:
 	unsigned short            resy       = 0x2000u;
 	unsigned short            numthreads = 0x16u;
 	long double               zoom       = 0x1p0;
-	long long                 ver        = 0x4ll;
+	long long                 ver        = 0x5ll;
 	unsigned long long        maxiter    = 0x400ull;
 	std::vector<std::uint8_t> plotmandelbrot();
 	void                      arghandl(int const & argc,char const * * & argv);
