@@ -3,12 +3,9 @@ CXXFLAGS=-Iinclude
 ifneq ($(DEBUG),1)
 CXXFLAGS += -DNDEBUG
 endif
-ifeq ($(LUMA__X),1)
-CXXFLAGS += -DLUMA__X=true
-endif
 CXXFLAGS += -std=c++20 -Wall -Wextra -Wpedantic
 CXXFLAGS += -march=native -mtune=native -O3
-LDFLAGS = -lfmt -lgmp -lmpfr -lpthread -lwebp
+LDFLAGS = -lfmt -lgmp -lmpfr -lpng -lpthread -lwebp
 HDRS_CXX = \
 	include/benoit.hh
 SRCS_CXX = \

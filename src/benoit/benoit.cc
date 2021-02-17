@@ -1,4 +1,5 @@
 # include <benoit.hh>
+# include <cstddef>
 # include <cstdint>
 # include <cstdlib>
 # include <fcntl.h>
@@ -14,9 +15,6 @@ using namespace std::literals::string_literals;
 	this->notiffunc(funcname);
 	this->arghandl(argc,argv);
 	switch(this->imgfmt) {
-		case benoit::t::imgfmt::jpeg:
-			this->outimg.append(".jpeg"s);
-			break;
 		case benoit::t::imgfmt::png:
 			this->outimg.append(".png"s);
 			break;
@@ -30,8 +28,8 @@ using namespace std::literals::string_literals;
 			this->outimg.append(".webp"s);
 			break;
 	}
-	this->exit(EXIT_SUCCESS);
 	std::vector<std::uint8_t> buf = this->plotmandelbrot();
+	this->exit(EXIT_SUCCESS);
 	int file = ::open(this->outimg.c_str(),O_TRUNC | O_WRONLY);
 	std::string msg = ("P3 "s + std::to_string(this->resx) + " "s +std::to_string(this->resy) + " 255 "s);
 	for(auto val : buf) {
@@ -46,7 +44,6 @@ using namespace std::literals::string_literals;
 	}
 	this->exit(EXIT_SUCCESS);
 }
-# if 0x0
 	/*
 	auto webpconf = ::WebPConfig();
 	webpconf.lossless = 0x1;
@@ -83,15 +80,14 @@ using namespace std::literals::string_literals;
 
 	}
 	WebPPictureFree(&webpimg);
-	*/
-	//auto buf  = std::vector<std::uint8_t>();
-	//buf.push_back(0xFF);
-	//buf.push_back(0x0);
-	//buf.push_back(0x0);
-	//auto file = std::fstream(this->outimt,std::fstream::binary | std::fstream::out | std::fstream::trunc);
-	//if(!file.is_open()) {
-	//	::_exit(EXIT_FAILURE);
-	//}
+	auto buf  = std::vector<std::uint8_t>();
+	buf.push_back(0xFF);
+	buf.push_back(0x0);
+	buf.push_back(0x0);
+	auto file = std::fstream(this->outimt,std::fstream::binary | std::fstream::out | std::fstream::trunc);
+	if(!file.is_open()) {
+		::_exit(EXIT_FAILURE);
+	}
 	const double maxR = 2.25;
 	const double minR = -2.25;
 	const double maxI = 2.25;
@@ -139,4 +135,4 @@ using namespace std::literals::string_literals;
 			buf.push_back(green);
 			buf.push_back(red);
 		}
-# endif
+*/
