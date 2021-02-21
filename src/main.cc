@@ -1,4 +1,4 @@
-# include <benoit.hh>
+# include <benoit/main.hh>
 int main(int const argc,char const * * argv) {
-	::benoit benoit(argc,argv);
+	benoit::main(argc,argv);
 }

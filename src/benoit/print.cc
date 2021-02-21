@@ -1,14 +1,18 @@
-# include <benoit.hh>
+# include <benoit/dat.hh>
+# include <benoit/print.hh>
 # include <fcntl.h>
 # include <stdexcept>
 # include <string>
 # include <unistd.h>
 void benoit::print(char const * msg,bool stderr) {
 	std::string const funcname = "benoit::print(char const *)"s;
-	this->print(std::string(msg),stderr);
+	 benoit::print(std::string(msg),stderr);
 }
 void benoit::print(std::string msg,bool stderr) {
 	std::string const funcname = "benoit::print(std::string)"s;
+	if(benoit::dat.printdolog) {
+		benoit::dat.thelog.insert(benoit::dat.thelog.begin(),msg);
+	}
 	int file = 0x0;
 	if(stderr) {
 		::open("/dev/stderr",O_WRONLY);
