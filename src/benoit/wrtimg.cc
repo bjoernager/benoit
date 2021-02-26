@@ -31,7 +31,7 @@ void benoit::wrtimg(std::vector<std::uint8_t> * img) {
 		datsiz = WebPEncodeLosslessRGB(img->data(),benoit::d::resx,benoit::d::resy,(benoit::d::resy * 0x3),&dat);
 		break;
 	}
-	int file = ::open(benoit::d::outimg.c_str(),O_TRUNC | O_WRONLY);
+	int file = ::open(benoit::d::outimg.c_str(),(O_CREAT | O_TRUNC | O_WRONLY),0x1B4);
 	auto iterwrt = [](int & file,std::uint8_t * & dat,unsigned long long & datsiz) {
 		for(unsigned long long pos = 0x0;(pos < datsiz);++pos) {
 			::ssize_t byteswrtn = ::write(file,&dat[pos],0x1);

@@ -1,6 +1,6 @@
 # pragma once
 namespace benoit {
 	namespace d {
-		unsigned long long extern ver;
+		unsigned long long constexpr ver = 0x7;
 	}
 }

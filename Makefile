@@ -59,7 +59,6 @@ SRCS_CXX = \
 	src/benoit/d/resx.cc \
 	src/benoit/d/resy.cc \
 	src/benoit/d/thelog.cc \
-	src/benoit/d/ver.cc \
 	src/benoit/exit.cc \
 	src/benoit/helpscrn.cc \
 	src/benoit/kernelstr.cc \

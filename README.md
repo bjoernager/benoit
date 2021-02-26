@@ -1,10 +1,14 @@
+<center>
+	<img src="https://fadaesen.dk/files/benoit.svg" style="width:16em" />
+</center>
+
 # benoit
 
 [*benoit*](https://mandelbrot.dk/delta/benoit) is a free and open-source Mandelbrot renderer written in C++ aimed at producing accurate Mandelbrot renders at arbitrary positions in the set as fast as possible.
 
-This speed is achieved by using all of the host's avaialable CPUs.
+This speed is achieved by using as many of the host's avaialable CPUs as possible.
 
-This project is licensed under the GNU Affero General Public License version 3 as published by the Free Software Foundation.
+For information regarding copyright of the software and it's license, please read the *Copyright & License* section down below.
 
 ## Building
 
@@ -29,6 +33,22 @@ The project is written for POSIX and therefore requires the POSIX libraries.
 Other than that, it also requires the target system to have the LLP64 data-model or greater.
 
 Targets with a pointer size of less than 64b are currently incompatible, but architectures like Aarch64, AMD64, IA-64 and PPC64 are expected to work, no-problem.
+
+## Copyright & License
+
+Copyright (c) 2021 Gabriel Jensen.
+
+All rights reserved.
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+See the GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License along with this program.
+
+If not, see <https://www.gnu.org/licenses/>.
 
 ## Questions
 
@@ -58,4 +78,4 @@ This project is named *benoit* in honour of Benoit Mandelbrot, the discoverer of
 
 Benoit was a cool dude, but most people remember him only under the name *Mandelbrot*, if at all.
 
-I think Benoit is a cool name, and Mr. Mandelbrot was a cool dude, so why not make a cool programme?
+I think Benoit is a cool name, and Mr. Mandelbrot was a cool dude, so why not make a cool programme named after two cool things?
