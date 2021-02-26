@@ -1,9 +1,13 @@
 # include <benoit/kernelstr.hh>
+# include <benoit/logfunc.hh>
+# include <benoit/logfuncret.hh>
 # include <benoit/t/kernel.hh>
 # include <string>
 # include <unordered_map>
 using namespace std::literals::string_literals;
 std::string benoit::kernelstr(benoit::t::kernel kernel) noexcept {
+	std::string const funcname = "benoit::kernelstr(benoit::t::kernel)"s;
+	benoit::logfunc(funcname);
 	std::unordered_map<benoit::t::kernel,std::string> map = {
 		{
 			benoit::t::kernel::darwinos,
@@ -43,5 +47,6 @@ std::string benoit::kernelstr(benoit::t::kernel kernel) noexcept {
 		}
 	};
 	std::string str = map[kernel];
+	benoit::logfuncret(funcname);
 	return str;
 }

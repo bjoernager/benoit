@@ -1,15 +1,17 @@
 # pragma once
+# include <benoit/t/rgba.hh>
 # include <cstdint>
 # include <pthread.h>
-# include <vector>
 namespace benoit {
 	namespace t {
 		class thrddat {
 		public:
-			pthread_t *                 thrd = nullptr;
-			std::vector<std::uint8_t> * img  = nullptr;
-			unsigned *                  rows = nullptr;
-			unsigned *                  id   = nullptr;
+			pthread_t *          thrd     = nullptr;
+			std::uint8_t *       thrdcol  = nullptr;
+			benoit::t::rgba *    img      = nullptr;
+			unsigned *           id       = nullptr;
+			unsigned long long * imgbegin = nullptr;
+			unsigned long long * imgend   = nullptr;
 		};
 	}
 }

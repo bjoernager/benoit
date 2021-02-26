@@ -1,6 +1,8 @@
 # include <benoit/archstr.hh>
 # include <benoit/helpscrn.hh>
-# include <benoit/dat.hh>
+# include <benoit/d/arch.hh>
+# include <benoit/d/kernel.hh>
+# include <benoit/d/ver.hh>
 # include <benoit/exit.hh>
 # include <benoit/kernelstr.hh>
 # include <benoit/logfunc.hh>
@@ -112,24 +114,27 @@ using namespace std::literals::string_literals;
 		datmod = fmt::format("{} AKA how the fuck did this get compiled?"s,datmod);
 	}
 	benoit::print(""s);
-	benoit::print(fmt::format("benoit {}",benoit::dat.ver));
+	benoit::print(fmt::format("benoit {}",benoit::d::ver));
 	benoit::print("Copyright 2021 Gabriel Jensen"s);
 	benoit::print(""s);
 	benoit::print("Arguments:"s);
-	benoit::print("\u0009debug={false,true}:"s);
-	benoit::print("\u0009\u0009Sets whether or not to display debug information."s);
-	benoit::print("\u0009\u0009Some debugging information (for example assertions) will still require building a debug build."s);
+	benoit::print("\u0009force-backtrace={false,true}:"s);
+	benoit::print("\u0009\u0009Forces the backtrace of the at programme exit."s);
+	benoit::print("\u0009height={0..65536}:"s);
+	benoit::print("\u0009\u0009Sets the height for the rendered image."s);
 	benoit::print("\u0009help, --help:"s);
 	benoit::print("\u0009\u0009Displays this information screen."s);
-	benoit::print("\u0009threads={0..65535}:"s);
+	benoit::print("\u0009threads={0..65536}:"s);
 	benoit::print("\u0009\u0009Sets the number of threads that will be used."s);
+	benoit::print("\u0009height={0..65536}:"s);
+	benoit::print("\u0009\u0009Sets the width for the rendered image."s);
 	benoit::print(""s);
 	benoit::print("Compilation Information:"s);
-	benoit::print(fmt::format("\u0009Architecture:          {}"s,benoit::archstr(benoit::dat.arch)));
+	benoit::print(fmt::format("\u0009Architecture:          {}"s,benoit::archstr(benoit::d::arch)));
 	benoit::print(fmt::format("\u0009Compilation Date:      {}"s,cmdate));
 	benoit::print(fmt::format("\u0009Compiler C++ Standard: {}"s,cppver));
 	benoit::print(fmt::format("\u0009Data Model:            {}"s,datmod));
-	benoit::print(fmt::format("\u0009System Kernel:         {}"s,benoit::kernelstr(benoit::dat.kernel)));
+	benoit::print(fmt::format("\u0009System Kernel:         {}"s,benoit::kernelstr(benoit::d::kernel)));
 	benoit::print(""s);
 	benoit::exit(EXIT_SUCCESS);
 }

@@ -1,30 +1,27 @@
-# include <benoit/dat.hh>
+# include <benoit/d/thelog.hh>
+# include <benoit/d/printdolog.hh>
 # include <benoit/print.hh>
 # include <fcntl.h>
 # include <stdexcept>
 # include <string>
 # include <unistd.h>
+using namespace std::literals::string_literals;
 void benoit::print(char const * msg,bool stderr) {
-	std::string const funcname = "benoit::print(char const *)"s;
+	std::string const funcname = "benoit::print(char const *,bool)"s;
 	 benoit::print(std::string(msg),stderr);
 }
 void benoit::print(std::string msg,bool stderr) {
-	std::string const funcname = "benoit::print(std::string)"s;
-	if(benoit::dat.printdolog) {
-		benoit::dat.thelog.insert(benoit::dat.thelog.begin(),msg);
+	std::string const funcname = "benoit::print(std::string,bool)"s;
+	if(benoit::d::printdolog) {
+		benoit::d::thelog.insert(benoit::d::thelog.begin(),msg);
 	}
+	msg.append("\u000A"s);
 	int file = 0x0;
 	if(stderr) {
-		::open("/dev/stderr",O_WRONLY);
+		file = 0x1;
 	}
-	else {
-		::open("/dev/stdout",O_WRONLY);
-	}
-	msg.append("\u000A");
 	if(::write(file,msg.c_str(),msg.size()) < 0x0) {
 		throw std::runtime_error("Unable to write to Stdout.");
 	}
-	if(::close(file) < 0x0) {
-		throw std::runtime_error("Unable to close Stdout");
-	}
+	fsync(file);
 }
