@@ -52,14 +52,6 @@ If not, see <https://www.gnu.org/licenses/>.
 
 ## Questions
 
-### How can I donate?
-
-Thanks for considering it. What can I say?
-
-Sadly, I currently do not have any way for you to donate unless.
-
-But again thanks for wanting to do so. Here, have some gløgg: 🍷
-
 ### Why 64b-only?
 
 64b architectures use 32b to represent an `int`, while 32b architectures use 16b.

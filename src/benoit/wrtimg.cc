@@ -28,7 +28,7 @@ void benoit::wrtimg(std::vector<std::uint8_t> * img) {
 	case benoit::t::imgfmt::png:
 		break;
 	case benoit::t::imgfmt::webp:
-		datsiz = WebPEncodeLosslessRGB(img->data(),benoit::d::resx,benoit::d::resy,(benoit::d::resy * 0x3),&dat);
+		datsiz = WebPEncodeLosslessRGB(img->data(),benoit::d::resx,benoit::d::resy,(benoit::d::resx * 0x3),&dat);
 		break;
 	}
 	int file = ::open(benoit::d::outimg.c_str(),(O_CREAT | O_TRUNC | O_WRONLY),0x1B4);
