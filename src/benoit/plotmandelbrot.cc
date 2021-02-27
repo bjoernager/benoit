@@ -24,6 +24,7 @@ namespace {
 			thrddat->img[px].r = *thrddat->thrdcol;
 			thrddat->img[px].g = *thrddat->thrdcol;
 			thrddat->img[px].b = *thrddat->thrdcol;
+			thrddat->img[px].a = 0xBF;
 		}
 		pthread_exit(nullptr);
 	}
@@ -68,6 +69,7 @@ std::vector<std::uint8_t> * benoit::plotmandelbrot() {
 		img->push_back(rgbaimg[pos].r);
 		img->push_back(rgbaimg[pos].g);
 		img->push_back(rgbaimg[pos].b);
+		img->push_back(rgbaimg[pos].a);
 	}
 	::delete rgbaimg;
 	benoit::logfuncret(funcname);

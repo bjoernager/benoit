@@ -14,6 +14,7 @@
 # include <benoit/logfuncret.hh>
 # include <benoit/print.hh>
 # include <benoit/t/imgfmt.hh>
+# include <charconv>
 # include <fmt/core.h>
 # include <string>
 # include <unordered_map>
@@ -63,7 +64,7 @@ void benoit::arghandl(int const & argc,char const * * & argv) {
 					}
 				}
 				else if(obj == "height"s) {
-					benoit::d::resy = std::stoi(val);
+					std::from_chars(val.c_str(),(val.c_str() + val.size()),benoit::d::resy);
 					if(benoit::d::resy > 0x10000) {
 						benoit::print(fmt::format("Argument “{}” sets the height to {}, but the maximum width is 65536.",arg,benoit::d::resy),true);
 						benoit::d::resy = 0x10000;
@@ -73,14 +74,14 @@ void benoit::arghandl(int const & argc,char const * * & argv) {
 					benoit::d::outimg = val;
 				}
 				else if(obj == "threads"s) {
-					benoit::d::numthrds = std::stoi(val);
+					std::from_chars(val.c_str(),(val.c_str() + val.size()),benoit::d::numthrds);
 					if(benoit::d::numthrds > 0x10000) {
 						benoit::print(fmt::format("Argument “{}” sets the number of threads to {}, but the maximum number of threads is 65536."s,arg,benoit::d::numthrds),true);
 						benoit::d::numthrds = 0x10000;
 					}
 				}
 				else if(obj == "width"s) {
-					benoit::d::resx = std::stoi(val);
+					std::from_chars(val.c_str(),(val.c_str() + val.size()),benoit::d::resx);
 					if(benoit::d::resx > 0x10000) {
 						benoit::print(fmt::format("Argument “{}” sets the width to {}, but the maximum width is 65536."s,arg,benoit::d::resx),true);
 						benoit::d::resx = 0x10000;

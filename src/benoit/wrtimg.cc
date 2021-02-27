@@ -28,20 +28,17 @@ void benoit::wrtimg(std::vector<std::uint8_t> * img) {
 	case benoit::t::imgfmt::png:
 		break;
 	case benoit::t::imgfmt::webp:
-		datsiz = WebPEncodeLosslessRGB(img->data(),benoit::d::resx,benoit::d::resy,(benoit::d::resx * 0x3),&dat);
+		datsiz = WebPEncodeLosslessRGBA(img->data(),benoit::d::resx,benoit::d::resy,(benoit::d::resx * 0x4),&dat);
 		break;
 	}
 	int file = ::open(benoit::d::outimg.c_str(),(O_CREAT | O_TRUNC | O_WRONLY),0x1B4);
-	auto iterwrt = [](int & file,std::uint8_t * & dat,unsigned long long & datsiz) {
-		for(unsigned long long pos = 0x0;(pos < datsiz);++pos) {
-			::ssize_t byteswrtn = ::write(file,&dat[pos],0x1);
-			if(byteswrtn < 0x0) {
-				benoit::print(fmt::format("Unable to write to “{}”."s,benoit::d::outimg));
-				return;
-			}
+	for(unsigned long long pos = 0x0;(pos < datsiz);++pos) {
+		::ssize_t byteswrtn = ::write(file,&dat[pos],0x1);
+		if(byteswrtn < 0x0) {
+			benoit::print(fmt::format("Unable to write to “{}”."s,benoit::d::outimg));
+			return;
 		}
-	};
-	iterwrt(file,dat,datsiz);
+	}
 	delete dat;
 	delete img;
 	if(::close(file) < 0x0) {

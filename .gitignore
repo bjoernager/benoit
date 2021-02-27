@@ -1,6 +1,5 @@
 *.o
 *.png
-*.ppm
 *.webp
 *.xml
 /benoit
