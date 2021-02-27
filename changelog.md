@@ -1,9 +1,15 @@
+# ↊
+
+* Fix #3.
+* Implement a working, multithreaded renderer forked from MandelbrotSDL.
+* Add more command-line options.
+
 # 9
 
 * Remove *\*.ppm* from *.gitignore*.
 * Reformat changelog from HTML to Markdown.
 * Add an alpha channel to the image data.
-* Use *std::from_chars* instead of *std::stoi* for in argument handler.
+* Use *std::from_chars* instead of *std::stoi* in argument handler.
 * Inline the *benoit::wrtimg::iterwrt* lambda expression.
 
 # 8
@@ -53,7 +59,7 @@
 
 * Remove unused variables from Makefile.
 * Require the LLP64 data model when compiling.
-* Create working multithrded example.
+* Create working multithreaded example.
 * Depend also on libpng.
 * Remove JPEG as a supported image format.
 
@@ -64,7 +70,7 @@
 * Create better support for different image formats.
 * Remove C-string functions in favour of the ones in &ltcstring&gt.
 * Greatly improve debugging.
-* Create foundation for new multithrded multiprecision renderer.
+* Create foundation for new multithreaded multiprecision renderer.
 * Remove old renderer.
 * Completely remove Rust artifacts.
 

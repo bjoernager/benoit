@@ -2,6 +2,8 @@
 # include <benoit/helpscrn.hh>
 # include <benoit/d/arch.hh>
 # include <benoit/d/kernel.hh>
+# include <benoit/d/logdoprint.hh>
+# include <benoit/d/printdolog.hh>
 # include <benoit/d/ver.hh>
 # include <benoit/exit.hh>
 # include <benoit/kernelstr.hh>
@@ -20,58 +22,58 @@ using namespace std::literals::string_literals;
 		std::string time = __TIME__;
 		std::unordered_map<std::string,std::string> monthmap = {
 			{
-				"Jan",
-				"01",
+				"Jan"s,
+				"01"s,
 			},
 			{
-				"Feb",
-				"02",
+				"Feb"s,
+				"02"s,
 			},
 			{
-				"Mar",
-				"03",
+				"Mar"s,
+				"03"s,
 			},
 			{
-				"Apr",
-				"04",
+				"Apr"s,
+				"04"s,
 			},
 			{
-				"May",
-				"05",
+				"May"s,
+				"05"s,
 			},
 			{
-				"Jun",
-				"06",
+				"Jun"s,
+				"06"s,
 			},
 			{
-				"Jul",
-				"07",
+				"Jul"s,
+				"07"s,
 			},
 			{
-				"Aug",
-				"08",
+				"Aug"s,
+				"08"s,
 			},
 			{
-				"Sep",
-				"09",
+				"Sep"s,
+				"09"s,
 			},
 			{
-				"Oct",
-				"10",
+				"Oct"s,
+				"10"s,
 			},
 			{
-				"Nov",
-				"11",
+				"Nov"s,
+				"11"s,
 			},
 			{
-				"Dec",
-				"12",
+				"Dec"s,
+				"12"s,
 			},
 		};
 		std::string year  = date.substr(0x7);
 		std::string month = monthmap[date.substr(0x0,0x3)];
 		std::string day   = date.substr(0x4,0x2);
-		cmdate            = year + "-"s + month + "-"s + day + "T"s + time;
+		cmdate            = fmt::format("{}-{}-{}T{}"s,year,month,day,time);
 	}
 	std::string cppver = ""s;
 	{
@@ -113,17 +115,23 @@ using namespace std::literals::string_literals;
 	else {
 		datmod = fmt::format("{} AKA how the fuck did this get compiled?"s,datmod);
 	}
+	benoit::d::logdoprint = false;
+	benoit::d::printdolog = false;
 	benoit::print(""s);
 	benoit::print(fmt::format("benoit {}",benoit::d::ver));
 	benoit::print("Copyright 2021 Gabriel Jensen"s);
 	benoit::print(""s);
 	benoit::print("Arguments:"s);
+	benoit::print("\u0009alpha={false,true}:"s);
+	benoit::print("\u0009\u0009Sets whether or not to use alpha or background colour for rendered image."s);
 	benoit::print("\u0009force-backtrace={false,true}:"s);
 	benoit::print("\u0009\u0009Forces the backtrace of the at programme exit."s);
 	benoit::print("\u0009height={0..65536}:"s);
 	benoit::print("\u0009\u0009Sets the height for the rendered image."s);
 	benoit::print("\u0009help, --help:"s);
 	benoit::print("\u0009\u0009Displays this information screen."s);
+	benoit::print("\u0009maximum-iterations={0..18446744073709551615}:"s);
+	benoit::print("\u0009\u0009Sets the maximum number of iterations allowed."s);
 	benoit::print("\u0009threads={0..65536}:"s);
 	benoit::print("\u0009\u0009Sets the number of threads that will be used."s);
 	benoit::print("\u0009height={0..65536}:"s);
@@ -136,5 +144,7 @@ using namespace std::literals::string_literals;
 	benoit::print(fmt::format("\u0009Data Model:            {}"s,datmod));
 	benoit::print(fmt::format("\u0009System Kernel:         {}"s,benoit::kernelstr(benoit::d::kernel)));
 	benoit::print(""s);
+	benoit::d::logdoprint = true;
+	benoit::d::printdolog = true;
 	benoit::exit(EXIT_SUCCESS);
 }

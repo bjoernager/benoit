@@ -1,7 +1,7 @@
 # include <benoit/d/logdoprint.hh>
 bool benoit::d::logdoprint =
 # if defined(NDEBUG)
-	false;
+false;
 # else
-	true;
+true;
 # endif

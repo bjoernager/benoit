@@ -5,11 +5,12 @@ CXXFLAGS += -DNDEBUG -g
 endif
 CXXFLAGS += -std=c++20 -Wall -Wextra -Wpedantic
 CXXFLAGS += -march=native -mtune=native -O3
-LDFLAGS = -lfmt -lgmp -lmpfr -lpng -lpthread -lpugixml -lwebp
+LDFLAGS =   -lfmt -lgmp -lmpfr -lpng -lpthread -lpugixml -lwebp
 HDRS_CXX = \
 	include/benoit/archstr.hh \
 	include/benoit/arghandl.hh \
 	include/benoit/crtcfg.hh \
+	include/benoit/d/alpha.hh \
 	include/benoit/d/arch.hh \
 	include/benoit/d/cfg.hh \
 	include/benoit/d/debug.hh \
@@ -47,6 +48,7 @@ SRCS_CXX = \
 	src/benoit/archstr.cc \
 	src/benoit/arghandl.cc \
 	src/benoit/crtcfg.cc \
+	src/benoit/d/alpha.cc \
 	src/benoit/d/cfg.cc \
 	src/benoit/d/dobt.cc \
 	src/benoit/d/imgfmt.cc \
@@ -74,9 +76,9 @@ SRCS_CXX = \
 	src/main.cc
 OBJS_CXX=$(SRCS_CXX:.cc=.o)
 OBJS=$(OBJS_CXX)
-benoit: $(OBJS)
+benoit: Makefile $(OBJS)
 	$(CXX) $(LDFLAGS) -o $@ $(OBJS)
-$(OBJS_CXX): $(HDRS_CXX) $(SRCS_CXX)
+$(OBJS_CXX): Makefile $(HDRS_CXX)
 .PHONY: clean
 clean:
 	rm $(OBJS)

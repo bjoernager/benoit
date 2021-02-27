@@ -1,7 +1,9 @@
 # include <benoit/archstr.hh>
 # include <benoit/arghandl.hh>
+# include <benoit/d/alpha.hh>
 # include <benoit/d/dobt.hh>
 # include <benoit/d/imgfmt.hh>
+# include <benoit/d/maxiter.hh>
 # include <benoit/d/numthrds.hh>
 # include <benoit/d/outimg.hh>
 # include <benoit/d/resx.hh>
@@ -44,7 +46,15 @@ void benoit::arghandl(int const & argc,char const * * & argv) {
 				benoit::log(funcname,fmt::format("Found object “{}”.",obj));
 				std::string val = arg.substr(eqpos + 0x1);
 				benoit::log(funcname,fmt::format("Found value “{}”.",val));
-				if(obj == "force-backtrace"s) {
+				if(obj == "alpha"s) {
+					if(!strtobool.contains(val)) {
+						benoit::print(fmt::format(invalvalforobj,val,obj));
+					}
+					else {
+						benoit::d::alpha = strtobool[val];
+					}
+				}
+				else if(obj == "force-backtrace"s) {
 					if(!strtobool.contains(val)) {
 						benoit::print(fmt::format(invalvalforobj,val,obj));
 					}
@@ -69,6 +79,9 @@ void benoit::arghandl(int const & argc,char const * * & argv) {
 						benoit::print(fmt::format("Argument “{}” sets the height to {}, but the maximum width is 65536.",arg,benoit::d::resy),true);
 						benoit::d::resy = 0x10000;
 					}
+				}
+				else if(obj == "maximum-iterations"s) {
+					std::from_chars(val.c_str(),(val.c_str() + val.size()),benoit::d::maxiter);
 				}
 				else if(obj == "output"s) {
 					benoit::d::outimg = val;
