@@ -2,6 +2,8 @@
 # include <benoit/d/outimg.hh>
 # include <benoit/d/resx.hh>
 # include <benoit/d/resy.hh>
+# include <benoit/err/clsfil.hh>
+# include <benoit/err/wrttofil.hh>
 # include <benoit/logfunc.hh>
 # include <benoit/logfuncret.hh>
 # include <benoit/print.hh>
@@ -23,7 +25,7 @@ void benoit::wrtimg(std::vector<std::uint8_t> * img) {
 	std::string const funcname = "benoit::wrtimg(std::vector<std::uint8_t> *)"s;
 	benoit::logfunc(funcname);
 	std::uint8_t *     dat;
-	unsigned long long datsiz;
+	unsigned long long datsiz = 0x0;
 	switch(benoit::d::imgfmt) {
 	case benoit::t::imgfmt::png:
 		break;
@@ -31,18 +33,18 @@ void benoit::wrtimg(std::vector<std::uint8_t> * img) {
 		datsiz = WebPEncodeLosslessRGBA(img->data(),benoit::d::resx,benoit::d::resy,(benoit::d::resx * 0x4),&dat);
 		break;
 	}
-	int file = ::open(benoit::d::outimg.c_str(),(O_CREAT | O_TRUNC | O_WRONLY),0x1B4);
+	int fil = ::open(benoit::d::outimg.c_str(),(O_CREAT | O_TRUNC | O_WRONLY),0x1B4);
 	for(unsigned long long pos = 0x0;(pos < datsiz);++pos) {
-		::ssize_t byteswrtn = ::write(file,&dat[pos],0x1);
+		::ssize_t byteswrtn = ::write(fil,&dat[pos],0x1);
 		if(byteswrtn < 0x0) {
-			benoit::print(fmt::format("Unable to write to “{}”."s,benoit::d::outimg));
+			benoit::err::wrttofil(benoit::d::outimg);
 			return;
 		}
 	}
 	delete dat;
 	delete img;
-	if(::close(file) < 0x0) {
-		benoit::print(fmt::format("Unable to close file “{}”."s,benoit::d::outimg));
+	if(::close(fil) < 0x0) {
+		benoit::err::clsfil(benoit::d::outimg);
 	}
 	benoit::logfuncret(funcname);
 }
@@ -86,8 +88,8 @@ auto buf  = std::vector<std::uint8_t>();
 buf.push_back(0xFF);
 buf.push_back(0x0);
 buf.push_back(0x0);
-auto file = std::fstream(benoit::outimt,std::fstream::binary | std::fstream::out | std::fstream::trunc);
-if(!file.is_open()) {
+auto fil = std::fstream(benoit::outimt,std::fstream::binary | std::fstream::out | std::fstream::trunc);
+if(!fil.is_open()) {
 	::_exit(EXIT_FAILURE);
 }
 */

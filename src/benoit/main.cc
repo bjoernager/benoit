@@ -20,7 +20,6 @@ static_assert(((sizeof(short) >= 0x2) && (sizeof(int) >= 0x4) && (sizeof(long) >
 using namespace std::literals::string_literals;
 [[noreturn]] void benoit::main(int const argc,char const * * argv) noexcept {
 	std::string const funcname = "benoit::main(int const,char const * *)"s;
-	benoit::log(fmt::format("{}"s,argv[0x0]));
 	benoit::logfunc(funcname);
 	benoit::d::numthrds = std::thread::hardware_concurrency();
 	benoit::log(fmt::format("{} availabe threads have been detected."s,benoit::d::numthrds));

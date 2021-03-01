@@ -1,3 +1,11 @@
+# ↋
+
+* Drop *boost::multiprecision::mpfr_float* in favour of the standard type *::__float128* for multiprecision.
+* Create a prettier colour palette.
+* Use JSON instead of XML for configuration.
+* Automatically create a configuration file if one doesn't already exist.
+* Greatly improve render time.
+
 # ↊
 
 * Fix #3.

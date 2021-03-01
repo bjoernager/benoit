@@ -6,8 +6,9 @@ namespace benoit {
 	namespace t {
 		class thrddat {
 		public:
-			pthread_t *          thrd     = nullptr;
 			benoit::t::rgba *    img      = nullptr;
+			bool *               isrun    = nullptr;
+			pthread_t *          thrd     = nullptr;
 			unsigned *           id       = nullptr;
 			unsigned long long * imgbegin = nullptr;
 			unsigned long long * imgend   = nullptr;

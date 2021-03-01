@@ -12,7 +12,7 @@ For information regarding copyright of the software and it's license, please rea
 
 ## Building
 
-The included Makefile is supposed to work for most platforms.
+The included Makefile is supposed to work.
 
 In the event it doesn't, find a solution.
 
@@ -20,19 +20,11 @@ In the event it doesn't, find a solution.
 
 This project depends on the following libraries:
 
-* Boost.Multiprecision (for multiprecision calculations)
-* {FMT} (for string-formatting)
-* GMP (a dependency of Boost.Multiprecision)
-* libpng (for encoding PNG images)
-* libwebp (for encoding WebP images)
-* MPFR (a dependency of Boost.Multiprecision)
-* pugixml (for XML parsing)
+* [*{FMT}*](https://github.com/fmtlib/fmt) for string-formatting.
+* [*libpng*](https://github.com/glennrp/libpng) for encoding PNG images.
+* [*libwebp*](https://chromium.googlesource.com/webm/libwebp) for encoding WebP images.
 
-The project is written for POSIX and therefore requires the POSIX libraries.
-
-Other than that, it also requires the target system to have the LLP64 data-model or greater.
-
-Targets with a pointer size of less than 64b are currently incompatible, but architectures like Aarch64, AMD64, IA-64 and PPC64 are expected to work, no-problem.
+The project requires the target system to use the LLP64 data-model or greater.
 
 ## Copyright & License
 

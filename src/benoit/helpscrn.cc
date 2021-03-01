@@ -115,11 +115,13 @@ using namespace std::literals::string_literals;
 	else {
 		datmod = fmt::format("{} AKA how the fuck did this get compiled?"s,datmod);
 	}
+	bool logdoprint = benoit::d::logdoprint;
 	benoit::d::logdoprint = false;
 	benoit::d::printdolog = false;
 	benoit::print(""s);
 	benoit::print(fmt::format("benoit {}",benoit::d::ver));
 	benoit::print("Copyright 2021 Gabriel Jensen"s);
+	benoit::print("All rigths reserved."s);
 	benoit::print(""s);
 	benoit::print("Arguments:"s);
 	benoit::print("\u0009alpha={false,true}:"s);
@@ -144,7 +146,7 @@ using namespace std::literals::string_literals;
 	benoit::print(fmt::format("\u0009Data Model:            {}"s,datmod));
 	benoit::print(fmt::format("\u0009System Kernel:         {}"s,benoit::kernelstr(benoit::d::kernel)));
 	benoit::print(""s);
-	benoit::d::logdoprint = true;
+	benoit::d::logdoprint = logdoprint;
 	benoit::d::printdolog = true;
 	benoit::exit(EXIT_SUCCESS);
 }

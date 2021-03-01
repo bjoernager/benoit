@@ -1,13 +1,12 @@
 # pragma once
-# include <boost/multiprecision/mpfr.hpp>
 namespace benoit {
 	namespace t {
 		class pos {
 		public:
-											  pos(boost::multiprecision::mpfr_float x = 0x0,boost::multiprecision::mpfr_float y = 0x0);
-			long double x    = 0x0;
-			long double y    = 0x0;
-			long double zoom = 0x1;
+											  pos(__float128 x = 0x0,__float128 y = 0x0);
+			__float128 x    = 0x0;
+			__float128 y    = 0x0;
+			__float128 zoom = 0x1;
 		};
 	}
 }

@@ -1,11 +1,11 @@
 CXX=g++
-CXXFLAGS=-Iinclude -D_ATFILE_SOURCE -D_FORTIFY_SOURCE=0x2 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_ISOC99_SOURCE -D_ISOC11_SOURCE -D_ISOC2X_SOURCE -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED -D__STDC_WANT_IEC_60559_BFP_EXT__ -D__STDC_WANT_IEC_60559_FUNCS_EXT__ -D__STDC_WANT_IEC_60559_TYPES_EXT__ -D__STDC_WANT_LIB_EXT2__=0x1
+CXXFLAGS=-Iinclude -D_ATFILE_SOURCE -D_FORTIFY_SOURCE=0x2 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_ISOC99_SOURCE -D_ISOC11_SOURCE -D_ISOC2X_SOURCE -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED -D__STDC_WANT_IEC_60559_BFP_EXT__ -D__STDC_WANT_IEC_60559_DFP_EXT__ -D__STDC_WANT_IEC_60559_FUNCS_EXT__ -D__STDC_WANT_IEC_60559_TYPES_EXT__ -D__STDC_WANT_LIB_EXT2__=0x1
 ifneq ($(debug),true)
 CXXFLAGS += -DNDEBUG -g
 endif
 CXXFLAGS += -std=c++20 -Wall -Wextra -Wpedantic
 CXXFLAGS += -march=native -mtune=native -O3
-LDFLAGS =   -lfmt -lgmp -lmpfr -lpng -lpthread -lpugixml -lwebp
+LDFLAGS =   -lfmt -lpng -lpthread -lwebp
 HDRS_CXX = \
 	include/benoit/archstr.hh \
 	include/benoit/arghandl.hh \
@@ -27,6 +27,8 @@ HDRS_CXX = \
 	include/benoit/d/resy.hh \
 	include/benoit/d/thelog.hh \
 	include/benoit/d/ver.hh \
+	include/benoit/err/clsfil.hh \
+	include/benoit/err/wrttofil.hh \
 	include/benoit/exit.hh \
 	include/benoit/helpscrn.hh \
 	include/benoit/kernelstr.hh \
@@ -61,6 +63,8 @@ SRCS_CXX = \
 	src/benoit/d/resx.cc \
 	src/benoit/d/resy.cc \
 	src/benoit/d/thelog.cc \
+	src/benoit/err/clsfil.cc \
+	src/benoit/err/wrttofil.cc \
 	src/benoit/exit.cc \
 	src/benoit/helpscrn.cc \
 	src/benoit/kernelstr.cc \

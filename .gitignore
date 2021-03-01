@@ -1,5 +1,5 @@
+*.json
 *.o
 *.png
 *.webp
-*.xml
 /benoit
