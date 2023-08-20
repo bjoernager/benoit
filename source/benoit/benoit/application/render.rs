@@ -26,37 +26,42 @@ use crate::benoit::application::Application;
 extern crate sdl2;
 
 use sdl2::pixels::Color;
-use sdl2::rect::Rect;
+use sdl2::rect::Point;
+use std::time::Instant;
 
 impl Application {
 	pub fn render(&mut self) {
 		eprintln!("rendering: {} + {}i @ {}", self.position_x, self.position_y, self.zoom);
 
-		//let mut data: [i8; 0x100] = [0; 0x100];
+		let canvas_size = self.canvas_height* self.canvas_width;
 
-		for y in 0x0..self.canvas_width {
-			for x in 0x0..self.canvas_height {
-				let pixel = y * 0xFF + x;
+		let mut data: Vec<u32> = Vec::with_capacity(self.canvas_height as usize * self.canvas_width as usize);
 
+		let time_start = Instant::now();
+
+		for y in 0x0..self.canvas_height {
+			for x in 0x0..self.canvas_width {
 				let canvas_width  = self.canvas_width as f64;
 				let canvas_height = self.canvas_height as f64;
 
-				let ca = (x as f64 - canvas_width  / 2.0) / (canvas_width  / 4.0 * self.zoom) + self.position_x;
-				let cb = (y as f64 - canvas_height / 2.0) / (canvas_height / 4.0 * self.zoom) + self.position_y;
+				let ca = (x as f64 - canvas_width  / 2.0) / canvas_width  * 4.0 / self.zoom + self.position_x;
+				let cb = (y as f64 - canvas_height / 2.0) / canvas_height * 4.0 / self.zoom + self.position_y;
 
 				let mut za: f64 = 0.0;
 				let mut zb: f64 = 0.0;
 
-				let mut iteration_count = 0x0u32;
+				let mut iteration_count: u32 = 0x0;
 				while iteration_count < self.max_iteration_count {
 					let square_distance = (za * za + zb * zb).sqrt();
 					if square_distance > 2.0 * 2.0 { break }
 
-					// z = z^2 + c
 					{
+						// z = z^2 + c
+
 						// Complex square:
 						// a = a^2 - b^2
 						// b = 2abi
+
 						let za_temporary = za;
 						za = za * za - zb * zb + ca;
 						zb = za_temporary * zb * 2.0 + cb;
@@ -65,22 +70,32 @@ impl Application {
 					iteration_count += 0x1;
 				}
 
-				let value  = (iteration_count as f32 / self.max_iteration_count as f32 * 255.0).round() as u8;
-				let colour = Color::RGB(value, value, value);
-				self.canvas.set_draw_color(colour);
-
-				let square = Rect::new(
-					x as i32,
-					y as i32,
-					0x1,
-					0x1,
-				);
-				self.canvas.fill_rects(&[square]).unwrap();
+				data.push(iteration_count);
 			}
+		}
+
+		let duration = time_start.elapsed();
+
+		for pixel in 0x0..canvas_size {
+			let y = pixel / self.canvas_width;
+			let x = pixel - y * self.canvas_width;
+
+			let iteration_count = data[pixel as usize];
+
+			let value: u8 = if iteration_count != self.max_iteration_count {
+				(iteration_count as f32 / 64.0 % 1.0 * 255.0).round() as u8
+			} else {
+				0x0
+			};
+			let colour = Color::RGB(value, value, value);
+			self.canvas.set_draw_color(colour);
+
+			let point = Point::new(x as i32, y as i32);
+			self.canvas.draw_point(point).unwrap();
 		}
 
 		self.canvas.present();
 
-		eprintln!("done");
+		eprintln!("done ({}ms)", duration.as_millis());
 	}
 }

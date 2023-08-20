@@ -25,8 +25,8 @@ use crate::benoit::application::Application;
 
 impl Application {
 	pub fn initialise() -> Application {
-		let canvas_width  = 0x400;
-		let canvas_height = 0x400;
+		let canvas_width  = 0x200;
+		let canvas_height = 0x200;
 
 		let sdl       = sdl2::init().expect("unable to initialise sdl2");
 		let sdl_video = sdl.video().expect("unable to initialise video");
@@ -46,7 +46,7 @@ impl Application {
 			position_x:          0.0,
 			position_y:          0.0,
 			zoom:                1.0,
-			max_iteration_count: 0xFF,
+			max_iteration_count: 0x100,
 
 			do_render: true,
 		};

@@ -68,11 +68,19 @@ impl Application {
 						_           => 0.0,
 					};
 
+					self.max_iteration_count = match scancode {
+						Scancode::F => self.max_iteration_count * 0x2,
+						Scancode::R => self.max_iteration_count / 0x2,
+						_           => self.max_iteration_count,
+					};
+
 					self.do_render = match scancode {
 						Scancode::A => true,
 						Scancode::D => true,
 						Scancode::E => true,
+						Scancode::F => true,
 						Scancode::Q => true,
+						Scancode::R => true,
 						Scancode::S => true,
 						Scancode::W => true,
 						_           => false,

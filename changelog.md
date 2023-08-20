@@ -1,3 +1,9 @@
+# 12
+
+* Render and draw in different passes
+* Update colouring
+* Actually remove old makefile
+
 # 11
 
 * Remove old makefile
