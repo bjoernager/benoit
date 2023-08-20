@@ -30,7 +30,7 @@ use sdl2::rect::Rect;
 
 impl Application {
 	pub fn render(&mut self) {
-		println!("rendering");
+		eprintln!("rendering: {} + {}i @ {}", self.position_x, self.position_y, self.zoom);
 
 		//let mut data: [i8; 0x100] = [0; 0x100];
 
@@ -41,16 +41,16 @@ impl Application {
 				let canvas_width  = self.canvas_width as f64;
 				let canvas_height = self.canvas_height as f64;
 
-				let ca = (x as f64 - canvas_width  / 2.0) / (canvas_width  / 4.0);
-				let cb = (y as f64 - canvas_height / 2.0) / (canvas_height / 4.0);
+				let ca = (x as f64 - canvas_width  / 2.0) / (canvas_width  / 4.0 * self.zoom) + self.position_x;
+				let cb = (y as f64 - canvas_height / 2.0) / (canvas_height / 4.0 * self.zoom) + self.position_y;
 
-				let mut za = 0.0f64;
-				let mut zb = 0.0f64;
+				let mut za: f64 = 0.0;
+				let mut zb: f64 = 0.0;
 
 				let mut iteration_count = 0x0u32;
 				while iteration_count < self.max_iteration_count {
-					let distance = (za.powf(2.0) + zb.powf(2.0)).sqrt();
-					if distance > 2.0 { break }
+					let square_distance = (za * za + zb * zb).sqrt();
+					if square_distance > 2.0 * 2.0 { break }
 
 					// z = z^2 + c
 					{
@@ -58,14 +58,14 @@ impl Application {
 						// a = a^2 - b^2
 						// b = 2abi
 						let za_temporary = za;
-						za = za.powf(2.0) - zb.powf(2.0) + ca;
+						za = za * za - zb * zb + ca;
 						zb = za_temporary * zb * 2.0 + cb;
 					}
 
 					iteration_count += 0x1;
 				}
 
-				let value  = (iteration_count / self.max_iteration_count * 0xFF) as u8;
+				let value  = (iteration_count as f32 / self.max_iteration_count as f32 * 255.0).round() as u8;
 				let colour = Color::RGB(value, value, value);
 				self.canvas.set_draw_color(colour);
 
@@ -81,6 +81,6 @@ impl Application {
 
 		self.canvas.present();
 
-		println!("done");
+		eprintln!("done");
 	}
 }

@@ -43,7 +43,12 @@ impl Application {
 			canvas_width:  canvas_width,
 			canvas_height: canvas_height,
 
+			position_x:          0.0,
+			position_y:          0.0,
+			zoom:                1.0,
 			max_iteration_count: 0xFF,
+
+			do_render: true,
 		};
 	}
 }

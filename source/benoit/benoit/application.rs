@@ -27,6 +27,7 @@ use sdl2::{Sdl, VideoSubsystem};
 use sdl2::render::WindowCanvas;
 
 pub mod initialise;
+pub mod poll_events;
 pub mod render;
 pub mod run;
 
@@ -38,5 +39,10 @@ pub struct Application {
 	canvas_width:  u32,
 	canvas_height: u32,
 
+	position_x:          f64,
+	position_y:          f64,
+	zoom:                f64,
 	max_iteration_count: u32,
+
+	do_render: bool,
 }

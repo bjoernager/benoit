@@ -1,9 +1,18 @@
+# 11
+
+* Remove old makefile
+* Optimise renderer
+* Modulise code
+* Check keyboard input (allow viewpoint movement)
+* Update colouring
+
 # 10
 
 * Rewrite in Rust again
 * Update gitignore
 * Update readme
 * Update changelog format
+* Use git tagging for versioning
 
 # ↋
 

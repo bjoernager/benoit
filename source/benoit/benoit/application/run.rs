@@ -25,20 +25,17 @@ use crate::benoit::application::Application;
 
 extern crate sdl2;
 
-use sdl2::event::Event;
-
 impl Application {
 	pub fn run(&mut self) {
 		let mut event_pump = self.sdl.event_pump().expect("unable to get event pump");
 
-		self.render();
+		loop {
+			if self.poll_events(&mut event_pump) { break }
 
-		'main_loop: loop {
-			for event in event_pump.poll_iter() {
-				match event {
-					Event::Quit {..} => break 'main_loop,
-					_                => {},
-				}
+			if self.do_render {
+				self.render();
+
+				self.do_render = false;
 			}
 		}
 	}
