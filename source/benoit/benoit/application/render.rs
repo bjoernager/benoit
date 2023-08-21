@@ -26,16 +26,16 @@ use crate::benoit::application::Application;
 extern crate sdl2;
 
 use sdl2::pixels::Color;
-use sdl2::rect::Point;
+use sdl2::rect::Rect;
 use std::time::Instant;
 
 impl Application {
 	pub fn render(&mut self) {
-		eprintln!("rendering: {} + {}i @ {}", self.position_x, self.position_y, self.zoom);
+		eprintln!("rendering: {}{:+}i ({}x) @ ({})", self.position_x, self.position_y, self.zoom, self.maximum_iteration_count);
 
-		let canvas_size = self.canvas_height* self.canvas_width;
+		let canvas_size = self.canvas_height * self.canvas_width;
 
-		let mut data: Vec<u32> = Vec::with_capacity(self.canvas_height as usize * self.canvas_width as usize);
+		let mut data = Vec::<u32>::with_capacity(canvas_size as usize);
 
 		let time_start = Instant::now();
 
@@ -51,7 +51,7 @@ impl Application {
 				let mut zb: f64 = 0.0;
 
 				let mut iteration_count: u32 = 0x0;
-				while iteration_count < self.max_iteration_count {
+				while iteration_count < self.maximum_iteration_count {
 					let square_distance = (za * za + zb * zb).sqrt();
 					if square_distance > 2.0 * 2.0 { break }
 
@@ -77,21 +77,28 @@ impl Application {
 		let duration = time_start.elapsed();
 
 		for pixel in 0x0..canvas_size {
-			let y = pixel / self.canvas_width;
-			let x = pixel - y * self.canvas_width;
+			let y = pixel as u32 / self.canvas_width;
+			let x = pixel as u32 - y * self.canvas_width;
 
 			let iteration_count = data[pixel as usize];
 
-			let value: u8 = if iteration_count != self.max_iteration_count {
-				(iteration_count as f32 / 64.0 % 1.0 * 255.0).round() as u8
+			let factor = iteration_count as f32 / 64.0 % 1.0;
+
+			let value: u8 = if iteration_count != self.maximum_iteration_count {
+				(factor * 255.0).round() as u8
 			} else {
 				0x0
 			};
 			let colour = Color::RGB(value, value, value);
 			self.canvas.set_draw_color(colour);
 
-			let point = Point::new(x as i32, y as i32);
-			self.canvas.draw_point(point).unwrap();
+			let rectangle = Rect::new(
+				(x * self.scale) as i32,
+				(y * self.scale) as i32,
+				self.scale,
+				self.scale
+			);
+			self.canvas.fill_rects(&[rectangle]).unwrap();
 		}
 
 		self.canvas.present();

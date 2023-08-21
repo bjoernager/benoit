@@ -25,13 +25,14 @@ use crate::benoit::application::Application;
 
 impl Application {
 	pub fn initialise() -> Application {
-		let canvas_width  = 0x200;
-		let canvas_height = 0x200;
+		let canvas_width:  u32 = 0x400;
+		let canvas_height: u32 = 0x400;
+		let scale:         u32 = 0x1;
 
 		let sdl       = sdl2::init().expect("unable to initialise sdl2");
 		let sdl_video = sdl.video().expect("unable to initialise video");
 
-		let window = sdl_video.window("Benoit", canvas_width, canvas_height).position_centered().build().expect("unable to open window");
+		let window = sdl_video.window("Benoit", canvas_width * scale, canvas_height * scale).position_centered().build().expect("unable to open window");
 
 		let canvas = window.into_canvas().build().expect("unable to create canvas");
 
@@ -42,11 +43,12 @@ impl Application {
 
 			canvas_width:  canvas_width,
 			canvas_height: canvas_height,
+			scale:         scale,
 
-			position_x:          0.0,
-			position_y:          0.0,
-			zoom:                1.0,
-			max_iteration_count: 0x100,
+			position_x:              0.0,
+			position_y:              0.0,
+			zoom:                    1.0,
+			maximum_iteration_count: 0x100,
 
 			do_render: true,
 		};

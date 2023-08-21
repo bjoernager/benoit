@@ -1,3 +1,8 @@
+# 13
+
+* Update render message
+* Add scaling setting
+
 # 12
 
 * Render and draw in different passes

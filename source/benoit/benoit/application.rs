@@ -38,11 +38,12 @@ pub struct Application {
 
 	canvas_width:  u32,
 	canvas_height: u32,
+	scale:         u32,
 
-	position_x:          f64,
-	position_y:          f64,
-	zoom:                f64,
-	max_iteration_count: u32,
+	position_x:              f64,
+	position_y:              f64,
+	zoom:                    f64,
+	maximum_iteration_count: u32,
 
 	do_render: bool,
 }
