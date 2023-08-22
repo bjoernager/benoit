@@ -41,6 +41,8 @@ impl Application {
 			sdl_video: sdl_video,
 			canvas:    canvas,
 
+			thread_count: 0x10,
+
 			canvas_width:  canvas_width,
 			canvas_height: canvas_height,
 			scale:         scale,

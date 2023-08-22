@@ -27,7 +27,10 @@ extern crate sdl2;
 
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
+use std::slice;
+use std::thread::{JoinHandle, spawn};
 use std::time::Instant;
+use std::ptr::addr_of_mut;
 
 impl Application {
 	pub fn render(&mut self) {
@@ -35,46 +38,55 @@ impl Application {
 
 		let canvas_size = self.canvas_height * self.canvas_width;
 
-		let mut data = Vec::<u32>::with_capacity(canvas_size as usize);
+		let mut data = vec![0x0; canvas_size as usize];
+
+		let mut threads = Vec::<JoinHandle<()>>::with_capacity(self.thread_count as usize);
 
 		let time_start = Instant::now();
 
-		for y in 0x0..self.canvas_height {
-			for x in 0x0..self.canvas_width {
-				let canvas_width  = self.canvas_width as f64;
-				let canvas_height = self.canvas_height as f64;
+		'render_loop: {
+			let mut y: u32 = 0x0;
 
-				let ca = (x as f64 - canvas_width  / 2.0) / canvas_width  * 4.0 / self.zoom + self.position_x;
-				let cb = (y as f64 - canvas_height / 2.0) / canvas_height * 4.0 / self.zoom + self.position_y;
+			for _thread in 0x0..self.thread_count {
+				if y == self.canvas_height { break 'render_loop; }
 
-				let mut za: f64 = 0.0;
-				let mut zb: f64 = 0.0;
+				let slice_start = y as usize * self.canvas_width as usize;
+				let data_slice  = unsafe { slice::from_raw_parts_mut(addr_of_mut!(data[slice_start]), self.canvas_width as usize) };
 
-				let mut iteration_count: u32 = 0x0;
-				while iteration_count < self.maximum_iteration_count {
-					let square_distance = (za * za + zb * zb).sqrt();
-					if square_distance > 2.0 * 2.0 { break }
+				let canvas_width            = self.canvas_width;
+				let canvas_height           = self.canvas_height;
+				let position_x              = self.position_x;
+				let position_y              = self.position_y;
+				let zoom                    = self.zoom;
+				let maximum_iteration_count = self.maximum_iteration_count;
 
-					{
-						// z = z^2 + c
+				threads.push(spawn(move || { Application::render_row(data_slice, y, canvas_width, canvas_height, position_x, position_y, zoom, maximum_iteration_count) }));
 
-						// Complex square:
-						// a = a^2 - b^2
-						// b = 2abi
+				y += 0x1;
+			}
 
-						let za_temporary = za;
-						za = za * za - zb * zb + ca;
-						zb = za_temporary * zb * 2.0 + cb;
-					}
+			for y in 0x0..self.canvas_height {
+				threads.remove(0x0).join();
 
-					iteration_count += 0x1;
-				}
+				let slice_start = y as usize * self.canvas_width as usize;
+				let data_slice  = unsafe { slice::from_raw_parts_mut(addr_of_mut!(data[slice_start]), self.canvas_width as usize) };
 
-				data.push(iteration_count);
+				let canvas_width            = self.canvas_width;
+				let canvas_height           = self.canvas_height;
+				let position_x              = self.position_x;
+				let position_y              = self.position_y;
+				let zoom                    = self.zoom;
+				let maximum_iteration_count = self.maximum_iteration_count;
+
+				threads.push(spawn(move || { Application::render_row(data_slice, y, canvas_width, canvas_height, position_x, position_y, zoom, maximum_iteration_count) }));
 			}
 		}
 
 		let duration = time_start.elapsed();
+
+		for thread in threads {
+			thread.join().unwrap();
+		}
 
 		for pixel in 0x0..canvas_size {
 			let y = pixel as u32 / self.canvas_width;
@@ -84,7 +96,7 @@ impl Application {
 
 			let factor = {
 				let factor = iteration_count as f32 / 64.0 % 1.0;
-				
+
 				(if factor >= 1.0 / 2.0 {
 					1.0 - factor
 				} else {

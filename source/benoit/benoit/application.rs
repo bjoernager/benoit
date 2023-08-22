@@ -29,12 +29,15 @@ use sdl2::render::WindowCanvas;
 pub mod initialise;
 pub mod poll_events;
 pub mod render;
+pub mod render_row;
 pub mod run;
 
 pub struct Application {
 	sdl:       Sdl,
 	sdl_video: VideoSubsystem,
 	canvas:    WindowCanvas,
+
+	thread_count: u32,
 
 	canvas_width:  u32,
 	canvas_height: u32,
