@@ -82,7 +82,15 @@ impl Application {
 
 			let iteration_count = data[pixel as usize];
 
-			let factor = iteration_count as f32 / 64.0 % 1.0;
+			let factor = {
+				let factor = iteration_count as f32 / 64.0 % 1.0;
+				
+				(if factor >= 1.0 / 2.0 {
+					1.0 - factor
+				} else {
+					factor
+				}) * 2.0
+			};
 
 			let value: u8 = if iteration_count != self.maximum_iteration_count {
 				(factor * 255.0).round() as u8

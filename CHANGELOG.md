@@ -1,3 +1,8 @@
+# 14
+
+* Update colouring
+* Rename changelog file: changelog.md => CHANGELOG.md
+
 # 13
 
 * Update render message
