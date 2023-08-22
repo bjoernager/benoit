@@ -21,35 +21,29 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-extern crate sdl2;
+use crate::benoit::application::Application;
 
-use sdl2::{Sdl, VideoSubsystem};
-use sdl2::render::WindowCanvas;
+extern crate webp;
 
-pub mod colour;
-pub mod draw;
-pub mod dump;
-pub mod initialise;
-pub mod poll_events;
-pub mod render_row;
-pub mod render;
-pub mod run;
+use std::fs::write;
+use webp::Encoder;
 
-pub struct Application {
-	sdl:       Sdl,
-	sdl_video: VideoSubsystem,
-	canvas:    WindowCanvas,
+impl Application {
+	pub fn dump_image(&mut self) {
+		let canvas_size = self.canvas_height * self.canvas_width;
 
-	thread_count: u32,
+		let mut data: Vec::<u32> = vec![0x0; canvas_size as usize];
+		self.render(&mut data[..]);
 
-	canvas_width:  u32,
-	canvas_height: u32,
-	scale:         u32,
+		let mut image: Vec::<u8> = vec![0x0; canvas_size as usize * 0x3];
+		self.colour(&mut image[..], &data[..]);
 
-	position_x:              f64,
-	position_y:              f64,
-	zoom:                    f64,
-	maximum_iteration_count: u32,
+		let encoder = Encoder::from_rgb(&image[..], self.canvas_width, self.canvas_height);
 
-	do_draw: bool,
+		let data = encoder.encode_lossless();
+
+		let file_path = "./image.webp";
+
+		write(file_path, &*data);
+	}
 }

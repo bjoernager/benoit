@@ -45,6 +45,7 @@ impl Application {
 
 					match scancode {
 						Scancode::Escape => return true,
+						Scancode::X      => self.dump_image(),
 						_                => {},
 					}
 
@@ -74,7 +75,7 @@ impl Application {
 						_           => self.maximum_iteration_count,
 					};
 
-					self.do_render = match scancode {
+					self.do_draw = match scancode {
 						Scancode::A => true,
 						Scancode::D => true,
 						Scancode::E => true,

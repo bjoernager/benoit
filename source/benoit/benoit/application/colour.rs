@@ -21,35 +21,34 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-extern crate sdl2;
+use crate::benoit::application::Application;
 
-use sdl2::{Sdl, VideoSubsystem};
-use sdl2::render::WindowCanvas;
+impl Application {
+	pub fn colour(&mut self, buffer: &mut [u8], data: &[u32]) {
+		let canvas_size = self.canvas_height * self.canvas_width;
 
-pub mod colour;
-pub mod draw;
-pub mod dump;
-pub mod initialise;
-pub mod poll_events;
-pub mod render_row;
-pub mod render;
-pub mod run;
+		for pixel in 0x0..canvas_size {
+			let iteration_count = data[pixel as usize];
 
-pub struct Application {
-	sdl:       Sdl,
-	sdl_video: VideoSubsystem,
-	canvas:    WindowCanvas,
+			let factor = {
+				let factor = iteration_count as f32 / 64.0 % 1.0;
 
-	thread_count: u32,
+				(if factor >= 1.0 / 2.0 {
+					1.0 - factor
+				} else {
+					factor
+				}) * 2.0
+			};
 
-	canvas_width:  u32,
-	canvas_height: u32,
-	scale:         u32,
+			let colour: u8 = if iteration_count != self.maximum_iteration_count {
+				(factor * 255.0).round() as u8
+			} else {
+				0x0
+			};
 
-	position_x:              f64,
-	position_y:              f64,
-	zoom:                    f64,
-	maximum_iteration_count: u32,
-
-	do_draw: bool,
+			buffer[pixel as usize * 0x3] = colour;
+			buffer[pixel as usize * 0x3 + 0x1] = colour;
+			buffer[pixel as usize * 0x3 + 0x2] = colour;
+		}
+	}
 }

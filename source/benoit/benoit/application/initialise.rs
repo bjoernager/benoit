@@ -52,7 +52,7 @@ impl Application {
 			zoom:                    1.0,
 			maximum_iteration_count: 0x100,
 
-			do_render: true,
+			do_draw: true,
 		};
 	}
 }

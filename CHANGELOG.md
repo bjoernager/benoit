@@ -1,3 +1,10 @@
+# 16
+
+* Clean up code
+* Support rendering to files
+* Depend on webp
+* Modulise code
+
 # 15
 
 * Render using multiple threads
