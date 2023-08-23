@@ -29,6 +29,7 @@ use sdl2::render::WindowCanvas;
 pub mod colour;
 pub mod draw;
 pub mod dump;
+pub mod handle_key;
 pub mod initialise;
 pub mod poll_events;
 pub mod render_row;
@@ -36,10 +37,6 @@ pub mod render;
 pub mod run;
 
 pub struct Application {
-	sdl:       Sdl,
-	sdl_video: VideoSubsystem,
-	canvas:    WindowCanvas,
-
 	thread_count: u32,
 
 	canvas_width:  u32,
@@ -50,6 +47,12 @@ pub struct Application {
 	position_y:              f64,
 	zoom:                    f64,
 	maximum_iteration_count: u32,
+
+	dump_path: String,
+
+	sdl:       Sdl,
+	sdl_video: VideoSubsystem,
+	canvas:    WindowCanvas,
 
 	do_draw: bool,
 }

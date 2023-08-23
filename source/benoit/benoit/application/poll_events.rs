@@ -27,69 +27,24 @@ extern crate sdl2;
 
 use sdl2::EventPump;
 use sdl2::event::Event;
-use sdl2::keyboard::Scancode;
 
 impl Application {
 	pub fn poll_events(&mut self, event_pump: &mut EventPump) -> bool {
 		for event in event_pump.poll_iter() {
-			match event {
+			let quit = match event {
 				Event::KeyDown {
 					timestamp: _,
 					window_id: _,
 					keycode:   _,
-					scancode,
+					scancode:  scan_code,
 					keymod:    _,
 					repeat:    _,
-				} => {
-					let scancode = scancode.unwrap();
+				} => self.handle_key(scan_code.unwrap()),
+				Event::Quit { .. } => true,
+				_ => false,
+			};
 
-					match scancode {
-						Scancode::Escape => return true,
-						Scancode::X      => self.dump_image(),
-						_                => {},
-					}
-
-					self.zoom = match scancode {
-						Scancode::E => self.zoom * 2.0,
-						Scancode::Q => self.zoom / 2.0,
-						_           => self.zoom,
-					};
-
-					let translate_ammount: f64 = 1.0 / 16.0 / self.zoom;
-
-					self.position_x += match scancode {
-						Scancode::A => -translate_ammount,
-						Scancode::D => translate_ammount,
-						_           => 0.0,
-					};
-
-					self.position_y += match scancode {
-						Scancode::S => translate_ammount,
-						Scancode::W => -translate_ammount,
-						_           => 0.0,
-					};
-
-					self.maximum_iteration_count = match scancode {
-						Scancode::F => self.maximum_iteration_count * 0x2,
-						Scancode::R => self.maximum_iteration_count / 0x2,
-						_           => self.maximum_iteration_count,
-					};
-
-					self.do_draw = match scancode {
-						Scancode::A => true,
-						Scancode::D => true,
-						Scancode::E => true,
-						Scancode::F => true,
-						Scancode::Q => true,
-						Scancode::R => true,
-						Scancode::S => true,
-						Scancode::W => true,
-						_           => false,
-					};
-				},
-				Event::Quit { .. } => return true,
-				_ => {},
-			}
+			if quit { return true }
 		}
 
 		return false;

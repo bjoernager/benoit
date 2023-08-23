@@ -29,8 +29,8 @@ use std::time::Instant;
 use std::ptr::addr_of_mut;
 
 impl Application {
-	pub fn render(&mut self, buffer: &mut [u32]) {
-		eprintln!("rendering: {}{:+}i ({}x) @ ({})", self.position_x, self.position_y, self.zoom, self.maximum_iteration_count);
+	pub fn render(&mut self, buffer: &mut [u32], position_x: f64, position_y: f64, zoom: f64, maximum_iteration_count: u32) {
+		eprintln!("rendering: {}{:+}i ({}x) @ ({})", position_x, position_y, zoom, maximum_iteration_count);
 
 		let mut threads = Vec::<JoinHandle<()>>::with_capacity(self.thread_count as usize);
 
@@ -46,10 +46,10 @@ impl Application {
 
 			let canvas_width            = self.canvas_width;
 			let canvas_height           = self.canvas_height;
-			let position_x              = self.position_x;
-			let position_y              = self.position_y;
-			let zoom                    = self.zoom;
-			let maximum_iteration_count = self.maximum_iteration_count;
+			let position_x              = position_x;
+			let position_y              = position_y;
+			let zoom                    = zoom;
+			let maximum_iteration_count = maximum_iteration_count;
 
 			let mut y: u32 = 0x0;
 

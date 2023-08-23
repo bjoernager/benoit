@@ -21,27 +21,19 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::application::Application;
+pub mod load;
 
-extern crate webp;
+pub struct Configuration {
+	pub thread_count: u32,
 
-use std::fs::write;
-use webp::Encoder;
+	pub canvas_width:  u32,
+	pub canvas_height: u32,
+	pub scale:         u32,
 
-impl Application {
-	pub fn dump(&mut self, path: String) {
-		let canvas_size = self.canvas_height * self.canvas_width;
+	pub position_x:              f64,
+	pub position_y:              f64,
+	pub zoom:                    f64,
+	pub maximum_iteration_count: u32,
 
-		let mut data: Vec::<u32> = vec![0x0; canvas_size as usize];
-		self.render(&mut data[..], self.position_x, self.position_y, self.zoom, self.maximum_iteration_count);
-
-		let mut image: Vec::<u8> = vec![0x0; canvas_size as usize * 0x3];
-		self.colour(&mut image[..], &data[..]);
-
-		let encoder = Encoder::from_rgb(&image[..], self.canvas_width, self.canvas_height);
-
-		let data = encoder.encode_lossless();
-
-		write(path, &*data).expect("unable to write image");
-	}
+	pub dump_path: String,
 }

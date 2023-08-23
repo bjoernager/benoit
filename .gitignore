@@ -2,4 +2,5 @@
 *.webp
 /old
 /target
+Benoit.toml
 Cargo.lock

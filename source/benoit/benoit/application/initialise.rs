@@ -22,35 +22,36 @@
 */
 
 use crate::benoit::application::Application;
+use crate::benoit::configuration::Configuration;
 
 impl Application {
 	pub fn initialise() -> Application {
-		let canvas_width:  u32 = 0x400;
-		let canvas_height: u32 = 0x400;
-		let scale:         u32 = 0x1;
+		let configuration = Configuration::load("./Benoit.toml");
 
 		let sdl       = sdl2::init().expect("unable to initialise sdl2");
 		let sdl_video = sdl.video().expect("unable to initialise video");
 
-		let window = sdl_video.window("Benoit", canvas_width * scale, canvas_height * scale).position_centered().build().expect("unable to open window");
+		let window = sdl_video.window("Benoit", configuration.canvas_width * configuration.scale, configuration.canvas_height * configuration.scale).position_centered().build().expect("unable to open window");
 
 		let canvas = window.into_canvas().build().expect("unable to create canvas");
 
 		return Application {
+			thread_count: configuration.thread_count,
+
+			canvas_width:  configuration.canvas_width,
+			canvas_height: configuration.canvas_height,
+			scale:         configuration.scale,
+
+			position_x:              configuration.position_x,
+			position_y:              configuration.position_y,
+			zoom:                    configuration.zoom,
+			maximum_iteration_count: configuration.maximum_iteration_count,
+
+			dump_path: configuration.dump_path,
+
 			sdl:       sdl,
 			sdl_video: sdl_video,
 			canvas:    canvas,
-
-			thread_count: 0x10,
-
-			canvas_width:  canvas_width,
-			canvas_height: canvas_height,
-			scale:         scale,
-
-			position_x:              0.0,
-			position_y:              0.0,
-			zoom:                    1.0,
-			maximum_iteration_count: 0x100,
 
 			do_draw: true,
 		};

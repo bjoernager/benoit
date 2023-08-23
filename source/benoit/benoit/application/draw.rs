@@ -33,7 +33,7 @@ impl Application {
 		let canvas_size = self.canvas_height * self.canvas_width;
 
 		let mut data: Vec::<u32> = vec![0x0; canvas_size as usize];
-		self.render(&mut data[..]);
+		self.render(&mut data[..], self.position_x, self.position_y, self.zoom, self.maximum_iteration_count);
 
 		let mut image: Vec::<u8> = vec![0x0; canvas_size as usize * 0x3];
 		self.colour(&mut image[..], &data[..]);

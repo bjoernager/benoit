@@ -1,3 +1,11 @@
+# 17
+
+* Modulise code
+* Check I/O errors
+* Support configuration
+* Depend on toml
+* Update gitignore
+
 # 16
 
 * Clean up code
