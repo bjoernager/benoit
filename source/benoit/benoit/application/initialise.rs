@@ -24,9 +24,16 @@
 use crate::benoit::application::Application;
 use crate::benoit::configuration::Configuration;
 
+use std::env::args;
+
 impl Application {
 	pub fn initialise() -> Application {
-		let configuration = Configuration::load("./Benoit.toml");
+		let mut arguments = args();
+
+		let configuration = match arguments.nth(0x1) {
+			Some(path) => Configuration::load(path.as_str()),
+			None       => Configuration::default(),
+		};
 
 		let sdl       = sdl2::init().expect("unable to initialise sdl2");
 		let sdl_video = sdl.video().expect("unable to initialise video");

@@ -39,7 +39,7 @@ impl Application {
 					scancode:  scan_code,
 					keymod:    _,
 					repeat:    _,
-				} => self.handle_key(scan_code.unwrap()),
+				} => self.handle_keys(scan_code.unwrap()),
 				Event::Quit { .. } => true,
 				_ => false,
 			};

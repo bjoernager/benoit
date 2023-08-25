@@ -21,38 +21,23 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-extern crate sdl2;
+use crate::benoit::configuration::Configuration;
 
-use sdl2::{Sdl, VideoSubsystem};
-use sdl2::render::WindowCanvas;
+impl Configuration {
+	pub fn default() -> Configuration {
+		return Configuration {
+			thread_count: 0x2,
 
-pub mod colour;
-pub mod draw;
-pub mod dump;
-pub mod handle_keys;
-pub mod initialise;
-pub mod poll_events;
-pub mod render_row;
-pub mod render;
-pub mod run;
+			canvas_width:  0x100,
+			canvas_height: 0x100,
+			scale:         0x1,
 
-pub struct Application {
-	thread_count: u32,
+			position_x:              0.0,
+			position_y:              0.0,
+			zoom:                    1.0,
+			maximum_iteration_count: 0x100,
 
-	canvas_width:  u32,
-	canvas_height: u32,
-	scale:         u32,
-
-	position_x:              f64,
-	position_y:              f64,
-	zoom:                    f64,
-	maximum_iteration_count: u32,
-
-	dump_path: String,
-
-	sdl:       Sdl,
-	sdl_video: VideoSubsystem,
-	canvas:    WindowCanvas,
-
-	do_draw: bool,
+			dump_path: "./image.webp".to_string(),
+		};
+	}
 }

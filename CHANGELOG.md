@@ -1,3 +1,8 @@
+# 18
+
+* Rename handle_key to handle_keys
+* Only load configuration if provided
+
 # 17
 
 * Modulise code

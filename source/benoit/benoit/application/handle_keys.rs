@@ -28,7 +28,7 @@ extern crate sdl2;
 use sdl2::keyboard::Scancode;
 
 impl Application {
-	pub fn handle_key(&mut self, scan_code: Scancode) -> bool {
+	pub fn handle_keys(&mut self, scan_code: Scancode) -> bool {
 		match scan_code {
 			Scancode::Escape => return true,
 			Scancode::X      => self.dump(self.dump_path.clone()),

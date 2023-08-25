@@ -29,22 +29,13 @@ use std::fs::read;
 use std::str::FromStr;
 use toml::{Table, Value};
 
+use std::time::Duration;
+
 impl Configuration {
 	pub fn load(path: &str) -> Configuration {
-		let mut configuration = Configuration {
-			thread_count: 0x2,
+		eprintln!("loading configuration at \"{path}\"");
 
-			canvas_width:  0x100,
-			canvas_height: 0x100,
-			scale:         0x1,
-
-			position_x:              0.0,
-			position_y:              0.0,
-			zoom:                    1.0,
-			maximum_iteration_count: 0x100,
-
-			dump_path: "./image.webp".to_string(),
-		};
+		let mut configuration = Configuration::default();
 
 		let configuration_text = match read(path) {
 			Ok(content) => String::from_utf8_lossy(&content).to_string(),
