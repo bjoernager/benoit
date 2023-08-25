@@ -1,3 +1,10 @@
+# 19
+
+* Update controls
+* Update configuration format
+* Optimise renderer
+* Fix thread count not being loaded
+
 # 18
 
 * Rename handle_key to handle_keys

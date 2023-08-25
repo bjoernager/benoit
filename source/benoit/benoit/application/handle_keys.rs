@@ -36,12 +36,12 @@ impl Application {
 		}
 
 		self.zoom = match scan_code {
-			Scancode::E => self.zoom * 2.0,
-			Scancode::Q => self.zoom / 2.0,
+			Scancode::E => self.zoom * 4.0,
+			Scancode::Q => self.zoom / 4.0,
 			_           => self.zoom,
 		};
 
-		let translate_ammount: f64 = 1.0 / 16.0 / self.zoom;
+		let translate_ammount: f64 = 1.0 / 4.0 / self.zoom;
 
 		self.position_x += match scan_code {
 			Scancode::A => -translate_ammount,
