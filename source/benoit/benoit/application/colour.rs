@@ -24,7 +24,7 @@
 use crate::benoit::application::Application;
 
 impl Application {
-	pub fn colour(&mut self, buffer: &mut [u8], data: &[u32]) {
+	pub fn colour(&self, buffer: &mut [u8], data: &[u32]) {
 		let canvas_size = self.canvas_height * self.canvas_width;
 
 		for pixel in 0x0..canvas_size {

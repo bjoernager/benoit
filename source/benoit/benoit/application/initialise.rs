@@ -23,8 +23,13 @@
 
 use crate::benoit::application::Application;
 use crate::benoit::configuration::Configuration;
+use crate::benoit::video::Video;
 
+extern crate rug;
+
+use rug::Float;
 use std::env::args;
+use std::thread::available_parallelism;
 
 impl Application {
 	pub fn initialise() -> Application {
@@ -35,32 +40,46 @@ impl Application {
 			None       => Configuration::default(),
 		};
 
-		let sdl       = sdl2::init().expect("unable to initialise sdl2");
-		let sdl_video = sdl.video().expect("unable to initialise video");
+		let precision: u32 = 0x100;
 
-		let window = sdl_video.window("Benoit", configuration.canvas_width * configuration.scale, configuration.canvas_height * configuration.scale).position_centered().build().expect("unable to open window");
+		let thread_count: u32 = if configuration.thread_count == 0x0 {
+			match available_parallelism() {
+				Ok(ammount) => ammount.get() as u32,
+				_           => 0x2,
+			}
+		} else {
+			configuration.thread_count
+		};
 
-		let canvas = window.into_canvas().build().expect("unable to create canvas");
+		eprintln!("using {thread_count} threads");
+
+		let video = match configuration.interactive {
+			true  => Some(Video::initialise(configuration.canvas_width, configuration.canvas_height, configuration.scale)),
+			false => None,
+		};
 
 		return Application {
-			thread_count: configuration.thread_count,
+			thread_count: thread_count,
 
 			canvas_width:  configuration.canvas_width,
 			canvas_height: configuration.canvas_height,
 			scale:         configuration.scale,
+			frame_count:   configuration.frame_count,
 
-			position_x:              configuration.position_x,
-			position_y:              configuration.position_y,
-			zoom:                    configuration.zoom,
+			center_real:             Float::with_val(precision, configuration.center_real),
+			center_imaginary:        Float::with_val(precision, configuration.center_imaginary),
+			zoom:                    Float::with_val(precision, configuration.zoom),
 			maximum_iteration_count: configuration.maximum_iteration_count,
 
 			dump_path: configuration.dump_path,
 
-			sdl:       sdl,
-			sdl_video: sdl_video,
-			canvas:    canvas,
+			video: video,
 
-			do_draw: true,
+			interactive: configuration.interactive,
+			do_draw:     true,
+			do_dump:     false,
+
+			precision: precision,
 		};
 	}
 }

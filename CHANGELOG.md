@@ -1,3 +1,17 @@
+# 1↊
+
+* Use arbitrary-precision calculations
+* Depend on Rug
+* Optimise renderer
+* Animate if configured
+* Update commenting
+* Remove scale option from configuration
+* Auto-deduce thread count
+* Update controls (only render on command)
+* Update messages
+* Refactor application structure
+* Print controls
+
 # 19
 
 * Update controls

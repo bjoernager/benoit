@@ -26,17 +26,10 @@ use crate::benoit::application::Application;
 extern crate sdl2;
 
 impl Application {
-	pub fn run(&mut self) {
-		let mut event_pump = self.sdl.event_pump().expect("unable to get event pump");
-
-		loop {
-			if self.poll_events(&mut event_pump) { break }
-
-			if self.do_draw {
-				self.draw();
-
-				self.do_draw = false;
-			}
-		}
+	pub fn run(&mut self) -> i32 {
+		return match self.interactive {
+			true  => self.r#loop(),
+			false => self.animate(),
+		};
 	}
 }

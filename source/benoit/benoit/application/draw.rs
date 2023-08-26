@@ -29,13 +29,10 @@ use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 
 impl Application {
-	pub fn draw(&mut self) {
+	pub fn draw(&mut self, data: &mut [u32], image: &mut [u8]) {
 		let canvas_size = self.canvas_height * self.canvas_width;
 
-		let mut data: Vec::<u32> = vec![0x0; canvas_size as usize];
-		self.render(&mut data[..], self.position_x, self.position_y, self.zoom, self.maximum_iteration_count);
-
-		let mut image: Vec::<u8> = vec![0x0; canvas_size as usize * 0x3];
+		self.render(&mut data[..], self.precision, &self.center_real, &self.center_imaginary, &self.zoom, self.maximum_iteration_count);
 		self.colour(&mut image[..], &data[..]);
 
 		for pixel in 0x0..canvas_size {
@@ -45,7 +42,7 @@ impl Application {
 			let value = image[pixel as usize * 0x3];
 
 			let colour = Color::RGB(value, value, value);
-			self.canvas.set_draw_color(colour);
+			self.video.as_mut().unwrap().canvas.set_draw_color(colour);
 
 			let rectangle = Rect::new(
 				(x * self.scale) as i32,
@@ -53,9 +50,9 @@ impl Application {
 				self.scale,
 				self.scale
 			);
-			self.canvas.fill_rects(&[rectangle]).unwrap();
+			self.video.as_mut().unwrap().canvas.fill_rects(&[rectangle]).unwrap();
 		}
 
-		self.canvas.present();
+		self.video.as_mut().unwrap().canvas.present();
 	}
 }

@@ -25,7 +25,14 @@ mod benoit;
 
 use benoit::application::Application;
 
+use std::mem::drop;
+use std::process::exit;
+
 fn main() {
 	let mut application = Application::initialise();
-	application.run();
+	let code = application.run();
+
+	drop(application);
+
+	exit(code);
 }

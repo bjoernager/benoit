@@ -29,16 +29,8 @@ use std::fs::write;
 use webp::Encoder;
 
 impl Application {
-	pub fn dump(&mut self, path: String) {
-		let canvas_size = self.canvas_height * self.canvas_width;
-
-		let mut data: Vec::<u32> = vec![0x0; canvas_size as usize];
-		self.render(&mut data[..], self.position_x, self.position_y, self.zoom, self.maximum_iteration_count);
-
-		let mut image: Vec::<u8> = vec![0x0; canvas_size as usize * 0x3];
-		self.colour(&mut image[..], &data[..]);
-
-		let encoder = Encoder::from_rgb(&image[..], self.canvas_width, self.canvas_height);
+	pub fn dump(&self, path: String, image: &[u8], canvas_width: u32, canvas_height: u32) {
+		let encoder = Encoder::from_rgb(&image[..], canvas_width, canvas_height);
 
 		let data = encoder.encode_lossless();
 

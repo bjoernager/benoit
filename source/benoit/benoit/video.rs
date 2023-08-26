@@ -21,26 +21,14 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::configuration::Configuration;
+extern crate sdl2;
 
-impl Configuration {
-	pub fn default() -> Configuration {
-		return Configuration {
-			thread_count: 0x0,
+use sdl2::Sdl;
+use sdl2::render::WindowCanvas;
 
-			canvas_width:  0x100,
-			canvas_height: 0x100,
-			scale:         0x1,
-			frame_count:   0x10,
+pub mod initialise;
 
-			center_real:             0.0,
-			center_imaginary:        0.0,
-			zoom:                    1.0,
-			maximum_iteration_count: 0x100,
-
-			dump_path: "./render/".to_string(),
-
-			interactive: true,
-		};
-	}
+pub struct Video {
+	pub sdl:    Sdl,
+	pub canvas: WindowCanvas,
 }

@@ -23,20 +23,25 @@
 
 use crate::benoit::application::Application;
 
+extern crate rug;
+
+use rug::Float;
 use std::slice;
 use std::thread::{JoinHandle, spawn};
 use std::time::Instant;
 use std::ptr::addr_of_mut;
 
 impl Application {
-	pub fn render(&mut self, buffer: &mut [u32], position_x: f64, position_y: f64, zoom: f64, maximum_iteration_count: u32) {
-		eprintln!("rendering: {}{:+}i ({}x) @ ({})", position_x, position_y, zoom, maximum_iteration_count);
+	pub fn render(&self, buffer: &mut [u32], precision: u32, center_real: &Float, center_imaginary: &Float, zoom: &Float, maximum_iteration_count: u32) {
+		eprint!("rendering...");
 
 		let mut threads = Vec::<JoinHandle<()>>::with_capacity(self.thread_count as usize);
 
 		let time_start = Instant::now();
 
 		'render_loop: {
+			// We render the set using one thread per row.
+
 			let get_slice = |buffer: &mut [u32], y: u32, canvas_width: u32| -> &mut [u32] {
 				let slice_start = y as usize * canvas_width as usize;
 				let slice = unsafe { slice::from_raw_parts_mut(addr_of_mut!(buffer[slice_start]), canvas_width as usize) };
@@ -46,34 +51,46 @@ impl Application {
 
 			let canvas_width            = self.canvas_width;
 			let canvas_height           = self.canvas_height;
-			let position_x              = position_x;
-			let position_y              = position_y;
-			let zoom                    = zoom;
-			let maximum_iteration_count = maximum_iteration_count;
+
+			// Firstly, we fill up the thread vector by
+			// spawning threads.
 
 			let mut y: u32 = 0x0;
-
 			for _thread in 0x0..self.thread_count {
+				// We should stop if there are no remaining rows.
 				if y == self.canvas_height { break 'render_loop; }
 
 				let buffer_slice = get_slice(buffer, y, self.canvas_width);
 
-				threads.push(spawn(move || { Application::render_row(buffer_slice, y, canvas_width, canvas_height, position_x, position_y, zoom, maximum_iteration_count) }));
+				let center_real = center_real.clone();
+				let center_imaginary = center_imaginary.clone();
+				let zoom       = zoom.clone();
+
+				threads.push(spawn(move || { Application::render_row(buffer_slice, precision, y, canvas_width, canvas_height, center_real, center_imaginary, zoom, maximum_iteration_count) }));
 
 				y += 0x1;
 			}
+
+			// Secondly, we continuously join the first thread
+			// to spawn another one. This is as to make the
+			// threads more "active" by making the take on more
+			// rows when they complete.
 
 			for y in 0x0..self.canvas_height {
 				threads.remove(0x0).join().unwrap();
 
 				let buffer_slice = get_slice(buffer, y, self.canvas_width);
 
-				threads.push(spawn(move || { Application::render_row(buffer_slice, y, canvas_width, canvas_height, position_x, position_y, zoom, maximum_iteration_count) }));
+				let center_real = center_real.clone();
+				let center_imaginary = center_imaginary.clone();
+				let zoom       = zoom.clone();
+
+				threads.push(spawn(move || { Application::render_row(buffer_slice, precision, y, canvas_width, canvas_height, center_real, center_imaginary, zoom, maximum_iteration_count) }));
 			}
 		}
 
 		let duration = time_start.elapsed();
 
-		eprintln!("done ({}ms)", duration.as_millis());
+		eprintln!(" done ({}ms)", duration.as_millis());
 	}
 }

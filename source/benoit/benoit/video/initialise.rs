@@ -21,26 +21,22 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::configuration::Configuration;
+use crate::benoit::video::Video;
 
-impl Configuration {
-	pub fn default() -> Configuration {
-		return Configuration {
-			thread_count: 0x0,
+extern crate sdl2;
 
-			canvas_width:  0x100,
-			canvas_height: 0x100,
-			scale:         0x1,
-			frame_count:   0x10,
+impl Video {
+	pub fn initialise(canvas_width: u32, canvas_height: u32, scale: u32) -> Video {
+		let sdl       = sdl2::init().expect("unable to initialise sdl2");
+		let sdl_video = sdl.video().expect("unable to initialise video");
 
-			center_real:             0.0,
-			center_imaginary:        0.0,
-			zoom:                    1.0,
-			maximum_iteration_count: 0x100,
+		let window = sdl_video.window("Benoit", canvas_width * scale, canvas_height * scale).position_centered().build().expect("unable to open window");
 
-			dump_path: "./render/".to_string(),
+		let canvas = window.into_canvas().build().expect("unable to create canvas");
 
-			interactive: true,
+		return Video {
+			sdl:    sdl,
+			canvas: canvas,
 		};
 	}
 }

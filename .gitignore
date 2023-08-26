@@ -1,6 +1,7 @@
 *.png
 *.webp
 /old
+/render
 /target
 Benoit.toml
 Cargo.lock

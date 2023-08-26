@@ -30,11 +30,14 @@ pub struct Configuration {
 	pub canvas_width:  u32,
 	pub canvas_height: u32,
 	pub scale:         u32,
+	pub frame_count:   u32,
 
-	pub position_x:              f64,
-	pub position_y:              f64,
+	pub center_real:             f64,
+	pub center_imaginary:        f64,
 	pub zoom:                    f64,
 	pub maximum_iteration_count: u32,
 
 	pub dump_path: String,
+
+	pub interactive: bool,
 }

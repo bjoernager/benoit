@@ -35,6 +35,8 @@ impl Configuration {
 
 		let mut configuration = Configuration::default();
 
+		configuration.interactive = false;
+
 		let configuration_text = match read(path) {
 			Ok(content) => String::from_utf8_lossy(&content).to_string(),
 			Err(..)     => {
@@ -68,11 +70,11 @@ impl Configuration {
 		get_integer(&mut configuration.canvas_width,  &configuration_table, "canvas_width");
 		get_integer(&mut configuration.canvas_height, &configuration_table, "canvas_height");
 		get_integer(&mut configuration.scale,         &configuration_table, "scale");
+		get_integer(&mut configuration.frame_count,   &configuration_table, "frame_count");
 
-		get_float(&mut configuration.position_x, &configuration_table, "real");
-		get_float(&mut configuration.position_y, &configuration_table, "imaginary");
-		get_float(&mut configuration.zoom,       &configuration_table, "zoom");
-
+		get_float(  &mut configuration.center_real,             &configuration_table, "real");
+		get_float(  &mut configuration.center_imaginary,        &configuration_table, "imaginary");
+		get_float(  &mut configuration.zoom,                    &configuration_table, "zoom");
 		get_integer(&mut configuration.maximum_iteration_count, &configuration_table, "maximum_iteration_count");
 
 		return configuration;

@@ -21,16 +21,19 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-extern crate sdl2;
+use crate::benoit::video::Video;
 
-use sdl2::{Sdl, VideoSubsystem};
-use sdl2::render::WindowCanvas;
+extern crate rug;
 
+use rug::Float;
+
+pub mod animate;
 pub mod colour;
 pub mod draw;
 pub mod dump;
 pub mod handle_keys;
 pub mod initialise;
+pub mod r#loop;
 pub mod poll_events;
 pub mod render_row;
 pub mod render;
@@ -42,17 +45,20 @@ pub struct Application {
 	canvas_width:  u32,
 	canvas_height: u32,
 	scale:         u32,
+	frame_count:   u32,
 
-	position_x:              f64,
-	position_y:              f64,
-	zoom:                    f64,
+	center_real:             Float,
+	center_imaginary:        Float,
+	zoom:                    Float,
 	maximum_iteration_count: u32,
 
 	dump_path: String,
 
-	sdl:       Sdl,
-	sdl_video: VideoSubsystem,
-	canvas:    WindowCanvas,
+	video: Option<Video>,
 
-	do_draw: bool,
+	interactive: bool,
+	do_draw:     bool,
+	do_dump:     bool,
+
+	precision: u32,
 }

@@ -23,54 +23,53 @@
 
 use crate::benoit::application::Application;
 
+extern crate rug;
 extern crate sdl2;
 
+use rug::Float;
 use sdl2::keyboard::Scancode;
+use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 
 impl Application {
 	pub fn handle_keys(&mut self, scan_code: Scancode) -> bool {
 		match scan_code {
 			Scancode::Escape => return true,
-			Scancode::X      => self.dump(self.dump_path.clone()),
+			Scancode::C      => self.do_draw = true,
+			Scancode::X      => self.do_dump = true,
+			Scancode::Z      => eprintln!("{}{:+}i -- {}x @ {} iter.", self.center_real, self.center_imaginary, self.zoom, self.maximum_iteration_count),
 			_                => {},
 		}
 
-		self.zoom = match scan_code {
-			Scancode::E => self.zoom * 4.0,
-			Scancode::Q => self.zoom / 4.0,
-			_           => self.zoom,
+		match scan_code {
+			Scancode::E => self.zoom.mul_assign(4.0),
+			Scancode::Q => self.zoom.div_assign(4.0),
+			_           => {},
 		};
 
-		let translate_ammount: f64 = 1.0 / 4.0 / self.zoom;
+		let translate_ammount = {
+			let mut ammount = Float::with_val(self.precision, 1.0);
+			ammount.div_assign(4.0);
+			ammount.div_assign(&self.zoom);
 
-		self.position_x += match scan_code {
-			Scancode::A => -translate_ammount,
-			Scancode::D => translate_ammount,
-			_           => 0.0,
+			ammount
 		};
 
-		self.position_y += match scan_code {
-			Scancode::S => translate_ammount,
-			Scancode::W => -translate_ammount,
-			_           => 0.0,
+		match scan_code {
+			Scancode::A => self.center_real.sub_assign(&translate_ammount),
+			Scancode::D => self.center_real.add_assign(&translate_ammount),
+			_           => {},
+		};
+
+		match scan_code {
+			Scancode::S => self.center_imaginary.add_assign(&translate_ammount),
+			Scancode::W => self.center_imaginary.sub_assign(&translate_ammount),
+			_           => {},
 		};
 
 		self.maximum_iteration_count = match scan_code {
 			Scancode::F => self.maximum_iteration_count * 0x2,
 			Scancode::R => self.maximum_iteration_count / 0x2,
 			_           => self.maximum_iteration_count,
-		};
-
-		self.do_draw = match scan_code {
-			Scancode::A => true,
-			Scancode::D => true,
-			Scancode::E => true,
-			Scancode::F => true,
-			Scancode::Q => true,
-			Scancode::R => true,
-			Scancode::S => true,
-			Scancode::W => true,
-			_           => false,
 		};
 
 		return false;
