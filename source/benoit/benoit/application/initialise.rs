@@ -21,6 +21,7 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::PRECISION;
 use crate::benoit::application::Application;
 use crate::benoit::configuration::Configuration;
 use crate::benoit::video::Video;
@@ -39,8 +40,6 @@ impl Application {
 			Some(path) => Configuration::load(path.as_str()),
 			None       => Configuration::default(),
 		};
-
-		let precision: u32 = 0x100;
 
 		let thread_count: u32 = if configuration.thread_count == 0x0 {
 			match available_parallelism() {
@@ -66,9 +65,9 @@ impl Application {
 			scale:         configuration.scale,
 			frame_count:   configuration.frame_count,
 
-			center_real:             Float::with_val(precision, configuration.center_real),
-			center_imaginary:        Float::with_val(precision, configuration.center_imaginary),
-			zoom:                    Float::with_val(precision, configuration.zoom),
+			center_real:             Float::with_val(PRECISION, configuration.center_real),
+			center_imaginary:        Float::with_val(PRECISION, configuration.center_imaginary),
+			zoom:                    Float::with_val(PRECISION, configuration.zoom),
 			maximum_iteration_count: configuration.maximum_iteration_count,
 
 			dump_path: configuration.dump_path,
@@ -78,8 +77,6 @@ impl Application {
 			interactive: configuration.interactive,
 			do_draw:     true,
 			do_dump:     false,
-
-			precision: precision,
 		};
 	}
 }

@@ -21,6 +21,7 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::PRECISION;
 use crate::benoit::application::Application;
 
 extern crate rug;
@@ -47,7 +48,7 @@ impl Application {
 		};
 
 		let translate_ammount = {
-			let mut ammount = Float::with_val(self.precision, 1.0);
+			let mut ammount = Float::with_val(PRECISION, 1.0);
 			ammount.div_assign(4.0);
 			ammount.div_assign(&self.zoom);
 

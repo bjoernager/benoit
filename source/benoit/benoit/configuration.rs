@@ -21,6 +21,10 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+extern crate rug;
+
+use rug::Float;
+
 pub mod default;
 pub mod load;
 
@@ -32,9 +36,9 @@ pub struct Configuration {
 	pub scale:         u32,
 	pub frame_count:   u32,
 
-	pub center_real:             f64,
-	pub center_imaginary:        f64,
-	pub zoom:                    f64,
+	pub center_real:             Float,
+	pub center_imaginary:        Float,
+	pub zoom:                    Float,
 	pub maximum_iteration_count: u32,
 
 	pub dump_path: String,

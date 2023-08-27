@@ -21,10 +21,13 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::PRECISION;
 use crate::benoit::configuration::Configuration;
 
+extern crate rug;
 extern crate toml;
 
+use rug::Float;
 use std::fs::read;
 use std::str::FromStr;
 use toml::{Table, Value};
@@ -50,18 +53,23 @@ impl Configuration {
 		let get_integer = |buffer: &mut u32, table: &Table, name: &str| {
 			if !table.contains_key(name) { return }
 
-			match configuration_table[name] {
-				Value::Integer(value) => *buffer = value as u32,
-				_                     => panic!("mismatched type for {name}"),
+			match &configuration_table[name] {
+				Value::Integer(value) => *buffer = *value as u32,
+				_                     => panic!("mismatched type of {name}"),
 			};
 		};
 
-		let get_float = |buffer: &mut f64, table: &Table, name: &str| {
+		let get_float = |buffer: &mut Float, table: &Table, name: &str| {
 			if !table.contains_key(name) { return }
 
-			match configuration_table[name] {
-				Value::Float(value) => *buffer = value,
-				_                   => panic!("mismatched type for {name}"),
+			match &configuration_table[name] {
+				Value::String(string) => {
+					*buffer = match Float::parse(string) {
+						Ok(value) => Float::with_val(PRECISION, value),
+						_         => panic!("invalid format of {name}"),
+					}
+				},
+				_ => panic!("mismatched type of {name}"),
 			};
 		};
 

@@ -21,6 +21,7 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::PRECISION;
 use crate::benoit::application::Application;
 
 extern crate rug;
@@ -29,25 +30,25 @@ use rug::Float;
 use std::ops::{AddAssign, DivAssign, MulAssign};
 
 impl Application {
-	pub fn render_row(data: &mut [u32], precision: u32, y: u32, canvas_width: u32, canvas_height: u32, center_real: Float, center_imaginary: Float, zoom: Float, maximum_iteration_count: u32) {
-		let two = Float::with_val(precision, 2.0);
+	pub fn render_row(data: &mut [u32], y: u32, canvas_width: u32, canvas_height: u32, center_real: Float, center_imaginary: Float, zoom: Float, maximum_iteration_count: u32) {
+		let two = Float::with_val(PRECISION, 2.0);
 
 		for x in 0x0..canvas_width {
-			let canvas_width  = Float::with_val(precision, canvas_width);
-			let canvas_height = Float::with_val(precision, canvas_height);
+			let canvas_width  = Float::with_val(PRECISION, canvas_width);
+			let canvas_height = Float::with_val(PRECISION, canvas_height);
 
-			//let ca = Float::with_val(precision, (&x - &canvas_width  / 2.0) / &canvas_width  * 4.0 / &zoom + &center_real);
-			//let cb = Float::with_val(precision, (&y - &canvas_height / 2.0) / &canvas_height * 4.0 / &zoom + &center_imaginary);
+			//let ca = Float::with_val(PRECISION, (&x - &canvas_width  / 2.0) / &canvas_width  * 4.0 / &zoom + &center_real);
+			//let cb = Float::with_val(PRECISION, (&y - &canvas_height / 2.0) / &canvas_height * 4.0 / &zoom + &center_imaginary);
 
-			let x_float = Float::with_val(precision, x);
-			let y_float = Float::with_val(precision, y);
+			let x_float = Float::with_val(PRECISION, x);
+			let y_float = Float::with_val(PRECISION, y);
 
 			// Re(c) = (x-canvas_width/2)/canvas_width*4/zoom+Re(z)
 
 			let ca = {
-				let tmp0 = Float::with_val(precision, &canvas_width / 2.0);
+				let tmp0 = Float::with_val(PRECISION, &canvas_width / 2.0);
 
-				let mut ca = Float::with_val(precision, &x_float - &tmp0);
+				let mut ca = Float::with_val(PRECISION, &x_float - &tmp0);
 				ca.div_assign(&canvas_width);
 				ca.mul_assign(4.0);
 				ca.div_assign(&zoom);
@@ -59,9 +60,9 @@ impl Application {
 			// Im(c) = (x-canvas_height/2)/canvas_height*4/zoom+Im(z)
 
 			let cb = {
-				let tmp0 = Float::with_val(precision, &canvas_height / 2.0);
+				let tmp0 = Float::with_val(PRECISION, &canvas_height / 2.0);
 
-				let mut cb = Float::with_val(precision, &y_float - &tmp0);
+				let mut cb = Float::with_val(PRECISION, &y_float - &tmp0);
 				cb.div_assign(&canvas_height);
 				cb.mul_assign(4.0);
 				cb.div_assign(&zoom);
@@ -70,12 +71,12 @@ impl Application {
 				cb
 			};
 
-			let mut za = Float::with_val(precision, &ca);
-			let mut zb = Float::with_val(precision, &cb);
+			let mut za = Float::with_val(PRECISION, &ca);
+			let mut zb = Float::with_val(PRECISION, &cb);
 
 			let mut iteration_count: u32 = 0x0;
 			while iteration_count < maximum_iteration_count {
-				let square_distance = Float::with_val(precision, &za * &za + &zb * &zb);
+				let square_distance = Float::with_val(PRECISION, &za * &za + &zb * &zb);
 				if square_distance > 4.0 { break }
 
 				{
@@ -85,13 +86,13 @@ impl Application {
 					// a = a^2 - b^2
 					// b = 2abi
 
-					let za_temporary = Float::with_val(precision, &za);
+					let za_temporary = Float::with_val(PRECISION, &za);
 
-					za = Float::with_val(precision, &za * &za - &zb * &zb);
-					za = Float::with_val(precision, &za + &ca);
+					za = Float::with_val(PRECISION, &za * &za - &zb * &zb);
+					za = Float::with_val(PRECISION, &za + &ca);
 
-					zb = Float::with_val(precision, &za_temporary * &zb);
-					zb = Float::with_val(precision, &zb * &two + &cb);
+					zb = Float::with_val(PRECISION, &za_temporary * &zb);
+					zb = Float::with_val(PRECISION, &zb * &two + &cb);
 				}
 
 				iteration_count += 0x1;

@@ -24,3 +24,5 @@
 pub mod application;
 pub mod configuration;
 pub mod video;
+
+pub const PRECISION: u32 = 0x100;

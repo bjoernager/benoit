@@ -1,3 +1,8 @@
+# 1↋
+
+* Make configuration support more precise numbers (must be parsed as strings now)
+* Use global constant for precision
+
 # 1↊
 
 * Use arbitrary-precision calculations

@@ -21,7 +21,12 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::PRECISION;
 use crate::benoit::configuration::Configuration;
+
+extern crate rug;
+
+use rug::Float;
 
 impl Configuration {
 	pub fn default() -> Configuration {
@@ -33,9 +38,9 @@ impl Configuration {
 			scale:         0x1,
 			frame_count:   0x10,
 
-			center_real:             0.0,
-			center_imaginary:        0.0,
-			zoom:                    1.0,
+			center_real:             Float::with_val(PRECISION, 0.0),
+			center_imaginary:        Float::with_val(PRECISION, 0.0),
+			zoom:                    Float::with_val(PRECISION, 1.0),
 			maximum_iteration_count: 0x100,
 
 			dump_path: "./render/".to_string(),

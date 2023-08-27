@@ -33,6 +33,5 @@ fn main() {
 	let code = application.run();
 
 	drop(application);
-
 	exit(code);
 }

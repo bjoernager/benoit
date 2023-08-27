@@ -59,6 +59,4 @@ pub struct Application {
 	interactive: bool,
 	do_draw:     bool,
 	do_dump:     bool,
-
-	precision: u32,
 }
