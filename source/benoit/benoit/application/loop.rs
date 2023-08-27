@@ -40,8 +40,8 @@ impl Application {
 		eprintln!("- R    Decrease max. iteration count");
 		eprintln!("- F    Increase max. iteration count");
 		eprintln!();
-		eprintln!("- Z    Print center value (c)");
-		eprintln!("- X    Dump render");
+		eprintln!("- Z    Print centre value (c)");
+		eprintln!("- X    Dump frame");
 		eprintln!("- C    Render frame");
 		eprintln!();
 

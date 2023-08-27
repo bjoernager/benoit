@@ -1,3 +1,7 @@
+# 21
+
+* Update controls guide (fix typo)
+
 # 20
 
 * Optimise renderer
