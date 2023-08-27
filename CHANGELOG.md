@@ -1,3 +1,8 @@
+# 20
+
+* Optimise renderer
+* Update commenting
+
 # 1↋
 
 * Make configuration support more precise numbers (must be parsed as strings now)

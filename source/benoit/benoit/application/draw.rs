@@ -39,9 +39,14 @@ impl Application {
 			let y = pixel as u32 / self.canvas_width;
 			let x = pixel as u32 - y * self.canvas_width;
 
-			let value = image[pixel as usize * 0x3];
+			let colour = {
+				let red   = image[pixel as usize * 0x3];
+				let green = image[pixel as usize * 0x3 + 0x1];
+				let blue  = image[pixel as usize * 0x3 + 0x2];
 
-			let colour = Color::RGB(value, value, value);
+				Color::RGB(red, green, blue)
+			};
+
 			self.video.as_mut().unwrap().canvas.set_draw_color(colour);
 
 			let rectangle = Rect::new(

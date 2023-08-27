@@ -26,7 +26,6 @@ use crate::benoit::application::Application;
 impl Application {
 	pub fn colour(&self, buffer: &mut [u8], data: &[u32]) {
 		let canvas_size = self.canvas_height * self.canvas_width;
-
 		for pixel in 0x0..canvas_size {
 			let iteration_count = data[pixel as usize];
 
@@ -40,15 +39,19 @@ impl Application {
 				}) * 2.0
 			};
 
-			let colour: u8 = if iteration_count != self.maximum_iteration_count {
+			let value: u8 = if iteration_count != self.maximum_iteration_count {
 				(factor * 255.0).round() as u8
 			} else {
 				0x0
 			};
 
-			buffer[pixel as usize * 0x3] = colour;
-			buffer[pixel as usize * 0x3 + 0x1] = colour;
-			buffer[pixel as usize * 0x3 + 0x2] = colour;
+			let red   = value;
+			let green = value;
+			let blue  = value;
+
+			buffer[pixel as usize * 0x3]       = red;
+			buffer[pixel as usize * 0x3 + 0x1] = green;
+			buffer[pixel as usize * 0x3 + 0x2] = blue;
 		}
 	}
 }

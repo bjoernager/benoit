@@ -27,72 +27,84 @@ use crate::benoit::application::Application;
 extern crate rug;
 
 use rug::Float;
-use std::ops::{AddAssign, DivAssign, MulAssign};
 
 impl Application {
 	pub fn render_row(data: &mut [u32], y: u32, canvas_width: u32, canvas_height: u32, center_real: Float, center_imaginary: Float, zoom: Float, maximum_iteration_count: u32) {
-		let two = Float::with_val(PRECISION, 2.0);
-
 		for x in 0x0..canvas_width {
 			let canvas_width  = Float::with_val(PRECISION, canvas_width);
 			let canvas_height = Float::with_val(PRECISION, canvas_height);
-
-			//let ca = Float::with_val(PRECISION, (&x - &canvas_width  / 2.0) / &canvas_width  * 4.0 / &zoom + &center_real);
-			//let cb = Float::with_val(PRECISION, (&y - &canvas_height / 2.0) / &canvas_height * 4.0 / &zoom + &center_imaginary);
 
 			let x_float = Float::with_val(PRECISION, x);
 			let y_float = Float::with_val(PRECISION, y);
 
 			// Re(c) = (x-canvas_width/2)/canvas_width*4/zoom+Re(z)
-
 			let ca = {
 				let tmp0 = Float::with_val(PRECISION, &canvas_width / 2.0);
 
 				let mut ca = Float::with_val(PRECISION, &x_float - &tmp0);
-				ca.div_assign(&canvas_width);
-				ca.mul_assign(4.0);
-				ca.div_assign(&zoom);
-				ca.add_assign(&center_real);
+				ca /= &canvas_width;
+				ca *= 4.0;
+				ca /= &zoom;
+				ca += &center_real;
 
 				ca
 			};
 
 			// Im(c) = (x-canvas_height/2)/canvas_height*4/zoom+Im(z)
-
 			let cb = {
 				let tmp0 = Float::with_val(PRECISION, &canvas_height / 2.0);
 
 				let mut cb = Float::with_val(PRECISION, &y_float - &tmp0);
-				cb.div_assign(&canvas_height);
-				cb.mul_assign(4.0);
-				cb.div_assign(&zoom);
-				cb.add_assign(&center_imaginary);
+				cb /= &canvas_height;
+				cb *= 4.0;
+				cb /= &zoom;
+				cb += &center_imaginary;
 
 				cb
 			};
 
+			// Formaly, the initial condition that
+			//
+			// z = 0
+			//
+			// may be skipped as the first two iterations will
+			// always be
+			//
+			// z0 = 0
+			// z1 = z0^2+c = 0^2+c = 0+c = c
+			//
+			// That is, the result of the second iteration will
+			// always be the value of (c).
 			let mut za = Float::with_val(PRECISION, &ca);
 			let mut zb = Float::with_val(PRECISION, &cb);
 
 			let mut iteration_count: u32 = 0x0;
-			while iteration_count < maximum_iteration_count {
+			while {
 				let square_distance = Float::with_val(PRECISION, &za * &za + &zb * &zb);
-				if square_distance > 4.0 { break }
-
+				square_distance <= 4.0 && iteration_count < maximum_iteration_count
+			} {
 				{
-					// z = z^2 + c
-
-					// Complex square:
-					// a = a^2 - b^2
-					// b = 2abi
+					// The Mandelbrot Set (M) is defined as the set of values in the complex plane where the iterating function
+					//
+					// z = z^2+c
+					//
+					// stays bounded: I.e. the absolute value of (z) stays bounded:
+					//
+					// abs(z) = sqrt(Re(z)^2+Im(z)^2) <= 2^2 = 4
 
 					let za_temporary = Float::with_val(PRECISION, &za);
 
-					za = Float::with_val(PRECISION, &za * &za - &zb * &zb);
-					za = Float::with_val(PRECISION, &za + &ca);
+					// We can calculate the square of a complex number (z) as:
+					//
+					// z^2 = (a+ib)^2 = (a+ib)(a+ib) = a^2+iab+iab-b^2 = a^2-b^2+2iab
 
-					zb = Float::with_val(PRECISION, &za_temporary * &zb);
-					zb = Float::with_val(PRECISION, &zb * &two + &cb);
+					za = za.square();
+					za -= &zb * &zb;
+					za += &ca;
+
+					zb *= &za_temporary;
+					zb *= 2.0;
+					zb += &cb;
 				}
 
 				iteration_count += 0x1;
