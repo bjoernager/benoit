@@ -21,20 +21,14 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-extern crate rug;
+use crate::benoit::{Fractal, RowRenderer};
+use crate::benoit::application::Application;
 
-use rug::Float;
-
-pub mod application;
-pub mod configuration;
-pub mod video;
-
-type RowRenderer = fn(&mut [u32], u32, u32, u32, Float, Float, Float, u32, Float, Float);
-
-pub const PRECISION: u32 = 0x100;
-
-#[derive(Clone, Copy)]
-pub enum Fractal {
-	Julia,
-	Mandelbrot,
+impl Application {
+	pub fn get_row_renderer(fractal: Fractal) -> RowRenderer {
+		return match fractal {
+			Fractal::Julia      => Application::render_row_julia,
+			Fractal::Mandelbrot => Application::render_row_mandelbrot,
+		};
+	}
 }

@@ -21,7 +21,7 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::PRECISION;
+use crate::benoit::{Fractal, PRECISION};
 use crate::benoit::configuration::Configuration;
 
 extern crate rug;
@@ -33,6 +33,8 @@ impl Configuration {
 		return Configuration {
 			thread_count: 0x0,
 
+			fractal: Fractal::Mandelbrot,
+
 			canvas_width:  0x100,
 			canvas_height: 0x100,
 			scale:         0x1,
@@ -42,6 +44,9 @@ impl Configuration {
 			center_imaginary:        Float::with_val(PRECISION, 0.0),
 			zoom:                    Float::with_val(PRECISION, 1.0),
 			maximum_iteration_count: 0x100,
+
+			julia_real:      Float::with_val(PRECISION, 0.0),
+			julia_imaginary: Float::with_val(PRECISION, 0.0),
 
 			dump_path: "./render/".to_string(),
 

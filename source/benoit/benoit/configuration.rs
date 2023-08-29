@@ -21,6 +21,8 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::Fractal;
+
 extern crate rug;
 
 use rug::Float;
@@ -31,6 +33,8 @@ pub mod load;
 pub struct Configuration {
 	pub thread_count: u32,
 
+	pub fractal: Fractal,
+
 	pub canvas_width:  u32,
 	pub canvas_height: u32,
 	pub scale:         u32,
@@ -40,6 +44,9 @@ pub struct Configuration {
 	pub center_imaginary:        Float,
 	pub zoom:                    Float,
 	pub maximum_iteration_count: u32,
+
+	pub julia_real:      Float,
+	pub julia_imaginary: Float,
 
 	pub dump_path: String,
 

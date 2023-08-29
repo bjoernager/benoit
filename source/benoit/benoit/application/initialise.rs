@@ -60,6 +60,8 @@ impl Application {
 		return Application {
 			thread_count: thread_count,
 
+			fractal: configuration.fractal,
+
 			canvas_width:  configuration.canvas_width,
 			canvas_height: configuration.canvas_height,
 			scale:         configuration.scale,
@@ -70,6 +72,9 @@ impl Application {
 			zoom:                    Float::with_val(PRECISION, configuration.zoom),
 			maximum_iteration_count: configuration.maximum_iteration_count,
 
+			julia_real:      configuration.julia_real,
+			julia_imaginary: configuration.julia_imaginary,
+
 			dump_path: configuration.dump_path,
 
 			video: video,
@@ -77,6 +82,8 @@ impl Application {
 			interactive: configuration.interactive,
 			do_draw:     true,
 			do_dump:     false,
+
+			render_row: Application::get_row_renderer(configuration.fractal),
 		};
 	}
 }

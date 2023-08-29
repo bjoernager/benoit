@@ -21,7 +21,7 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::PRECISION;
+use crate::benoit::{Fractal, PRECISION};
 use crate::benoit::configuration::Configuration;
 
 extern crate rug;
@@ -73,7 +73,26 @@ impl Configuration {
 			};
 		};
 
+		let get_string = |table: &Table, name: &str| -> Option<&String> {
+			if !table.contains_key(name) { return None }
+
+			match &configuration_table[name] {
+				Value::String(value) => return Some(value),
+				_                    => panic!("mismatched type of {name}"),
+			};
+		};
+
 		get_integer(&mut configuration.thread_count,  &configuration_table, "thread_count");
+
+		configuration.fractal = if let Some(name) = get_string(&configuration_table, "fractal") {
+			match name.as_str() {
+				"julia"      => Fractal::Julia,
+				"mandelbrot" => Fractal::Mandelbrot,
+				name         => panic!("invalid fractal name {name}"),
+			}
+		} else {
+			configuration.fractal
+		};
 
 		get_integer(&mut configuration.canvas_width,  &configuration_table, "canvas_width");
 		get_integer(&mut configuration.canvas_height, &configuration_table, "canvas_height");
@@ -84,6 +103,9 @@ impl Configuration {
 		get_float(  &mut configuration.center_imaginary,        &configuration_table, "imaginary");
 		get_float(  &mut configuration.zoom,                    &configuration_table, "zoom");
 		get_integer(&mut configuration.maximum_iteration_count, &configuration_table, "maximum_iteration_count");
+
+		get_float(&mut configuration.julia_real,      &configuration_table, "julia_real");
+		get_float(&mut configuration.julia_imaginary, &configuration_table, "julia_imaginary");
 
 		return configuration;
 	}

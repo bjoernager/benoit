@@ -73,7 +73,7 @@ impl Application {
 
 		for frame in 0x0..self.frame_count {
 			eprint!("{frame:010}: ");
-			self.render(&mut data[..], &self.center_real, &self.center_imaginary, &zoom, self.maximum_iteration_count);
+			self.render(&mut data[..], &self.center_real, &self.center_imaginary, &zoom, self.maximum_iteration_count, &self.julia_real, &self.julia_imaginary);
 			self.colour(&mut image[..], &data[..]);
 
 			self.dump(format!("{}/frame{frame:010}.webp", self.dump_path), &image, self.canvas_width, self.canvas_height);

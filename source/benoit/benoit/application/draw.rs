@@ -32,7 +32,7 @@ impl Application {
 	pub fn draw(&mut self, data: &mut [u32], image: &mut [u8]) {
 		let canvas_size = self.canvas_height * self.canvas_width;
 
-		self.render(&mut data[..], &self.center_real, &self.center_imaginary, &self.zoom, self.maximum_iteration_count);
+		self.render(&mut data[..], &self.center_real, &self.center_imaginary, &self.zoom, self.maximum_iteration_count, &self.julia_real, &self.julia_imaginary);
 		self.colour(&mut image[..], &data[..]);
 
 		for pixel in 0x0..canvas_size {

@@ -32,7 +32,7 @@ use std::time::Instant;
 use std::ptr::addr_of_mut;
 
 impl Application {
-	pub fn render(&self, buffer: &mut [u32], center_real: &Float, center_imaginary: &Float, zoom: &Float, maximum_iteration_count: u32) {
+	pub fn render(&self, buffer: &mut [u32], center_real: &Float, center_imaginary: &Float, zoom: &Float, maximum_iteration_count: u32, julia_real: &Float, julia_imaginary: &Float) {
 		eprint!("rendering...");
 
 		let mut threads = Vec::<JoinHandle<()>>::with_capacity(self.thread_count as usize);
@@ -60,13 +60,18 @@ impl Application {
 				// We should stop if there are no remaining rows.
 				if y == self.canvas_height { break 'render_loop; }
 
+				let render_row = self.render_row;
+
 				let buffer_slice = get_slice(buffer, y, self.canvas_width);
 
-				let center_real = center_real.clone();
+				let center_real      = center_real.clone();
 				let center_imaginary = center_imaginary.clone();
-				let zoom       = zoom.clone();
+				let zoom             = zoom.clone();
 
-				threads.push(spawn(move || { Application::render_row(buffer_slice, y, canvas_width, canvas_height, center_real, center_imaginary, zoom, maximum_iteration_count) }));
+				let julia_real      = julia_real.clone();
+				let julia_imaginary = julia_imaginary.clone();
+
+				threads.push(spawn(move || { render_row(buffer_slice, y, canvas_width, canvas_height, center_real, center_imaginary, zoom, maximum_iteration_count, julia_real, julia_imaginary) }));
 
 				y += 0x1;
 			}
@@ -79,13 +84,18 @@ impl Application {
 			for y in 0x0..self.canvas_height {
 				threads.remove(0x0).join().unwrap();
 
+				let render_row = self.render_row;
+
 				let buffer_slice = get_slice(buffer, y, self.canvas_width);
 
-				let center_real = center_real.clone();
+				let center_real      = center_real.clone();
 				let center_imaginary = center_imaginary.clone();
-				let zoom       = zoom.clone();
+				let zoom             = zoom.clone();
 
-				threads.push(spawn(move || { Application::render_row(buffer_slice, y, canvas_width, canvas_height, center_real, center_imaginary, zoom, maximum_iteration_count) }));
+				let julia_real      = julia_real.clone();
+				let julia_imaginary = julia_imaginary.clone();
+
+				threads.push(spawn(move || { render_row(buffer_slice, y, canvas_width, canvas_height, center_real, center_imaginary, zoom, maximum_iteration_count, julia_real, julia_imaginary) }));
 			}
 		}
 

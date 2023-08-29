@@ -1,3 +1,10 @@
+# 22
+
+* Support rendering of Julia sets
+* Update controls
+* Refactor code
+* Update configuration
+
 # 21
 
 * Update controls guide (fix typo)

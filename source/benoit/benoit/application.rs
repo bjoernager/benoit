@@ -21,6 +21,7 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::{Fractal, RowRenderer};
 use crate::benoit::video::Video;
 
 extern crate rug;
@@ -31,16 +32,20 @@ pub mod animate;
 pub mod colour;
 pub mod draw;
 pub mod dump;
+pub mod get_row_renderer;
 pub mod handle_keys;
 pub mod initialise;
 pub mod r#loop;
 pub mod poll_events;
-pub mod render_row;
+pub mod render_row_julia;
+pub mod render_row_mandelbrot;
 pub mod render;
 pub mod run;
 
 pub struct Application {
 	thread_count: u32,
+
+	fractal: Fractal,
 
 	canvas_width:  u32,
 	canvas_height: u32,
@@ -52,6 +57,9 @@ pub struct Application {
 	zoom:                    Float,
 	maximum_iteration_count: u32,
 
+	julia_real:      Float,
+	julia_imaginary: Float,
+
 	dump_path: String,
 
 	video: Option<Video>,
@@ -59,4 +67,6 @@ pub struct Application {
 	interactive: bool,
 	do_draw:     bool,
 	do_dump:     bool,
+
+	render_row: RowRenderer,
 }

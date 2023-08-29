@@ -44,6 +44,11 @@ impl Application {
 		eprintln!("- X    Dump frame");
 		eprintln!("- C    Render frame");
 		eprintln!();
+		eprintln!("- \u{2191}    Translate Julia center up");
+		eprintln!("- \u{2190}    Translate Julia center left");
+		eprintln!("- \u{2192}    Translate Julia center down");
+		eprintln!("- \u{2193}    Translate Julia center right");
+		eprintln!();
 
 		let mut event_pump = self.video.as_mut().unwrap().sdl.event_pump().expect("unable to get event pump");
 
