@@ -29,7 +29,7 @@ extern crate rug;
 use rug::Float;
 
 impl Application {
-	pub fn render_row_mandelbrot(data: &mut [u32], y: u32, canvas_width: u32, canvas_height: u32, center_real: Float, center_imaginary: Float, zoom: Float, maximum_iteration_count: u32) {
+	pub fn render_row_tricorn(data: &mut [u32], y: u32, canvas_width: u32, canvas_height: u32, center_real: Float, center_imaginary: Float, zoom: Float, maximum_iteration_count: u32) {
 		for x in 0x0..canvas_width {
 			let canvas_width  = Float::with_val(PRECISION, canvas_width);
 			let canvas_height = Float::with_val(PRECISION, canvas_height);
@@ -37,7 +37,9 @@ impl Application {
 			let x_float = Float::with_val(PRECISION, x);
 			let y_float = Float::with_val(PRECISION, y);
 
-			// Re(c) = (x-canvas_width/2)*4/canvas_width/zoom+Re(z)
+			// For more information, see:
+			// render_row_mandelbrot
+
 			let ca = {
 				let tmp0 = Float::with_val(PRECISION, &canvas_width / 2.0);
 
@@ -50,7 +52,6 @@ impl Application {
 				ca
 			};
 
-			// Im(c) = (x-canvas_height/2)*4/canvas_height/zoom+Im(z)
 			let cb = {
 				let tmp0 = Float::with_val(PRECISION, &canvas_height / 2.0);
 
@@ -63,18 +64,6 @@ impl Application {
 				cb
 			};
 
-			// Formaly, the initial condition that
-			//
-			// z = 0
-			//
-			// may be skipped as the first two iterations will
-			// always be
-			//
-			// z0 = 0
-			// z1 = z0^2+c = 0^2+c = 0+c = c
-			//
-			// That is, the result of the second iteration will
-			// always be the value of (c).
 			let mut za = Float::with_val(PRECISION, &ca);
 			let mut zb = Float::with_val(PRECISION, &cb);
 
@@ -84,29 +73,26 @@ impl Application {
 				square_distance <= 4.0 && iteration_count < maximum_iteration_count
 			} {
 				{
-					// The Mandelbrot Set (M) is defined as the set of
-					// values in the complex plane where the iterating
-					// function
+					// The Tricorn is only different from the
+					// Mandelbrot Set in that the conjugate of (z) is
+					// used instead of just (z):
 					//
-					// z = z^2+c
-					//
-					// stays bounded: I.e. the absolute value of (z) stays bounded:
-					//
-					// abs(z) = sqrt(Re(z)^2+Im(z)^2) <= 2^2 = 4
+					// z = (Re(z)-Im(z))^2+c
 
 					let za_temporary = Float::with_val(PRECISION, &za);
-
-					// We can calculate the square of a complex number
-					// as:
-					//
-					// (a+ib)^2 = (a+ib)(a+ib) = a^2+iab+iab-b^2 = a^2-b^2+2iab
 
 					za = za.square();
 					za -= &zb * &zb;
 					za += &ca;
 
 					zb *= &za_temporary;
-					zb *= 2.0;
+					// We can negate the value by multiplying with
+					// (-1). A multiplication can be saved, as
+					//
+					// a*2*(-1) = a*(-2)
+					//
+					// so we may combine these two multiplications.
+					zb *= -2.0;
 					zb += &cb;
 				}
 

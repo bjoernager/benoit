@@ -33,7 +33,10 @@ use std::ops::MulAssign;
 
 impl Application {
 	pub fn animate(&self) -> i32 {
-		let stop_zoom = Float::with_val(PRECISION, &self.zoom);
+		// zoom_start:
+		let mut zoom = Float::with_val(PRECISION, 1.0 / 2.0);
+
+		let zoom_stop  = Float::with_val(PRECISION, &self.zoom);
 
 		let zoom_factor = {
 			// To get the zoom factor, we first want the 'a'
@@ -41,30 +44,29 @@ impl Application {
 			// (frame_count) on the x-dimension and from (1) to
 			// (zoom) on the y-dimension:
 			//
-			// a = nroot(x1-x0, y1/y0)
+			// a = nroot(x1-x0,y1/y0)
 			//
 			// but this may be simplified for use with Rug
 			// because
 			//
-			// nroot(a, b) = b^(1/a)
+			// nroot(a,b) = b^(1/a)
 			//
 			// making the final equation
 			//
-			// (x1-x0)^(1/y1*y0) = (zoom)^(1/frame_count)
+			// (x1-x0)^(1/(y1*y0)) = (zoom_stop/zoom_start)^(1/frame_count)
 
 			let x_difference = Float::with_val(PRECISION, self.frame_count);
 
 			let exponent = Float::with_val(PRECISION, 1.0 / &x_difference);
 
-			let mut factor = Float::with_val(PRECISION, &stop_zoom);
+			let mut factor = Float::with_val(PRECISION, &zoom_stop);
+			factor /= &zoom;
 			factor.pow_assign(exponent);
 
 			factor
 		};
 
-		let mut zoom = Float::with_val(PRECISION, 1.0);
-
-		eprintln!("animating {} frames at {}{:+}i to {:.3} (fac.: {:.3})", self.frame_count, self.center_real.to_f64(), self.center_imaginary.to_f64(), stop_zoom.to_f64(), zoom_factor.to_f64());
+		eprintln!("animating {} frames at {}{:+}i to {:.3} (fac.: {:.3})", self.frame_count, self.center_real.to_f64(), self.center_imaginary.to_f64(), zoom_stop.to_f64(), zoom_factor.to_f64());
 
 		let canvas_size = self.canvas_height as usize * self.canvas_width as usize;
 
@@ -73,7 +75,7 @@ impl Application {
 
 		for frame in 0x0..self.frame_count {
 			eprint!("{frame:010}: ");
-			self.render(&mut data[..], &self.center_real, &self.center_imaginary, &zoom, self.maximum_iteration_count, &self.julia_real, &self.julia_imaginary);
+			self.render(&mut data[..], &self.center_real, &self.center_imaginary, &zoom, self.maximum_iteration_count);
 			self.colour(&mut image[..], &data[..]);
 
 			self.dump(format!("{}/frame{frame:010}.webp", self.dump_path), &image, self.canvas_width, self.canvas_height);

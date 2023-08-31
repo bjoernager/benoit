@@ -21,12 +21,21 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::Fractal;
 use crate::benoit::application::Application;
 
 extern crate sdl2;
 
 impl Application {
 	pub fn run(&mut self) -> i32 {
+		let fractal_name = match self.fractal {
+			Fractal::BurningShip => "burning ship",
+			Fractal::Mandelbrot  => "mandelbrot set",
+			Fractal::Tricorn     => "tricorn",
+		};
+
+		eprintln!("rendering the {fractal_name}");
+
 		return match self.interactive {
 			true  => self.r#loop(),
 			false => self.animate(),

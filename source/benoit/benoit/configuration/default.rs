@@ -45,9 +45,6 @@ impl Configuration {
 			zoom:                    Float::with_val(PRECISION, 1.0),
 			maximum_iteration_count: 0x100,
 
-			julia_real:      Float::with_val(PRECISION, 0.0),
-			julia_imaginary: Float::with_val(PRECISION, 0.0),
-
 			dump_path: "./render/".to_string(),
 
 			interactive: true,

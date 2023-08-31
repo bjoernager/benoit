@@ -27,8 +27,9 @@ use crate::benoit::application::Application;
 impl Application {
 	pub fn get_row_renderer(fractal: Fractal) -> RowRenderer {
 		return match fractal {
-			Fractal::Julia      => Application::render_row_julia,
-			Fractal::Mandelbrot => Application::render_row_mandelbrot,
+			Fractal::BurningShip => Application::render_row_burning_ship,
+			Fractal::Mandelbrot  => Application::render_row_mandelbrot,
+			Fractal::Tricorn    => Application::render_row_tricorn,
 		};
 	}
 }

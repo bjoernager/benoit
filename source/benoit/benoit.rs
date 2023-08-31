@@ -29,12 +29,13 @@ pub mod application;
 pub mod configuration;
 pub mod video;
 
-type RowRenderer = fn(&mut [u32], u32, u32, u32, Float, Float, Float, u32, Float, Float);
+type RowRenderer = fn(&mut [u32], u32, u32, u32, Float, Float, Float, u32);
 
 pub const PRECISION: u32 = 0x100;
 
 #[derive(Clone, Copy)]
 pub enum Fractal {
-	Julia,
+	BurningShip,
 	Mandelbrot,
+	Tricorn,
 }

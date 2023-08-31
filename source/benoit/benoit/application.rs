@@ -37,8 +37,9 @@ pub mod handle_keys;
 pub mod initialise;
 pub mod r#loop;
 pub mod poll_events;
-pub mod render_row_julia;
+pub mod render_row_burning_ship;
 pub mod render_row_mandelbrot;
+pub mod render_row_tricorn;
 pub mod render;
 pub mod run;
 
@@ -56,9 +57,6 @@ pub struct Application {
 	center_imaginary:        Float,
 	zoom:                    Float,
 	maximum_iteration_count: u32,
-
-	julia_real:      Float,
-	julia_imaginary: Float,
 
 	dump_path: String,
 

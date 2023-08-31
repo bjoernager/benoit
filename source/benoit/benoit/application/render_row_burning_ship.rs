@@ -29,7 +29,7 @@ extern crate rug;
 use rug::Float;
 
 impl Application {
-	pub fn render_row_julia(data: &mut [u32], y: u32, canvas_width: u32, canvas_height: u32, center_real: Float, center_imaginary: Float, zoom: Float, maximum_iteration_count: u32, julia_real: Float, julia_imaginary: Float) {
+	pub fn render_row_burning_ship(data: &mut [u32], y: u32, canvas_width: u32, canvas_height: u32, center_real: Float, center_imaginary: Float, zoom: Float, maximum_iteration_count: u32) {
 		for x in 0x0..canvas_width {
 			let canvas_width  = Float::with_val(PRECISION, canvas_width);
 			let canvas_height = Float::with_val(PRECISION, canvas_height);
@@ -37,40 +37,35 @@ impl Application {
 			let x_float = Float::with_val(PRECISION, x);
 			let y_float = Float::with_val(PRECISION, y);
 
-			// The Julia set of the Mandelbrot set is similar
-			// but not quite identical: The start value of (z)
-			// is now relative to the canvas and (c) is
-			// constant corresponds to a point in the
-			// Mandelbrot Set.
+			// For more information, see:
+			// render_row_mandelbrot
 
-			let ca = &julia_real;
-			let cb = &julia_imaginary;
-
-			// Re(z) = (x-canvas_width/2)*4/canvas_width/zoom+Re(z)
-			let mut za = {
+			let ca = {
 				let tmp0 = Float::with_val(PRECISION, &canvas_width / 2.0);
 
-				let mut za = Float::with_val(PRECISION, &x_float - &tmp0);
-				za *= 4.0;
-				za /= &canvas_width;
-				za /= &zoom;
-				za += &center_real;
+				let mut ca = Float::with_val(PRECISION, &x_float - &tmp0);
+				ca *= 4.0;
+				ca /= &canvas_width;
+				ca /= &zoom;
+				ca += &center_real;
 
-				za
+				ca
 			};
 
-			// Im(Z) = (x-canvas_height/2)*4/canvas_height/zoom+Im(z)
-			let mut zb = {
+			let cb = {
 				let tmp0 = Float::with_val(PRECISION, &canvas_height / 2.0);
 
-				let mut zb = Float::with_val(PRECISION, &y_float - &tmp0);
-				zb *= 4.0;
-				zb /= &canvas_height;
-				zb /= &zoom;
-				zb += &center_imaginary;
+				let mut cb = Float::with_val(PRECISION, &y_float - &tmp0);
+				cb *= 4.0;
+				cb /= &canvas_height;
+				cb /= &zoom;
+				cb += &center_imaginary;
 
-				zb
+				cb
 			};
+
+			let mut za = Float::with_val(PRECISION, &ca);
+			let mut zb = Float::with_val(PRECISION, &cb);
 
 			let mut iteration_count: u32 = 0x0;
 			while {
@@ -78,23 +73,24 @@ impl Application {
 				square_distance <= 4.0 && iteration_count < maximum_iteration_count
 			} {
 				{
-					// The overall iterations of the Julia of M are
-					// identical to those of M:
+					// The Burning Ship is different in that - during
+					// iteration - the real and imaginary parts of (z)
+					// are made absolute:
 					//
-					// z = z^2+c
-					//
-					// with only the initial value of (z) and (c)
-					// differing.
+					// z = (abs(Re(z))+i*abs(Im(z)))^2+c
+
+					za = za.abs();
+					zb = zb.abs();
 
 					let za_temporary = Float::with_val(PRECISION, &za);
 
 					za = za.square();
 					za -= &zb * &zb;
-					za += ca;
+					za += &ca;
 
 					zb *= &za_temporary;
 					zb *= 2.0;
-					zb += cb;
+					zb += &cb;
 				}
 
 				iteration_count += 0x1;

@@ -72,9 +72,6 @@ impl Application {
 			zoom:                    Float::with_val(PRECISION, configuration.zoom),
 			maximum_iteration_count: configuration.maximum_iteration_count,
 
-			julia_real:      configuration.julia_real,
-			julia_imaginary: configuration.julia_imaginary,
-
 			dump_path: configuration.dump_path,
 
 			video: video,

@@ -86,9 +86,10 @@ impl Configuration {
 
 		configuration.fractal = if let Some(name) = get_string(&configuration_table, "fractal") {
 			match name.as_str() {
-				"julia"      => Fractal::Julia,
-				"mandelbrot" => Fractal::Mandelbrot,
-				name         => panic!("invalid fractal name {name}"),
+				"burningship" => Fractal::BurningShip,
+				"mandelbrot"  => Fractal::Mandelbrot,
+				"tricorn"    => Fractal::Tricorn,
+				name          => panic!("invalid fractal name {name}"),
 			}
 		} else {
 			configuration.fractal
@@ -103,9 +104,6 @@ impl Configuration {
 		get_float(  &mut configuration.center_imaginary,        &configuration_table, "imaginary");
 		get_float(  &mut configuration.zoom,                    &configuration_table, "zoom");
 		get_integer(&mut configuration.maximum_iteration_count, &configuration_table, "maximum_iteration_count");
-
-		get_float(&mut configuration.julia_real,      &configuration_table, "julia_real");
-		get_float(&mut configuration.julia_imaginary, &configuration_table, "julia_imaginary");
 
 		return configuration;
 	}

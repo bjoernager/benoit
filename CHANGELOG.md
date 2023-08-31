@@ -1,3 +1,13 @@
+# 23
+
+* Support rendering of the Tricorn and Burning Ship fractals
+* Update configuration
+* Update start zoom value
+* Remove Julia fractal(s)
+* Bump dependency versions
+* Update messages
+* Update commenting
+
 # 22
 
 * Support rendering of Julia sets

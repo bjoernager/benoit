@@ -45,9 +45,6 @@ pub struct Configuration {
 	pub zoom:                    Float,
 	pub maximum_iteration_count: u32,
 
-	pub julia_real:      Float,
-	pub julia_imaginary: Float,
-
 	pub dump_path: String,
 
 	pub interactive: bool,
