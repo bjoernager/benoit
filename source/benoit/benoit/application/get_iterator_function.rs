@@ -21,17 +21,16 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod application;
-pub mod configuration;
-pub mod iteration;
-pub mod render_data;
-pub mod video;
+use crate::benoit::Fractal;
+use crate::benoit::application::Application;
+use crate::benoit::iteration::*;
 
-pub const PRECISION: u32 = 0x80;
-
-#[derive(Clone, Copy)]
-pub enum Fractal {
-	BurningShip,
-	Mandelbrot,
-	Tricorn,
+impl Application {
+	pub fn get_iterator_function(fractal: Fractal) -> IteratorFunction {
+		return match fractal {
+			Fractal::BurningShip => iterate_burning_ship,
+			Fractal::Mandelbrot  => iterate_mandelbrot,
+			Fractal::Tricorn     => iterate_tricorn,
+		};
+	}
 }

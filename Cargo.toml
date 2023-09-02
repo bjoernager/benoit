@@ -1,6 +1,6 @@
 [package]
 name        = "benoit"
-version     = "0.24.0"
+version     = "0.28.0"
 authors     = ["Gabriel Bjørnager Jensen"]
 edition     = "2021"
 description = "Mandelbrot renderer."
@@ -15,7 +15,8 @@ path = "source/benoit/main.rs"
 lto = true
 
 [dependencies]
-rug  = "1.21.0"
-sdl2 = "0.35.2"
-toml = "0.7.6"
-webp = "0.2.5"
+rayon = "1.7.0"
+rug   = "1.21.0"
+sdl2  = "0.35.2"
+toml  = "0.7.6"
+webp  = "0.2.5"

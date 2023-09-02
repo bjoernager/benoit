@@ -21,17 +21,16 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod application;
-pub mod configuration;
-pub mod iteration;
-pub mod render_data;
-pub mod video;
+extern crate rug;
 
-pub const PRECISION: u32 = 0x80;
+use rug::Float;
 
-#[derive(Clone, Copy)]
-pub enum Fractal {
-	BurningShip,
-	Mandelbrot,
-	Tricorn,
-}
+pub mod iterate_burning_ship;
+pub mod iterate_mandelbrot;
+pub mod iterate_tricorn;
+
+pub use iterate_burning_ship::iterate_burning_ship;
+pub use iterate_mandelbrot::iterate_mandelbrot;
+pub use iterate_tricorn::iterate_tricorn;
+
+pub type IteratorFunction = fn(&mut Float, &mut Float, &Float, &Float);

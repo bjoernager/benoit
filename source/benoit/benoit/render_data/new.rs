@@ -21,49 +21,27 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::Fractal;
-use crate::benoit::iteration::IteratorFunction;
-use crate::benoit::video::Video;
+use crate::benoit::render_data::RenderData;
 
 extern crate rug;
 
 use rug::Float;
 
-pub mod animate;
-pub mod colour;
-pub mod draw;
-pub mod dump;
-pub mod get_iterator_function;
-pub mod handle_keys;
-pub mod initialise;
-pub mod r#loop;
-pub mod poll_events;
-pub mod render_row;
-pub mod render;
-pub mod run;
+impl RenderData {
+	pub fn new(buffer: &mut [u32], canvas_width: u32, canvas_height: u32, real: Float, imaginary: Float, zoom: Float, maximum_iteration_count: u32) -> RenderData {
+		let buffer_pointer = buffer.as_mut_ptr();
 
-pub struct Application {
-	thread_count: u32,
+		return RenderData {
+			canvas_width:  canvas_width,
+			canvas_height: canvas_height,
 
-	fractal: Fractal,
+			real:      real,
+			imaginary: imaginary,
+			zoom:      zoom,
 
-	canvas_width:  u32,
-	canvas_height: u32,
-	scale:         u32,
-	frame_count:   u32,
+			maximum_iteration_count: maximum_iteration_count,
 
-	center_real:             Float,
-	center_imaginary:        Float,
-	zoom:                    Float,
-	maximum_iteration_count: u32,
-
-	dump_path: String,
-
-	video: Option<Video>,
-
-	interactive: bool,
-	do_draw:     bool,
-	do_dump:     bool,
-
-	iterator_function: IteratorFunction,
+			buffer: buffer_pointer,
+		};
+	}
 }

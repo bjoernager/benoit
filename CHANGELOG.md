@@ -1,3 +1,12 @@
+# 24
+
+* Optimise rendering
+* Use Rayon for threading
+* Update thread structure (use arc for common data)
+* Use iterator functions instead of row renderers
+* Fix render garbage (somehow)
+* Lower precision
+
 # 23
 
 * Support rendering of the Tricorn and Burning Ship fractals

@@ -23,22 +23,24 @@
 
 use crate::benoit::PRECISION;
 use crate::benoit::application::Application;
+use crate::benoit::iteration::IteratorFunction;
+use crate::benoit::render_data::RenderData;
 
 extern crate rug;
 
 use rug::Float;
+use std::sync::Arc;
 
 impl Application {
-	pub fn render_row_burning_ship(data: &mut [u32], y: u32, canvas_width: u32, canvas_height: u32, center_real: Float, center_imaginary: Float, zoom: Float, maximum_iteration_count: u32) {
-		for x in 0x0..canvas_width {
-			let canvas_width  = Float::with_val(PRECISION, canvas_width);
-			let canvas_height = Float::with_val(PRECISION, canvas_height);
+	pub fn render_row(task: Arc<RenderData>, y: u32, iterator: IteratorFunction) {
+		let buffer = unsafe { task.slice(y) };
+
+		for x in 0x0..task.canvas_width {
+			let canvas_width  = Float::with_val(PRECISION, task.canvas_width);
+			let canvas_height = Float::with_val(PRECISION, task.canvas_height);
 
 			let x_float = Float::with_val(PRECISION, x);
 			let y_float = Float::with_val(PRECISION, y);
-
-			// For more information, see:
-			// render_row_mandelbrot
 
 			let ca = {
 				let tmp0 = Float::with_val(PRECISION, &canvas_width / 2.0);
@@ -46,8 +48,8 @@ impl Application {
 				let mut ca = Float::with_val(PRECISION, &x_float - &tmp0);
 				ca *= 4.0;
 				ca /= &canvas_width;
-				ca /= &zoom;
-				ca += &center_real;
+				ca /= &task.zoom;
+				ca += &task.real;
 
 				ca
 			};
@@ -58,8 +60,8 @@ impl Application {
 				let mut cb = Float::with_val(PRECISION, &y_float - &tmp0);
 				cb *= 4.0;
 				cb /= &canvas_height;
-				cb /= &zoom;
-				cb += &center_imaginary;
+				cb /= &task.zoom;
+				cb += &task.imaginary;
 
 				cb
 			};
@@ -70,33 +72,14 @@ impl Application {
 			let mut iteration_count: u32 = 0x0;
 			while {
 				let square_distance = Float::with_val(PRECISION, &za * &za + &zb * &zb);
-				square_distance <= 4.0 && iteration_count < maximum_iteration_count
+				square_distance <= 4.0 && iteration_count < task.maximum_iteration_count
 			} {
-				{
-					// The Burning Ship is different in that - during
-					// iteration - the real and imaginary parts of (z)
-					// are made absolute:
-					//
-					// z = (abs(Re(z))+i*abs(Im(z)))^2+c
-
-					za = za.abs();
-					zb = zb.abs();
-
-					let za_temporary = Float::with_val(PRECISION, &za);
-
-					za = za.square();
-					za -= &zb * &zb;
-					za += &ca;
-
-					zb *= &za_temporary;
-					zb *= 2.0;
-					zb += &cb;
-				}
+				iterator(&mut za, &mut zb, &ca, &cb);
 
 				iteration_count += 0x1;
 			}
 
-			unsafe { *data.get_unchecked_mut(x as usize) = iteration_count }
+			unsafe { *buffer.get_unchecked_mut(x as usize) = iteration_count }
 		}
 	}
 }

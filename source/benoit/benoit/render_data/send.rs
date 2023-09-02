@@ -21,17 +21,6 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod application;
-pub mod configuration;
-pub mod iteration;
-pub mod render_data;
-pub mod video;
+use crate::benoit::render_data::RenderData;
 
-pub const PRECISION: u32 = 0x80;
-
-#[derive(Clone, Copy)]
-pub enum Fractal {
-	BurningShip,
-	Mandelbrot,
-	Tricorn,
-}
+unsafe impl Send for RenderData {}

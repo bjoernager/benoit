@@ -26,8 +26,10 @@ use crate::benoit::application::Application;
 use crate::benoit::configuration::Configuration;
 use crate::benoit::video::Video;
 
+extern crate rayon;
 extern crate rug;
 
+use rayon::ThreadPoolBuilder;
 use rug::Float;
 use std::env::args;
 use std::thread::available_parallelism;
@@ -57,6 +59,8 @@ impl Application {
 			false => None,
 		};
 
+		ThreadPoolBuilder::new().num_threads(configuration.thread_count as usize).build_global().unwrap();
+
 		return Application {
 			thread_count: thread_count,
 
@@ -80,7 +84,7 @@ impl Application {
 			do_draw:     true,
 			do_dump:     false,
 
-			render_row: Application::get_row_renderer(configuration.fractal),
+			iterator_function: Application::get_iterator_function(configuration.fractal),
 		};
 	}
 }

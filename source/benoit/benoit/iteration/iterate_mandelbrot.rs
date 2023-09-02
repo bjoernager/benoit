@@ -21,17 +21,33 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod application;
-pub mod configuration;
-pub mod iteration;
-pub mod render_data;
-pub mod video;
+extern crate rug;
 
-pub const PRECISION: u32 = 0x80;
+use rug::Float;
 
-#[derive(Clone, Copy)]
-pub enum Fractal {
-	BurningShip,
-	Mandelbrot,
-	Tricorn,
+pub fn iterate_mandelbrot(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
+	// The Mandelbrot Set (M) is defined as the set of
+	// values in the complex plane where the iterating
+	// function
+	//
+	// z(n+1) = z(n)^2+c
+	//
+	// stays bounded: I.e. the absolute value of (z) stays bounded:
+	//
+	// abs(z) = sqrt(Re(z)^2+Im(z)^2) <= 2^2 = 4
+
+	let za_temporary = za.clone();
+
+	// We can calculate the square of a complex number
+	// as:
+	//
+	// (a+ib)^2 = (a+ib)(a+ib) = a^2+iab+iab-b^2 = a^2-b^2+2iab
+
+	za.square_mut();
+	*za -= &*zb * &*zb;
+	*za += ca;
+
+	*zb *= za_temporary;
+	*zb *= 2.0;
+	*zb += cb;
 }

@@ -21,17 +21,15 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod application;
-pub mod configuration;
-pub mod iteration;
-pub mod render_data;
-pub mod video;
+use crate::benoit::render_data::RenderData;
 
-pub const PRECISION: u32 = 0x80;
+use std::slice::from_raw_parts_mut;
 
-#[derive(Clone, Copy)]
-pub enum Fractal {
-	BurningShip,
-	Mandelbrot,
-	Tricorn,
+impl RenderData {
+	pub unsafe fn slice(&self, row: u32) -> &mut [u32] {
+		let offset = row as isize * self.canvas_width as isize;
+		let slice = from_raw_parts_mut(self.buffer.offset(offset), self.canvas_width as usize);
+
+		return slice;
+	}
 }

@@ -21,49 +21,27 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::Fractal;
-use crate::benoit::iteration::IteratorFunction;
-use crate::benoit::video::Video;
-
 extern crate rug;
 
 use rug::Float;
 
-pub mod animate;
-pub mod colour;
-pub mod draw;
-pub mod dump;
-pub mod get_iterator_function;
-pub mod handle_keys;
-pub mod initialise;
-pub mod r#loop;
-pub mod poll_events;
-pub mod render_row;
-pub mod render;
-pub mod run;
+pub fn iterate_burning_ship(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
+	// The Burning Ship is different in that - during
+	// iteration - the real and imaginary parts of (z)
+	// are made absolute:
+	//
+	// z(n) = (abs(Re(z(n)))+i*abs(Im(z(n))))^2+c
 
-pub struct Application {
-	thread_count: u32,
+	za.abs_mut();
+	zb.abs_mut();
 
-	fractal: Fractal,
+	let za_temporary = za.clone();
 
-	canvas_width:  u32,
-	canvas_height: u32,
-	scale:         u32,
-	frame_count:   u32,
+	za.square_mut();
+	*za -= &*zb * &*zb;
+	*za += ca;
 
-	center_real:             Float,
-	center_imaginary:        Float,
-	zoom:                    Float,
-	maximum_iteration_count: u32,
-
-	dump_path: String,
-
-	video: Option<Video>,
-
-	interactive: bool,
-	do_draw:     bool,
-	do_dump:     bool,
-
-	iterator_function: IteratorFunction,
+	*zb *= za_temporary;
+	*zb *= 2.0;
+	*zb += cb;
 }

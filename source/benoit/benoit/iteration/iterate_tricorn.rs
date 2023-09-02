@@ -21,15 +21,30 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::{Fractal, RowRenderer};
-use crate::benoit::application::Application;
+extern crate rug;
 
-impl Application {
-	pub fn get_row_renderer(fractal: Fractal) -> RowRenderer {
-		return match fractal {
-			Fractal::BurningShip => Application::render_row_burning_ship,
-			Fractal::Mandelbrot  => Application::render_row_mandelbrot,
-			Fractal::Tricorn    => Application::render_row_tricorn,
-		};
-	}
+use rug::Float;
+
+pub fn iterate_tricorn(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
+	// The Tricorn is only different from the
+	// Mandelbrot Set in that the conjugate of (z) is
+	// used instead of just (z):
+	//
+	// z(n+1) = (Re(z(n))-Im(z(n)))^2+c
+
+	let za_temporary = za.clone();
+
+	za.square_mut();
+	*za -= &*zb * &*zb;
+	*za += ca;
+
+	*zb *= za_temporary;
+	// We can negate the value by multiplying with
+	// (-1). A multiplication can be saved, as
+	//
+	// a*2*(-1) = a*(-2)
+	//
+	// Thus, we may combine these two multiplications.
+	*zb *= -2.0;
+	*zb += cb;
 }
