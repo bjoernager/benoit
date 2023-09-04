@@ -26,10 +26,11 @@ use crate::benoit::render_data::RenderData;
 use std::slice::from_raw_parts_mut;
 
 impl RenderData {
-	pub unsafe fn slice(&self, row: u32) -> &mut [u32] {
+	pub unsafe fn slice(&self, row: u32) -> (&mut [u32], &mut [f32]) {
 		let offset = row as isize * self.canvas_width as isize;
-		let slice = from_raw_parts_mut(self.buffer.offset(offset), self.canvas_width as usize);
+		let iteration_count = from_raw_parts_mut(self.iteration_count_buffer.offset(offset), self.canvas_width as usize);
+		let distance        = from_raw_parts_mut(self.square_distance_buffer.offset(offset), self.canvas_width as usize);
 
-		return slice;
+		return (iteration_count, distance);
 	}
 }

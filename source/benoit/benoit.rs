@@ -23,15 +23,9 @@
 
 pub mod application;
 pub mod configuration;
+pub mod fractal;
 pub mod iteration;
 pub mod render_data;
 pub mod video;
 
 pub const PRECISION: u32 = 0x80;
-
-#[derive(Clone, Copy)]
-pub enum Fractal {
-	BurningShip,
-	Mandelbrot,
-	Tricorn,
-}

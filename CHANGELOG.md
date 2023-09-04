@@ -1,3 +1,11 @@
+# 25
+
+* Update colouring (smooth)
+* Yield square distances from renders
+* Update start zoom
+* Add control for cycling fractals
+* Add function for getting the name of a fractal
+
 # 24
 
 * Optimise rendering

@@ -21,16 +21,11 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::fractal::Fractal;
-use crate::benoit::application::Application;
-use crate::benoit::iteration::*;
+pub mod get_name;
 
-impl Application {
-	pub fn get_iterator_function(fractal: Fractal) -> IteratorFunction {
-		return match fractal {
-			Fractal::BurningShip => iterate_burning_ship,
-			Fractal::Mandelbrot  => iterate_mandelbrot,
-			Fractal::Tricorn     => iterate_tricorn,
-		};
-	}
+#[derive(Clone, Copy)]
+pub enum Fractal {
+	BurningShip,
+	Mandelbrot,
+	Tricorn,
 }

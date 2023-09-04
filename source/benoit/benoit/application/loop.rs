@@ -29,34 +29,41 @@ impl Application {
 	pub fn r#loop(&mut self) -> i32 {
 		eprintln!();
 		eprintln!("Controls:");
-		eprintln!("- W    Translate up");
-		eprintln!("- A    Translate left");
-		eprintln!("- S    Translate down");
-		eprintln!("- D    Translate right");
+		eprintln!("- W      Translate up");
+		eprintln!("- A      Translate left");
+		eprintln!("- S      Translate down");
+		eprintln!("- D      Translate right");
 		eprintln!();
-		eprintln!("- Q    Zoom out");
-		eprintln!("- E    Zoom in");
+		eprintln!("- Q      Zoom out");
+		eprintln!("- E      Zoom in");
 		eprintln!();
-		eprintln!("- R    Decrease max. iteration count");
-		eprintln!("- F    Increase max. iteration count");
+		eprintln!("- R      Decrease max. iteration count");
+		eprintln!("- F      Increase max. iteration count");
 		eprintln!();
-		eprintln!("- Z    Print centre value (c)");
-		eprintln!("- X    Dump frame");
-		eprintln!("- C    Render frame");
+		eprintln!("- Tab    Cycle between fractals");
+		eprintln!();
+		eprintln!("- Z      Print centre value (c)");
+		eprintln!("- X      Dump frame");
+		eprintln!("- C      Render frame");
 		eprintln!();
 
 		let mut event_pump = self.video.as_mut().unwrap().sdl.event_pump().expect("unable to get event pump");
 
 		let canvas_size = self.canvas_height as usize * self.canvas_width as usize;
 
-		let mut data:  Vec::<u32> = vec![0x0; canvas_size];
+		let mut iteration_count_buffer: Vec::<u32> = vec![0x0; canvas_size];
+		let mut square_distance_buffer: Vec::<f32> = vec![0.0; canvas_size];
+
 		let mut image: Vec::<u8>  = vec![0x0; canvas_size * 0x3];
 
 		loop {
 			if self.poll_events(&mut event_pump) { break }
 
 			if self.do_draw {
-				self.draw(data.as_mut_slice(), image.as_mut_slice());
+				self.render(&mut iteration_count_buffer[..], &mut square_distance_buffer[..], &self.center_real, &self.center_imaginary, &self.zoom, self.maximum_iteration_count);
+				self.colour(&mut image[..], &iteration_count_buffer[..], &square_distance_buffer[..]);
+
+				self.draw(&image[..]);
 
 				self.do_draw = false;
 			}

@@ -21,7 +21,7 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::Fractal;
+use crate::benoit::fractal::Fractal;
 
 extern crate rug;
 

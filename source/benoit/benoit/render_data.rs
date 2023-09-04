@@ -26,8 +26,8 @@ extern crate rug;
 use rug::Float;
 
 pub mod new;
-pub mod slice;
 pub mod send;
+pub mod slice;
 pub mod sync;
 
 pub struct RenderData {
@@ -40,5 +40,6 @@ pub struct RenderData {
 
 	pub maximum_iteration_count: u32,
 
-	buffer: *mut u32,
+	iteration_count_buffer: *mut u32,
+	square_distance_buffer: *mut f32,
 }

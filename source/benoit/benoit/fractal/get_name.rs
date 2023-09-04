@@ -22,15 +22,13 @@
 */
 
 use crate::benoit::fractal::Fractal;
-use crate::benoit::application::Application;
-use crate::benoit::iteration::*;
 
-impl Application {
-	pub fn get_iterator_function(fractal: Fractal) -> IteratorFunction {
-		return match fractal {
-			Fractal::BurningShip => iterate_burning_ship,
-			Fractal::Mandelbrot  => iterate_mandelbrot,
-			Fractal::Tricorn     => iterate_tricorn,
+impl Fractal {
+	pub fn get_name(self) -> &'static str {
+		return match self {
+			Fractal::BurningShip => "burning ship",
+			Fractal::Mandelbrot  => "mandelbrot set",
+			Fractal::Tricorn     => "tricorn",
 		};
 	}
 }

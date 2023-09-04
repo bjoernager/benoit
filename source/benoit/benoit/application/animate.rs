@@ -34,7 +34,7 @@ use std::ops::MulAssign;
 impl Application {
 	pub fn animate(&self) -> i32 {
 		// zoom_start:
-		let mut zoom = Float::with_val(PRECISION, 1.0 / 2.0);
+		let mut zoom = Float::with_val(PRECISION, 1.0 / 4.0);
 
 		let zoom_stop  = Float::with_val(PRECISION, &self.zoom);
 
@@ -70,13 +70,15 @@ impl Application {
 
 		let canvas_size = self.canvas_height as usize * self.canvas_width as usize;
 
-		let mut data:  Vec::<u32> = vec![0x0; canvas_size];
+		let mut iteration_count_buffer: Vec::<u32> = vec![0x0; canvas_size];
+		let mut square_distance_buffer: Vec::<f32> = vec![0.0; canvas_size];
+
 		let mut image: Vec::<u8>  = vec![0x0; canvas_size * 0x3];
 
 		for frame in 0x0..self.frame_count {
 			eprint!("{frame:010}: ");
-			self.render(&mut data[..], &self.center_real, &self.center_imaginary, &zoom, self.maximum_iteration_count);
-			self.colour(&mut image[..], &data[..]);
+			self.render(&mut iteration_count_buffer[..], &mut square_distance_buffer[..], &self.center_real, &self.center_imaginary, &zoom, self.maximum_iteration_count);
+			self.colour(&mut image[..], &mut iteration_count_buffer[..], &mut square_distance_buffer[..]);
 
 			self.dump(format!("{}/frame{frame:010}.webp", self.dump_path), &image, self.canvas_width, self.canvas_height);
 

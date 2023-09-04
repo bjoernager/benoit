@@ -23,6 +23,8 @@
 
 use crate::benoit::PRECISION;
 use crate::benoit::application::Application;
+use crate::benoit::fractal::Fractal;
+use crate::benoit::iteration::IteratorFunction;
 
 extern crate rug;
 extern crate sdl2;
@@ -30,11 +32,26 @@ extern crate sdl2;
 use rug::Float;
 use sdl2::keyboard::Scancode;
 
+fn cycle_fractal(fractal: Fractal) -> (Fractal, IteratorFunction) {
+	let fractal = match fractal {
+		Fractal::BurningShip => Fractal::Mandelbrot,
+		Fractal::Mandelbrot  => Fractal::Tricorn,
+		Fractal::Tricorn     => Fractal::BurningShip,
+	};
+
+	let iterator_function = Application::get_iterator_function(fractal);
+
+	eprintln!("rendering the {}", fractal.get_name());
+
+	return (fractal, iterator_function);
+}
+
 impl Application {
 	pub fn handle_keys(&mut self, scan_code: Scancode) -> bool {
 		match scan_code {
 			Scancode::Escape => return true,
 			Scancode::C      => self.do_draw = true,
+			Scancode::Tab    => (self.fractal, self.iterator_function) = cycle_fractal(self.fractal),
 			Scancode::X      => self.do_dump = true,
 			Scancode::Z      => eprintln!("c = {}{:+}i -- {}x @ {} iter.", &self.center_real, &self.center_imaginary, &self.zoom, self.maximum_iteration_count),
 			_                => {},

@@ -28,8 +28,9 @@ extern crate rug;
 use rug::Float;
 
 impl RenderData {
-	pub fn new(buffer: &mut [u32], canvas_width: u32, canvas_height: u32, real: Float, imaginary: Float, zoom: Float, maximum_iteration_count: u32) -> RenderData {
-		let buffer_pointer = buffer.as_mut_ptr();
+	pub fn new(iteration_count_buffer: &mut [u32], square_distance_buffer: &mut [f32], canvas_width: u32, canvas_height: u32, real: Float, imaginary: Float, zoom: Float, maximum_iteration_count: u32) -> RenderData {
+		let iteration_count_buffer_pointer = iteration_count_buffer.as_mut_ptr();
+		let square_distance_buffer_pointer = square_distance_buffer.as_mut_ptr();
 
 		return RenderData {
 			canvas_width:  canvas_width,
@@ -41,7 +42,8 @@ impl RenderData {
 
 			maximum_iteration_count: maximum_iteration_count,
 
-			buffer: buffer_pointer,
+			iteration_count_buffer: iteration_count_buffer_pointer,
+			square_distance_buffer: square_distance_buffer_pointer,
 		};
 	}
 }

@@ -29,11 +29,8 @@ use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 
 impl Application {
-	pub fn draw(&mut self, data: &mut [u32], image: &mut [u8]) {
+	pub fn draw(&mut self, image: &[u8]) {
 		let canvas_size = self.canvas_height * self.canvas_width;
-
-		self.render(&mut data[..], &self.center_real, &self.center_imaginary, &self.zoom, self.maximum_iteration_count);
-		self.colour(&mut image[..], &data[..]);
 
 		for pixel in 0x0..canvas_size {
 			let y = pixel as u32 / self.canvas_width;

@@ -21,8 +21,9 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::{Fractal, PRECISION};
+use crate::benoit::PRECISION;
 use crate::benoit::configuration::Configuration;
+use crate::benoit::fractal::Fractal;
 
 extern crate rug;
 extern crate toml;

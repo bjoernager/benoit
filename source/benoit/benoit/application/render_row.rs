@@ -32,12 +32,12 @@ use rug::Float;
 use std::sync::Arc;
 
 impl Application {
-	pub fn render_row(task: Arc<RenderData>, y: u32, iterator: IteratorFunction) {
-		let buffer = unsafe { task.slice(y) };
+	pub fn render_row(data: Arc<RenderData>, y: u32, iterator: IteratorFunction) {
+		let (iteration_count_buffer, square_distance_buffer) = unsafe { data.slice(y) };
 
-		for x in 0x0..task.canvas_width {
-			let canvas_width  = Float::with_val(PRECISION, task.canvas_width);
-			let canvas_height = Float::with_val(PRECISION, task.canvas_height);
+		for x in 0x0..data.canvas_width {
+			let canvas_width  = Float::with_val(PRECISION, data.canvas_width);
+			let canvas_height = Float::with_val(PRECISION, data.canvas_height);
 
 			let x_float = Float::with_val(PRECISION, x);
 			let y_float = Float::with_val(PRECISION, y);
@@ -48,8 +48,8 @@ impl Application {
 				let mut ca = Float::with_val(PRECISION, &x_float - &tmp0);
 				ca *= 4.0;
 				ca /= &canvas_width;
-				ca /= &task.zoom;
-				ca += &task.real;
+				ca /= &data.zoom;
+				ca += &data.real;
 
 				ca
 			};
@@ -60,8 +60,8 @@ impl Application {
 				let mut cb = Float::with_val(PRECISION, &y_float - &tmp0);
 				cb *= 4.0;
 				cb /= &canvas_height;
-				cb /= &task.zoom;
-				cb += &task.imaginary;
+				cb /= &data.zoom;
+				cb += &data.imaginary;
 
 				cb
 			};
@@ -70,16 +70,22 @@ impl Application {
 			let mut zb = Float::with_val(PRECISION, &cb);
 
 			let mut iteration_count: u32 = 0x0;
+			let mut square_distance;
 			while {
-				let square_distance = Float::with_val(PRECISION, &za * &za + &zb * &zb);
-				square_distance <= 4.0 && iteration_count < task.maximum_iteration_count
+				square_distance = Float::with_val(PRECISION, &za * &za + &zb * &zb).to_f32();
+				// Having a larger escape radius gives better
+				// results with regard to smoothing.
+				square_distance <= 256.0 && iteration_count < data.maximum_iteration_count
 			} {
 				iterator(&mut za, &mut zb, &ca, &cb);
 
 				iteration_count += 0x1;
 			}
 
-			unsafe { *buffer.get_unchecked_mut(x as usize) = iteration_count }
+			unsafe {
+				*iteration_count_buffer.get_unchecked_mut(x as usize) = iteration_count;
+				*square_distance_buffer.get_unchecked_mut(x as usize) = square_distance;
+			}
 		}
 	}
 }
