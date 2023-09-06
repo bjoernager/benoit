@@ -33,9 +33,9 @@ impl Application {
 			let (red, green, blue) = if iteration_count != self.maximum_iteration_count {
 				let distance = square_distance_buffer[pixel as usize].sqrt();
 
-				let mut factor = (iteration_count as f32 + 1.0 - distance.log2().log2()) / 16.0 % 1.0;
+				let factor_range = 16.0_f32.min(self.maximum_iteration_count as f32);
 
-				factor %= 1.0;
+				let mut factor = (iteration_count as f32 + 1.0 - distance.log2().log2()) / factor_range % 1.0;
 
 				factor = (if factor >= 1.0 / 2.0 {
 					1.0 - factor

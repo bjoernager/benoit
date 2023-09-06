@@ -43,7 +43,7 @@ impl Configuration {
 
 			center_real:             Float::with_val(PRECISION, 0.0),
 			center_imaginary:        Float::with_val(PRECISION, 0.0),
-			zoom:                    Float::with_val(PRECISION, 1.0 / 4.0),
+			zoom:                    Float::with_val(PRECISION, 1.0),
 			maximum_iteration_count: 0x100,
 
 			dump_path: "./render/".to_string(),

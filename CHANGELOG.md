@@ -1,3 +1,8 @@
+# 26
+
+* Update colouring for small iteration counts
+* Revert start zoom for interactive renders
+
 # 25
 
 * Update colouring (smooth)
