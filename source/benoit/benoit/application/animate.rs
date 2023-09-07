@@ -66,7 +66,7 @@ impl Application {
 			factor
 		};
 
-		eprintln!("animating {} frames at {}{:+}i to {:.3} (fac.: {:.3})", self.frame_count, self.center_real.to_f64(), self.center_imaginary.to_f64(), zoom_stop.to_f64(), zoom_factor.to_f64());
+		eprintln!("animating {} frames at {}{:+}i to {:.3} (fac.: {:.3})", self.frame_count, self.centre_real.to_f64(), self.centre_imaginary.to_f64(), zoom_stop.to_f64(), zoom_factor.to_f64());
 
 		let canvas_size = self.canvas_height as usize * self.canvas_width as usize;
 
@@ -77,7 +77,7 @@ impl Application {
 
 		for frame in 0x0..self.frame_count {
 			eprint!("{frame:010}: ");
-			self.render(&mut iteration_count_buffer[..], &mut square_distance_buffer[..], &self.center_real, &self.center_imaginary, &zoom, self.maximum_iteration_count);
+			self.render(&mut iteration_count_buffer[..], &mut square_distance_buffer[..], &self.centre_real, &self.centre_imaginary, &zoom, self.maximum_iteration_count);
 			self.colour(&mut image[..], &mut iteration_count_buffer[..], &mut square_distance_buffer[..]);
 
 			self.dump(format!("{}/frame{frame:010}.webp", self.dump_path), &image, self.canvas_width, self.canvas_height);

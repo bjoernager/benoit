@@ -33,17 +33,18 @@ use std::sync::Arc;
 use std::time::Instant;
 
 impl Application {
-	pub fn render(&self, iteration_count_buffer: &mut [u32], square_distance_buffer: &mut [f32], center_real: &Float, center_imaginary: &Float, zoom: &Float, maximum_iteration_count: u32) {
+	pub fn render(&self, iteration_count_buffer: &mut [u32], square_distance_buffer: &mut [f32], centre_real: &Float, centre_imaginary: &Float, zoom: &Float, maximum_iteration_count: u32) {
 		eprint!("rendering...");
 
 		let time_start = Instant::now();
 
-		let iterator = self.iterator_function;
+		let row_renderer = self.row_renderer;
+		let iterator     = self.iterator_function;
 
-		let data = Arc::new(RenderData::new(iteration_count_buffer, square_distance_buffer, self.canvas_width, self.canvas_height, center_real.clone(), center_imaginary.clone(), zoom.clone(), maximum_iteration_count));
+		let data = Arc::new(RenderData::new(iteration_count_buffer, square_distance_buffer, self.canvas_width, self.canvas_height, centre_real.clone(), centre_imaginary.clone(), zoom.clone(), maximum_iteration_count));
 
 		(0x0..self.canvas_height).into_par_iter().for_each(|row| {
-			Application::render_row(data.clone(), row, iterator);
+			row_renderer(data.clone(), row, iterator);
 		});
 
 		let duration = time_start.elapsed();

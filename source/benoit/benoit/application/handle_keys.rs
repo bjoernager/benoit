@@ -22,7 +22,7 @@
 */
 
 use crate::benoit::PRECISION;
-use crate::benoit::application::Application;
+use crate::benoit::application::{Application, RowRenderer};
 use crate::benoit::fractal::Fractal;
 use crate::benoit::iteration::IteratorFunction;
 
@@ -46,40 +46,54 @@ fn cycle_fractal(fractal: Fractal) -> (Fractal, IteratorFunction) {
 	return (fractal, iterator_function);
 }
 
+fn toggle_julia(julia: bool) -> (bool, RowRenderer) {
+	let julia = !julia;
+
+	let row_renderer = Application::get_row_renderer(julia);
+
+	match julia {
+		false => eprintln!("enabled the julia set"),
+		true  => eprintln!("disabled the julia set"),
+	};
+
+	return (julia, row_renderer);
+}
+
 impl Application {
 	pub fn handle_keys(&mut self, scan_code: Scancode) -> bool {
 		match scan_code {
+			Scancode::LAlt   => (self.fractal, self.iterator_function) = cycle_fractal(self.fractal),
 			Scancode::Escape => return true,
-			Scancode::C      => self.do_draw = true,
-			Scancode::Tab    => (self.fractal, self.iterator_function) = cycle_fractal(self.fractal),
+			Scancode::C      => self.do_render = true,
+			Scancode::Tab    => (self.julia, self.row_renderer) = toggle_julia(self.julia),
 			Scancode::X      => self.do_dump = true,
-			Scancode::Z      => eprintln!("c = {}{:+}i -- {}x @ {} iter.", &self.center_real, &self.center_imaginary, &self.zoom, self.maximum_iteration_count),
+			Scancode::Z      => eprintln!("c = {}{:+}i -- {}x @ {} iter.", &self.centre_real, &self.centre_imaginary, &self.zoom, self.maximum_iteration_count),
 			_                => {},
 		}
 
 		match scan_code {
-			Scancode::E => self.zoom *= 4.0,
-			Scancode::Q => self.zoom /= 4.0,
+			Scancode::E => self.zoom *= 2.0,
+			Scancode::Q => self.zoom /= 2.0,
 			_           => {},
 		};
 
 		let translate_ammount = {
-			let mut ammount = Float::with_val(PRECISION, 1.0);
-			ammount /= 4.0;
+			let mut ammount = Float::with_val(PRECISION, 4.0);
+			ammount /= 16.0;
 			ammount /= &self.zoom;
 
 			ammount
 		};
 
 		match scan_code {
-			Scancode::A => self.center_real -= &translate_ammount,
-			Scancode::D => self.center_real += &translate_ammount,
+			Scancode::A => self.centre_real -= &translate_ammount,
+			Scancode::D => self.centre_real += &translate_ammount,
 			_           => {},
 		};
 
 		match scan_code {
-			Scancode::S => self.center_imaginary += &translate_ammount,
-			Scancode::W => self.center_imaginary -= &translate_ammount,
+			Scancode::S => self.centre_imaginary += &translate_ammount,
+			Scancode::W => self.centre_imaginary -= &translate_ammount,
 			_           => {},
 		};
 

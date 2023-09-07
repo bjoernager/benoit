@@ -65,14 +65,15 @@ impl Application {
 			thread_count: thread_count,
 
 			fractal: configuration.fractal,
+			julia:   configuration.julia,
 
 			canvas_width:  configuration.canvas_width,
 			canvas_height: configuration.canvas_height,
 			scale:         configuration.scale,
 			frame_count:   configuration.frame_count,
 
-			center_real:             Float::with_val(PRECISION, configuration.center_real),
-			center_imaginary:        Float::with_val(PRECISION, configuration.center_imaginary),
+			centre_real:             Float::with_val(PRECISION, configuration.centre_real),
+			centre_imaginary:        Float::with_val(PRECISION, configuration.centre_imaginary),
 			zoom:                    Float::with_val(PRECISION, configuration.zoom),
 			maximum_iteration_count: configuration.maximum_iteration_count,
 
@@ -81,9 +82,10 @@ impl Application {
 			video: video,
 
 			interactive: configuration.interactive,
-			do_draw:     true,
+			do_render:     true,
 			do_dump:     false,
 
+			row_renderer:      Application::get_row_renderer(     configuration.julia),
 			iterator_function: Application::get_iterator_function(configuration.fractal),
 		};
 	}

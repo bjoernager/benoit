@@ -21,32 +21,14 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::fractal::Fractal;
+use crate::benoit::application::Application;
+use crate::benoit::application::RowRenderer;
 
-extern crate rug;
-
-use rug::Float;
-
-pub mod default;
-pub mod load;
-
-pub struct Configuration {
-	pub thread_count: u32,
-
-	pub fractal: Fractal,
-	pub julia:   bool,
-
-	pub canvas_width:  u32,
-	pub canvas_height: u32,
-	pub scale:         u32,
-	pub frame_count:   u32,
-
-	pub centre_real:             Float,
-	pub centre_imaginary:        Float,
-	pub zoom:                    Float,
-	pub maximum_iteration_count: u32,
-
-	pub dump_path: String,
-
-	pub interactive: bool,
+impl Application {
+	pub fn get_row_renderer(julia: bool) -> RowRenderer {
+		return match julia {
+			false => Application::render_row_normal,
+			true  => Application::render_row_julia,
+		};
+	}
 }

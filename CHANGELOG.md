@@ -1,3 +1,9 @@
+# 27
+
+* Bring back Julia sets (using row renderers)
+* Update controls (decrease sensitivity of zooms)
+* Scale by default
+
 # 26
 
 * Update colouring for small iteration counts

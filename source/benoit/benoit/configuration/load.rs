@@ -83,7 +83,7 @@ impl Configuration {
 			};
 		};
 
-		get_integer(&mut configuration.thread_count,  &configuration_table, "thread_count");
+		get_integer(&mut configuration.thread_count, &configuration_table, "thread_count");
 
 		configuration.fractal = if let Some(name) = get_string(&configuration_table, "fractal") {
 			match name.as_str() {
@@ -101,8 +101,8 @@ impl Configuration {
 		get_integer(&mut configuration.scale,         &configuration_table, "scale");
 		get_integer(&mut configuration.frame_count,   &configuration_table, "frame_count");
 
-		get_float(  &mut configuration.center_real,             &configuration_table, "real");
-		get_float(  &mut configuration.center_imaginary,        &configuration_table, "imaginary");
+		get_float(  &mut configuration.centre_real,             &configuration_table, "real");
+		get_float(  &mut configuration.centre_imaginary,        &configuration_table, "imaginary");
 		get_float(  &mut configuration.zoom,                    &configuration_table, "zoom");
 		get_integer(&mut configuration.maximum_iteration_count, &configuration_table, "maximum_iteration_count");
 

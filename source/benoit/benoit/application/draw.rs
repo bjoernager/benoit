@@ -21,15 +21,18 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::application::Application;
+use crate::benoit::PRECISION;
+use crate::benoit::application::{Application, PreviousPosition};
 
+extern crate rug;
 extern crate sdl2;
 
+use rug::Float;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 
 impl Application {
-	pub fn draw(&mut self, image: &[u8]) {
+	pub fn draw(&mut self, image: &[u8], previous_position: &PreviousPosition) {
 		let canvas_size = self.canvas_height * self.canvas_width;
 
 		for pixel in 0x0..canvas_size {
@@ -44,14 +47,14 @@ impl Application {
 				Color::RGB(red, green, blue)
 			};
 
-			self.video.as_mut().unwrap().canvas.set_draw_color(colour);
-
 			let rectangle = Rect::new(
 				(x * self.scale) as i32,
 				(y * self.scale) as i32,
 				self.scale,
 				self.scale
 			);
+
+			self.video.as_mut().unwrap().canvas.set_draw_color(colour);
 			self.video.as_mut().unwrap().canvas.fill_rects(&[rectangle]).unwrap();
 		}
 

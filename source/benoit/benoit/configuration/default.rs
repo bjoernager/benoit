@@ -35,14 +35,15 @@ impl Configuration {
 			thread_count: 0x0,
 
 			fractal: Fractal::Mandelbrot,
+			julia:   false,
 
 			canvas_width:  0x100,
 			canvas_height: 0x100,
-			scale:         0x1,
+			scale:         0x2,
 			frame_count:   0x10,
 
-			center_real:             Float::with_val(PRECISION, 0.0),
-			center_imaginary:        Float::with_val(PRECISION, 0.0),
+			centre_real:             Float::with_val(PRECISION, 0.0),
+			centre_imaginary:        Float::with_val(PRECISION, 0.0),
 			zoom:                    Float::with_val(PRECISION, 1.0),
 			maximum_iteration_count: 0x100,
 

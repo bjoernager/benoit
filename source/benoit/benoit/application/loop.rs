@@ -21,7 +21,7 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::application::Application;
+use crate::benoit::application::{Application, PreviousPosition};
 
 extern crate sdl2;
 
@@ -40,7 +40,8 @@ impl Application {
 		eprintln!("- R      Decrease max. iteration count");
 		eprintln!("- F      Increase max. iteration count");
 		eprintln!();
-		eprintln!("- Tab    Cycle between fractals");
+		eprintln!("- Tab    Toggle Julia");
+		eprintln!("- Alt    Cycle between fractals");
 		eprintln!();
 		eprintln!("- Z      Print centre value (c)");
 		eprintln!("- X      Dump frame");
@@ -56,17 +57,29 @@ impl Application {
 
 		let mut image: Vec::<u8>  = vec![0x0; canvas_size * 0x3];
 
+		let mut previous_position = PreviousPosition {
+			real:      self.centre_real.clone(),
+			imaginary: self.centre_imaginary.clone(),
+			zoom:      self.zoom.clone(),
+		};
+
 		loop {
 			if self.poll_events(&mut event_pump) { break }
 
-			if self.do_draw {
-				self.render(&mut iteration_count_buffer[..], &mut square_distance_buffer[..], &self.center_real, &self.center_imaginary, &self.zoom, self.maximum_iteration_count);
+			if self.do_render {
+				self.render(&mut iteration_count_buffer[..], &mut square_distance_buffer[..], &self.centre_real, &self.centre_imaginary, &self.zoom, self.maximum_iteration_count);
 				self.colour(&mut image[..], &iteration_count_buffer[..], &square_distance_buffer[..]);
 
-				self.draw(&image[..]);
+				previous_position = PreviousPosition {
+					real:      self.centre_real.clone(),
+					imaginary: self.centre_imaginary.clone(),
+					zoom:      self.zoom.clone(),
+				};
 
-				self.do_draw = false;
+				self.do_render = false;
 			}
+
+			self.draw(&image[..], &previous_position);
 
 			if self.do_dump {
 				let path = format!("{}/image.webp", self.dump_path);

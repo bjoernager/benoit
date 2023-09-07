@@ -32,7 +32,7 @@ use rug::Float;
 use std::sync::Arc;
 
 impl Application {
-	pub fn render_row(data: Arc<RenderData>, y: u32, iterator: IteratorFunction) {
+	pub fn render_row_normal(data: Arc<RenderData>, y: u32, iterator: IteratorFunction) {
 		let (iteration_count_buffer, square_distance_buffer) = unsafe { data.slice(y) };
 
 		for x in 0x0..data.canvas_width {
