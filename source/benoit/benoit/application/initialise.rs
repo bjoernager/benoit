@@ -73,9 +73,9 @@ impl Application {
 			frame_count:   configuration.frame_count,
 
 			centre_real:             Float::with_val(PRECISION, configuration.centre_real),
-			centre_imaginary:        Float::with_val(PRECISION, configuration.centre_imaginary),
+			centre_imag:        Float::with_val(PRECISION, configuration.centre_imag),
 			zoom:                    Float::with_val(PRECISION, configuration.zoom),
-			maximum_iteration_count: configuration.maximum_iteration_count,
+			max_iter_count: configuration.max_iter_count,
 
 			dump_path: configuration.dump_path,
 

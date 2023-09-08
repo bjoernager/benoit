@@ -58,6 +58,47 @@ impl Application {
 			self.video.as_mut().unwrap().canvas.fill_rects(&[rectangle]).unwrap();
 		}
 
+		if !self.julia {
+			let viewport_colour = Color::RGB(0xFF, 0x0, 0x0);
+
+			let canvas_width = {
+				let mut canvas_width = Float::with_val(PRECISION, self.canvas_width);
+				canvas_width *= self.scale;
+
+				canvas_width
+			};
+
+			let viewport = {
+				let ((offset_x, offset_y), width) = {
+					let zoom_ratio = Float::with_val(PRECISION, &self.zoom / &previous_position.zoom);
+
+					let mut width = Float::with_val(PRECISION, 1.0 / &zoom_ratio);
+
+					let mut offset_x = Float::with_val(PRECISION, 1.0 - &width);
+					let mut offset_y = Float::with_val(PRECISION, 1.0 - &width);
+
+					offset_x /= 2.0;
+					offset_y /= 2.0;
+
+					offset_x *= &canvas_width;
+					offset_y *= &canvas_width;
+					width    *= &canvas_width;
+
+					((offset_x.to_f32().round() as i32, offset_y.to_f32().round() as i32), width.to_f32().round() as u32)
+				};
+
+				Rect::new(
+					offset_x,
+					offset_y,
+					width,
+					width,
+				)
+			};
+
+			self.video.as_mut().unwrap().canvas.set_draw_color(viewport_colour);
+			self.video.as_mut().unwrap().canvas.draw_rects(&[viewport]).unwrap();
+		}
+
 		self.video.as_mut().unwrap().canvas.present();
 	}
 }

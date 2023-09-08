@@ -33,7 +33,7 @@ use std::sync::Arc;
 
 impl Application {
 	pub fn render_row_normal(data: Arc<RenderData>, y: u32, iterator: IteratorFunction) {
-		let (iteration_count_buffer, square_distance_buffer) = unsafe { data.slice(y) };
+		let (iter_count_buffer, square_dist_buffer) = unsafe { data.slice(y) };
 
 		for x in 0x0..data.canvas_width {
 			let canvas_width  = Float::with_val(PRECISION, data.canvas_width);
@@ -49,7 +49,7 @@ impl Application {
 				ca *= 4.0;
 				ca /= &canvas_width;
 				ca /= &data.zoom;
-				ca += &data.real;
+				ca += &data.centre_real;
 
 				ca
 			};
@@ -61,7 +61,7 @@ impl Application {
 				cb *= 4.0;
 				cb /= &canvas_height;
 				cb /= &data.zoom;
-				cb += &data.imaginary;
+				cb += &data.centre_imag;
 
 				cb
 			};
@@ -69,22 +69,22 @@ impl Application {
 			let mut za = Float::with_val(PRECISION, &ca);
 			let mut zb = Float::with_val(PRECISION, &cb);
 
-			let mut iteration_count: u32 = 0x0;
-			let mut square_distance;
+			let mut iter_count: u32 = 0x0;
+			let mut square_dist;
 			while {
-				square_distance = Float::with_val(PRECISION, &za * &za + &zb * &zb).to_f32();
+				square_dist = Float::with_val(PRECISION, &za * &za + &zb * &zb).to_f32();
 				// Having a larger escape radius gives better
 				// results with regard to smoothing.
-				square_distance <= 256.0 && iteration_count < data.maximum_iteration_count
+				square_dist <= 256.0 && iter_count < data.max_iter_count
 			} {
 				iterator(&mut za, &mut zb, &ca, &cb);
 
-				iteration_count += 0x1;
+				iter_count += 0x1;
 			}
 
 			unsafe {
-				*iteration_count_buffer.get_unchecked_mut(x as usize) = iteration_count;
-				*square_distance_buffer.get_unchecked_mut(x as usize) = square_distance;
+				*iter_count_buffer.get_unchecked_mut( x as usize) = iter_count;
+				*square_dist_buffer.get_unchecked_mut(x as usize) = square_dist;
 			}
 		}
 	}

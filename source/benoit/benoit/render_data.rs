@@ -34,12 +34,12 @@ pub struct RenderData {
 	pub canvas_width:  u32,
 	pub canvas_height: u32,
 
-	pub real:      Float,
-	pub imaginary: Float,
-	pub zoom:      Float,
+	pub centre_real: Float,
+	pub centre_imag: Float,
+	pub zoom:        Float,
 
-	pub maximum_iteration_count: u32,
+	pub max_iter_count: u32,
 
-	iteration_count_buffer: *mut u32,
-	square_distance_buffer: *mut f32,
+	iter_count_buffer:  *mut u32,
+	square_dist_buffer: *mut f32,
 }

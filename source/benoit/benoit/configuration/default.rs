@@ -42,10 +42,10 @@ impl Configuration {
 			scale:         0x2,
 			frame_count:   0x10,
 
-			centre_real:             Float::with_val(PRECISION, 0.0),
-			centre_imaginary:        Float::with_val(PRECISION, 0.0),
-			zoom:                    Float::with_val(PRECISION, 1.0),
-			maximum_iteration_count: 0x100,
+			centre_real:    Float::with_val(PRECISION, 0.0),
+			centre_imag:    Float::with_val(PRECISION, 0.0),
+			zoom:           Float::with_val(PRECISION, 1.0),
+			max_iter_count: 0x100,
 
 			dump_path: "./render/".to_string(),
 

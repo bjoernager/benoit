@@ -41,10 +41,10 @@ pub struct Configuration {
 	pub scale:         u32,
 	pub frame_count:   u32,
 
-	pub centre_real:             Float,
-	pub centre_imaginary:        Float,
-	pub zoom:                    Float,
-	pub maximum_iteration_count: u32,
+	pub centre_real:    Float,
+	pub centre_imag:    Float,
+	pub zoom:           Float,
+	pub max_iter_count: u32,
 
 	pub dump_path: String,
 

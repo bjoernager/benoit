@@ -52,28 +52,28 @@ impl Application {
 
 		let canvas_size = self.canvas_height as usize * self.canvas_width as usize;
 
-		let mut iteration_count_buffer: Vec::<u32> = vec![0x0; canvas_size];
-		let mut square_distance_buffer: Vec::<f32> = vec![0.0; canvas_size];
+		let mut iter_count_buffer: Vec::<u32> = vec![0x0; canvas_size];
+		let mut square_dist_buffer: Vec::<f32> = vec![0.0; canvas_size];
 
 		let mut image: Vec::<u8>  = vec![0x0; canvas_size * 0x3];
 
 		let mut previous_position = PreviousPosition {
-			real:      self.centre_real.clone(),
-			imaginary: self.centre_imaginary.clone(),
-			zoom:      self.zoom.clone(),
+			centre_real: self.centre_real.clone(),
+			centre_imag: self.centre_imag.clone(),
+			zoom:        self.zoom.clone(),
 		};
 
 		loop {
 			if self.poll_events(&mut event_pump) { break }
 
 			if self.do_render {
-				self.render(&mut iteration_count_buffer[..], &mut square_distance_buffer[..], &self.centre_real, &self.centre_imaginary, &self.zoom, self.maximum_iteration_count);
-				self.colour(&mut image[..], &iteration_count_buffer[..], &square_distance_buffer[..]);
+				self.render(&mut iter_count_buffer[..], &mut square_dist_buffer[..], &self.centre_real, &self.centre_imag, &self.zoom, self.max_iter_count);
+				self.colour(&mut image[..], &iter_count_buffer[..], &square_dist_buffer[..]);
 
 				previous_position = PreviousPosition {
-					real:      self.centre_real.clone(),
-					imaginary: self.centre_imaginary.clone(),
-					zoom:      self.zoom.clone(),
+					centre_real: self.centre_real.clone(),
+					centre_imag: self.centre_imag.clone(),
+					zoom:        self.zoom.clone(),
 				};
 
 				self.do_render = false;

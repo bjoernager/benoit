@@ -1,3 +1,8 @@
+# 28
+
+* Draw positional feedback before renders (does not currently support offsets)
+* Rename objects (allow some abbreviations)
+
 # 27
 
 * Bring back Julia sets (using row renderers)

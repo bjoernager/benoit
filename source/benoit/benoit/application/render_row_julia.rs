@@ -33,7 +33,7 @@ use std::sync::Arc;
 
 impl Application {
 	pub fn render_row_julia(data: Arc<RenderData>, y: u32, iterator: IteratorFunction) {
-		let (iteration_count_buffer, square_distance_buffer) = unsafe { data.slice(y) };
+		let (iter_count_buffer, square_dist_buffer) = unsafe { data.slice(y) };
 
 		for x in 0x0..data.canvas_width {
 			let canvas_width  = Float::with_val(PRECISION, data.canvas_width);
@@ -44,8 +44,8 @@ impl Application {
 
 			// For more information, see render_row_normal.
 
-			let ca = &data.real;
-			let cb = &data.imaginary;
+			let ca = &data.centre_real;
+			let cb = &data.centre_imag;
 
 			// When rendering the Julia fractals, the value of
 			// (c) remains constant throughout the entire
@@ -72,20 +72,20 @@ impl Application {
 				zb
 			};
 
-			let mut iteration_count: u32 = 0x0;
-			let mut square_distance;
+			let mut iter_count: u32 = 0x0;
+			let mut square_dist;
 			while {
-				square_distance = Float::with_val(PRECISION, &za * &za + &zb * &zb).to_f32();
-				square_distance <= 256.0 && iteration_count < data.maximum_iteration_count
+				square_dist = Float::with_val(PRECISION, &za * &za + &zb * &zb).to_f32();
+				square_dist <= 256.0 && iter_count < data.max_iter_count
 			} {
 				iterator(&mut za, &mut zb, ca, cb);
 
-				iteration_count += 0x1;
+				iter_count += 0x1;
 			}
 
 			unsafe {
-				*iteration_count_buffer.get_unchecked_mut(x as usize) = iteration_count;
-				*square_distance_buffer.get_unchecked_mut(x as usize) = square_distance;
+				*iter_count_buffer.get_unchecked_mut( x as usize) = iter_count;
+				*square_dist_buffer.get_unchecked_mut(x as usize) = square_dist;
 			}
 		}
 	}

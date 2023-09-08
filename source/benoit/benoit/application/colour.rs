@@ -24,18 +24,18 @@
 use crate::benoit::application::Application;
 
 impl Application {
-	pub fn colour(&self, buffer: &mut [u8], iteration_count_buffer: &[u32], square_distance_buffer: &[f32]) {
+	pub fn colour(&self, buffer: &mut [u8], iter_count_buffer: &[u32], square_dist_buffer: &[f32]) {
 		let canvas_size = self.canvas_height * self.canvas_width;
 
 		for pixel in 0x0..canvas_size {
-			let iteration_count = iteration_count_buffer[pixel as usize];
+			let iter_count = iter_count_buffer[pixel as usize];
 
-			let (red, green, blue) = if iteration_count != self.maximum_iteration_count {
-				let distance = square_distance_buffer[pixel as usize].sqrt();
+			let (red, green, blue) = if iter_count != self.max_iter_count {
+				let distance = square_dist_buffer[pixel as usize].sqrt();
 
-				let factor_range = 16.0_f32.min(self.maximum_iteration_count as f32);
+				let factor_range = 16.0_f32.min(self.max_iter_count as f32);
 
-				let mut factor = (iteration_count as f32 + 1.0 - distance.log2().log2()) / factor_range % 1.0;
+				let mut factor = (iter_count as f32 + 1.0 - distance.log2().log2()) / factor_range % 1.0;
 
 				factor = (if factor >= 1.0 / 2.0 {
 					1.0 - factor

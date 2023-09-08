@@ -48,10 +48,13 @@ pub mod run;
 
 pub type RowRenderer = fn(Arc<RenderData>, u32, IteratorFunction);
 
+// We pass this struct to draw the offset feedback.
+// Currently unused, however.
+#[allow(dead_code)]
 pub struct PreviousPosition {
-	real:      Float,
-	imaginary: Float,
-	zoom:      Float,
+	centre_real: Float,
+	centre_imag: Float,
+	zoom:        Float,
 }
 
 pub struct Application {
@@ -65,17 +68,17 @@ pub struct Application {
 	scale:         u32,
 	frame_count:   u32,
 
-	centre_real:             Float,
-	centre_imaginary:        Float,
-	zoom:                    Float,
-	maximum_iteration_count: u32,
+	centre_real:    Float,
+	centre_imag:    Float,
+	zoom:           Float,
+	max_iter_count: u32,
 
 	dump_path: String,
 
 	video: Option<Video>,
 
 	interactive: bool,
-	do_render:     bool,
+	do_render:   bool,
 	do_dump:     bool,
 
 	row_renderer:      RowRenderer,

@@ -67,7 +67,7 @@ impl Application {
 			Scancode::C      => self.do_render = true,
 			Scancode::Tab    => (self.julia, self.row_renderer) = toggle_julia(self.julia),
 			Scancode::X      => self.do_dump = true,
-			Scancode::Z      => eprintln!("c = {}{:+}i -- {}x @ {} iter.", &self.centre_real, &self.centre_imaginary, &self.zoom, self.maximum_iteration_count),
+			Scancode::Z      => eprintln!("c = {}{:+}i -- {}x @ {} iter.", &self.centre_real, &self.centre_imag, &self.zoom, self.max_iter_count),
 			_                => {},
 		}
 
@@ -92,15 +92,15 @@ impl Application {
 		};
 
 		match scan_code {
-			Scancode::S => self.centre_imaginary += &translate_ammount,
-			Scancode::W => self.centre_imaginary -= &translate_ammount,
+			Scancode::S => self.centre_imag += &translate_ammount,
+			Scancode::W => self.centre_imag -= &translate_ammount,
 			_           => {},
 		};
 
-		self.maximum_iteration_count = match scan_code {
-			Scancode::F => self.maximum_iteration_count * 0x2,
-			Scancode::R => self.maximum_iteration_count / 0x2,
-			_           => self.maximum_iteration_count,
+		self.max_iter_count = match scan_code {
+			Scancode::F => self.max_iter_count * 0x2,
+			Scancode::R => self.max_iter_count / 0x2,
+			_           => self.max_iter_count,
 		};
 
 		return false;

@@ -89,7 +89,7 @@ impl Configuration {
 			match name.as_str() {
 				"burningship" => Fractal::BurningShip,
 				"mandelbrot"  => Fractal::Mandelbrot,
-				"tricorn"    => Fractal::Tricorn,
+				"tricorn"     => Fractal::Tricorn,
 				name          => panic!("invalid fractal name {name}"),
 			}
 		} else {
@@ -102,9 +102,9 @@ impl Configuration {
 		get_integer(&mut configuration.frame_count,   &configuration_table, "frame_count");
 
 		get_float(  &mut configuration.centre_real,             &configuration_table, "real");
-		get_float(  &mut configuration.centre_imaginary,        &configuration_table, "imaginary");
+		get_float(  &mut configuration.centre_imag,        &configuration_table, "imaginary");
 		get_float(  &mut configuration.zoom,                    &configuration_table, "zoom");
-		get_integer(&mut configuration.maximum_iteration_count, &configuration_table, "maximum_iteration_count");
+		get_integer(&mut configuration.max_iter_count, &configuration_table, "max_iter_count");
 
 		return configuration;
 	}
