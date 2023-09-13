@@ -52,8 +52,8 @@ fn toggle_julia(julia: bool) -> (bool, RowRenderer) {
 	let row_renderer = Application::get_row_renderer(julia);
 
 	match julia {
-		false => eprintln!("enabled the julia set"),
-		true  => eprintln!("disabled the julia set"),
+		false => eprintln!("disabled the julia set"),
+		true  => eprintln!("enabled the julia set"),
 	};
 
 	return (julia, row_renderer);

@@ -21,16 +21,13 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::PRECISION;
 use crate::benoit::application::Application;
 use crate::benoit::configuration::Configuration;
 use crate::benoit::video::Video;
 
 extern crate rayon;
-extern crate rug;
 
 use rayon::ThreadPoolBuilder;
-use rug::Float;
 use std::env::args;
 use std::thread::available_parallelism;
 
@@ -71,9 +68,9 @@ impl Application {
 			scale:        configuration.scale,
 			frame_count:  configuration.frame_count,
 
-			centre_real:             Float::with_val(PRECISION, configuration.centre_real),
-			centre_imag:        Float::with_val(PRECISION, configuration.centre_imag),
-			zoom:                    Float::with_val(PRECISION, configuration.zoom),
+			centre_real:    configuration.centre_real,
+			centre_imag:    configuration.centre_imag,
+			zoom:           configuration.zoom,
 			max_iter_count: configuration.max_iter_count,
 
 			dump_path: configuration.dump_path,
@@ -81,7 +78,7 @@ impl Application {
 			video: video,
 
 			interactive: configuration.interactive,
-			do_render:     true,
+			do_render:   true,
 			do_dump:     false,
 
 			row_renderer:      Application::get_row_renderer(     configuration.julia),

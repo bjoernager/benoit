@@ -100,10 +100,10 @@ impl Configuration {
 		get_integer(&mut configuration.scale,        &configuration_table, "scale");
 		get_integer(&mut configuration.frame_count,  &configuration_table, "frame_count");
 
-		get_float(  &mut configuration.centre_real,             &configuration_table, "real");
-		get_float(  &mut configuration.centre_imag,        &configuration_table, "imaginary");
-		get_float(  &mut configuration.zoom,                    &configuration_table, "zoom");
-		get_integer(&mut configuration.max_iter_count, &configuration_table, "max_iter_count");
+		get_float(  &mut configuration.centre_real,    &configuration_table, "real");
+		get_float(  &mut configuration.centre_imag,    &configuration_table, "imaginary");
+		get_float(  &mut configuration.zoom,           &configuration_table, "zoom");
+		get_integer(&mut configuration.max_iter_count, &configuration_table, "maximum_iteration_count");
 
 		return configuration;
 	}

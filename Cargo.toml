@@ -1,6 +1,6 @@
 [package]
 name        = "benoit"
-version     = "0.33.0"
+version     = "0.34.0"
 authors     = ["Gabriel Bjørnager Jensen"]
 edition     = "2021"
 description = "Mandelbrot renderer."
@@ -16,7 +16,7 @@ lto = true
 
 [dependencies]
 rayon = "1.7.0"
-rug   = "1.21.0"
+rug   = "1.22.0"
 sdl2  = "0.35.2"
-toml  = "0.7.6"
+toml  = "0.8.0"
 webp  = "0.2.5"

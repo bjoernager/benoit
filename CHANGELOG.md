@@ -1,3 +1,9 @@
+# 2↊
+
+* Fix Julia toggle messages
+* Fix configuration parameter names
+* Bump dependency versions
+
 # 29
 
 * Support offsets in viewport feedback
