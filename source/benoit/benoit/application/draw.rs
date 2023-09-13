@@ -33,7 +33,7 @@ use sdl2::rect::Rect;
 
 impl Application {
 	pub fn draw(&mut self, image: &[u8], previous_position: &PreviousPosition) {
-		let canvas_size = self.canvas_height * self.canvas_width;
+		let canvas_size = self.canvas_width * self.canvas_width;
 
 		for pixel in 0x0..canvas_size {
 			let y = pixel as u32 / self.canvas_width;
@@ -74,11 +74,23 @@ impl Application {
 
 					let mut width = Float::with_val(PRECISION, 1.0 / &zoom_ratio);
 
-					let mut offset_x = Float::with_val(PRECISION, 1.0 - &width);
-					let mut offset_y = Float::with_val(PRECISION, 1.0 - &width);
+					let mut offset_x = self.centre_real.clone();
+					let mut offset_y = self.centre_imag.clone();
 
-					offset_x /= 2.0;
-					offset_y /= 2.0;
+					offset_x -= &previous_position.centre_real;
+					offset_y -= &previous_position.centre_imag;
+
+					offset_x /= 4.0;
+					offset_y /= 4.0;
+
+					offset_x *= &previous_position.zoom;
+					offset_y *= &previous_position.zoom;
+
+					let mut zoom_offset = Float::with_val(PRECISION, 1.0 - &width);
+					zoom_offset /= 2.0;
+
+					offset_x += &zoom_offset;
+					offset_y += &zoom_offset;
 
 					offset_x *= &canvas_width;
 					offset_y *= &canvas_width;

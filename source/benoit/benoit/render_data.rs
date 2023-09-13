@@ -31,8 +31,7 @@ pub mod slice;
 pub mod sync;
 
 pub struct RenderData {
-	pub canvas_width:  u32,
-	pub canvas_height: u32,
+	pub canvas_width: u32,
 
 	pub centre_real: Float,
 	pub centre_imag: Float,

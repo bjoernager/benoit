@@ -1,3 +1,8 @@
+# 29
+
+* Support offsets in viewport feedback
+* Remove support for non-square canvasses (update configuration)
+
 # 28
 
 * Draw positional feedback before renders (does not currently support offsets)

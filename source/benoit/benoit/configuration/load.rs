@@ -96,10 +96,9 @@ impl Configuration {
 			configuration.fractal
 		};
 
-		get_integer(&mut configuration.canvas_width,  &configuration_table, "canvas_width");
-		get_integer(&mut configuration.canvas_height, &configuration_table, "canvas_height");
-		get_integer(&mut configuration.scale,         &configuration_table, "scale");
-		get_integer(&mut configuration.frame_count,   &configuration_table, "frame_count");
+		get_integer(&mut configuration.canvas_width, &configuration_table, "canvas_width");
+		get_integer(&mut configuration.scale,        &configuration_table, "scale");
+		get_integer(&mut configuration.frame_count,  &configuration_table, "frame_count");
 
 		get_float(  &mut configuration.centre_real,             &configuration_table, "real");
 		get_float(  &mut configuration.centre_imag,        &configuration_table, "imaginary");

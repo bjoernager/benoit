@@ -41,9 +41,9 @@ impl Application {
 		let row_renderer = self.row_renderer;
 		let iterator     = self.iterator_function;
 
-		let data = Arc::new(RenderData::new(iter_count_buffer, square_dist_buffer, self.canvas_width, self.canvas_height, centre_real.clone(), centre_imag.clone(), zoom.clone(), max_iter_count));
+		let data = Arc::new(RenderData::new(iter_count_buffer, square_dist_buffer, self.canvas_width, centre_real.clone(), centre_imag.clone(), zoom.clone(), max_iter_count));
 
-		(0x0..self.canvas_height).into_par_iter().for_each(|row| {
+		(0x0..self.canvas_width).into_par_iter().for_each(|row| {
 			row_renderer(data.clone(), row, iterator);
 		});
 

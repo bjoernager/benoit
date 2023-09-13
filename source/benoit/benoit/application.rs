@@ -48,9 +48,6 @@ pub mod run;
 
 pub type RowRenderer = fn(Arc<RenderData>, u32, IteratorFunction);
 
-// We pass this struct to draw the offset feedback.
-// Currently unused, however.
-#[allow(dead_code)]
 pub struct PreviousPosition {
 	centre_real: Float,
 	centre_imag: Float,
@@ -63,10 +60,9 @@ pub struct Application {
 	fractal: Fractal,
 	julia:   bool,
 
-	canvas_width:  u32,
-	canvas_height: u32,
-	scale:         u32,
-	frame_count:   u32,
+	canvas_width: u32,
+	scale:        u32,
+	frame_count:  u32,
 
 	centre_real:    Float,
 	centre_imag:    Float,

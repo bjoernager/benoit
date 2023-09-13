@@ -1,6 +1,6 @@
 [package]
 name        = "benoit"
-version     = "0.32.0"
+version     = "0.33.0"
 authors     = ["Gabriel Bjørnager Jensen"]
 edition     = "2021"
 description = "Mandelbrot renderer."

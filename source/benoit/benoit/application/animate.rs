@@ -68,7 +68,7 @@ impl Application {
 
 		eprintln!("animating {} frames at {}{:+}i to {:.3} (fac.: {:.3})", self.frame_count, self.centre_real.to_f64(), self.centre_imag.to_f64(), zoom_stop.to_f64(), zoom_factor.to_f64());
 
-		let canvas_size = self.canvas_height as usize * self.canvas_width as usize;
+		let canvas_size = self.canvas_width as usize * self.canvas_width as usize;
 
 		let mut iter_count_buffer: Vec::<u32> = vec![0x0; canvas_size];
 		let mut square_dist_buffer: Vec::<f32> = vec![0.0; canvas_size];
@@ -80,7 +80,7 @@ impl Application {
 			self.render(&mut iter_count_buffer[..], &mut square_dist_buffer[..], &self.centre_real, &self.centre_imag, &zoom, self.max_iter_count);
 			self.colour(&mut image[..], &mut iter_count_buffer[..], &mut square_dist_buffer[..]);
 
-			self.dump(format!("{}/frame{frame:010}.webp", self.dump_path), &image, self.canvas_width, self.canvas_height);
+			self.dump(format!("{}/frame{frame:010}.webp", self.dump_path), &image, self.canvas_width);
 
 			zoom.mul_assign(&zoom_factor);
 		}

@@ -37,10 +37,9 @@ impl Configuration {
 			fractal: Fractal::Mandelbrot,
 			julia:   false,
 
-			canvas_width:  0x100,
-			canvas_height: 0x100,
-			scale:         0x2,
-			frame_count:   0x10,
+			canvas_width: 0x100,
+			scale:        0x2,
+			frame_count:  0x10,
 
 			centre_real:    Float::with_val(PRECISION, 0.0),
 			centre_imag:    Float::with_val(PRECISION, 0.0),

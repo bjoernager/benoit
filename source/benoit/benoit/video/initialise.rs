@@ -26,11 +26,11 @@ use crate::benoit::video::Video;
 extern crate sdl2;
 
 impl Video {
-	pub fn initialise(canvas_width: u32, canvas_height: u32, scale: u32) -> Video {
+	pub fn initialise(canvas_width: u32, scale: u32) -> Video {
 		let sdl       = sdl2::init().expect("unable to initialise sdl2");
 		let sdl_video = sdl.video().expect("unable to initialise video");
 
-		let window = sdl_video.window("Benoit", canvas_width * scale, canvas_height * scale).position_centered().build().expect("unable to open window");
+		let window = sdl_video.window("Benoit", canvas_width * scale, canvas_width * scale).position_centered().build().expect("unable to open window");
 
 		let canvas = window.into_canvas().build().expect("unable to create canvas");
 

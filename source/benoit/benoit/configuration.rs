@@ -36,10 +36,9 @@ pub struct Configuration {
 	pub fractal: Fractal,
 	pub julia:   bool,
 
-	pub canvas_width:  u32,
-	pub canvas_height: u32,
-	pub scale:         u32,
-	pub frame_count:   u32,
+	pub canvas_width: u32,
+	pub scale:        u32,
+	pub frame_count:  u32,
 
 	pub centre_real:    Float,
 	pub centre_imag:    Float,

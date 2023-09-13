@@ -30,7 +30,7 @@ pub fn iterate_burning_ship(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Flo
 	// iteration - the real and imaginary parts of (z)
 	// are made absolute:
 	//
-	// z(n) = (abs(Re(z(n)))+i*abs(Im(z(n))))^2+c
+	// z(n+1) = (abs(Re(z(n)))+i*abs(Im(z(n))))^2+c
 
 	za.abs_mut();
 	zb.abs_mut();

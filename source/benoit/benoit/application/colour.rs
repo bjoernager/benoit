@@ -25,7 +25,7 @@ use crate::benoit::application::Application;
 
 impl Application {
 	pub fn colour(&self, buffer: &mut [u8], iter_count_buffer: &[u32], square_dist_buffer: &[f32]) {
-		let canvas_size = self.canvas_height * self.canvas_width;
+		let canvas_size = self.canvas_width * self.canvas_width;
 
 		for pixel in 0x0..canvas_size {
 			let iter_count = iter_count_buffer[pixel as usize];

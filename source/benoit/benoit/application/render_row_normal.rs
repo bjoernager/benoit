@@ -36,8 +36,7 @@ impl Application {
 		let (iter_count_buffer, square_dist_buffer) = unsafe { data.slice(y) };
 
 		for x in 0x0..data.canvas_width {
-			let canvas_width  = Float::with_val(PRECISION, data.canvas_width);
-			let canvas_height = Float::with_val(PRECISION, data.canvas_height);
+			let canvas_width = Float::with_val(PRECISION, data.canvas_width);
 
 			let x_float = Float::with_val(PRECISION, x);
 			let y_float = Float::with_val(PRECISION, y);
@@ -55,11 +54,11 @@ impl Application {
 			};
 
 			let cb = {
-				let tmp0 = Float::with_val(PRECISION, &canvas_height / 2.0);
+				let tmp0 = Float::with_val(PRECISION, &canvas_width / 2.0);
 
 				let mut cb = Float::with_val(PRECISION, &y_float - &tmp0);
 				cb *= 4.0;
-				cb /= &canvas_height;
+				cb /= &canvas_width;
 				cb /= &data.zoom;
 				cb += &data.centre_imag;
 

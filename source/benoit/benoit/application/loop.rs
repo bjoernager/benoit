@@ -50,7 +50,7 @@ impl Application {
 
 		let mut event_pump = self.video.as_mut().unwrap().sdl.event_pump().expect("unable to get event pump");
 
-		let canvas_size = self.canvas_height as usize * self.canvas_width as usize;
+		let canvas_size = self.canvas_width as usize * self.canvas_width as usize;
 
 		let mut iter_count_buffer: Vec::<u32> = vec![0x0; canvas_size];
 		let mut square_dist_buffer: Vec::<f32> = vec![0.0; canvas_size];
@@ -85,7 +85,7 @@ impl Application {
 				let path = format!("{}/image.webp", self.dump_path);
 
 				eprintln!("dumping image at \"{path}\"");
-				self.dump(path, &image, self.canvas_width, self.canvas_height);
+				self.dump(path, &image, self.canvas_width);
 
 				self.do_dump = false;
 			}

@@ -55,7 +55,7 @@ impl Application {
 		eprintln!("using {thread_count} threads");
 
 		let video = match configuration.interactive {
-			true  => Some(Video::initialise(configuration.canvas_width, configuration.canvas_height, configuration.scale)),
+			true  => Some(Video::initialise(configuration.canvas_width, configuration.scale)),
 			false => None,
 		};
 
@@ -67,10 +67,9 @@ impl Application {
 			fractal: configuration.fractal,
 			julia:   configuration.julia,
 
-			canvas_width:  configuration.canvas_width,
-			canvas_height: configuration.canvas_height,
-			scale:         configuration.scale,
-			frame_count:   configuration.frame_count,
+			canvas_width: configuration.canvas_width,
+			scale:        configuration.scale,
+			frame_count:  configuration.frame_count,
 
 			centre_real:             Float::with_val(PRECISION, configuration.centre_real),
 			centre_imag:        Float::with_val(PRECISION, configuration.centre_imag),
