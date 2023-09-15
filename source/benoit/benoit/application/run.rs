@@ -21,12 +21,18 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::VERSION;
 use crate::benoit::application::Application;
 
 extern crate sdl2;
 
 impl Application {
 	pub fn run(&mut self) -> i32 {
+		println!();
+		println!("Benoit {VERSION:X}");
+		println!("Copyright 2021, 2023 Gabriel Bjørnager Jensen.");
+		println!();
+
 		eprintln!("rendering the {}", self.fractal.get_name());
 
 		return match self.interactive {

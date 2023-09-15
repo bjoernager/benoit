@@ -28,7 +28,8 @@ use crate::benoit::render_data::RenderData;
 
 extern crate rug;
 
-use rug::Float;
+use rug::{Assign, Float};
+use rug::float::Special;
 use std::sync::Arc;
 
 impl Application {
@@ -60,13 +61,16 @@ impl Application {
 				cb *= 4.0;
 				cb /= &canvas_width;
 				cb /= &data.zoom;
-				cb += &data.centre_imag;
+				cb -= &data.centre_imag;
 
 				cb
 			};
 
-			let mut za = Float::with_val(PRECISION, &ca);
-			let mut zb = Float::with_val(PRECISION, &cb);
+			let mut za = ca.clone();
+			let mut zb = cb.clone();
+
+			let mut za_prev = Float::with_val(PRECISION, Special::Nan);
+			let mut zb_prev = Float::with_val(PRECISION, Special::Nan);
 
 			let mut iter_count: u32 = 0x0;
 			let mut square_dist;
@@ -74,8 +78,17 @@ impl Application {
 				square_dist = Float::with_val(PRECISION, &za * &za + &zb * &zb).to_f32();
 				// Having a larger escape radius gives better
 				// results with regard to smoothing.
+
+				// Check if the value is periodic, i.e. its
+				// sequence repeats.
+				let periodic = za == za_prev && zb == zb_prev;
+
+				if periodic { iter_count = data.max_iter_count }
 				square_dist <= 256.0 && iter_count < data.max_iter_count
 			} {
+				za_prev.assign(&za);
+				zb_prev.assign(&zb);
+
 				iterator(&mut za, &mut zb, &ca, &cb);
 
 				iter_count += 0x1;

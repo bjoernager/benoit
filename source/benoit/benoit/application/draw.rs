@@ -59,8 +59,6 @@ impl Application {
 		}
 
 		if !self.julia {
-			let viewport_colour = Color::RGB(0xFF, 0x0, 0x0);
-
 			let canvas_width = {
 				let mut canvas_width = Float::with_val(PRECISION, self.canvas_width);
 				canvas_width *= self.scale;
@@ -74,11 +72,15 @@ impl Application {
 
 					let mut width = Float::with_val(PRECISION, 1.0 / &zoom_ratio);
 
+					// Remember that cartesian coordinates have an
+					// inverted vertical axis compared to those of
+					// SDL's coordinate system.
+
 					let mut offset_x = self.centre_real.clone();
-					let mut offset_y = self.centre_imag.clone();
+					let mut offset_y = Float::with_val(PRECISION, -&self.centre_imag);
 
 					offset_x -= &previous_position.centre_real;
-					offset_y -= &previous_position.centre_imag;
+					offset_y += &previous_position.centre_imag;
 
 					offset_x /= 4.0;
 					offset_y /= 4.0;
@@ -107,7 +109,10 @@ impl Application {
 				)
 			};
 
-			self.video.as_mut().unwrap().canvas.set_draw_color(viewport_colour);
+			self.video.as_mut().unwrap().canvas.set_draw_color(Color::RGBA(0x0, 0x0, 0x0, 0x3F));
+			self.video.as_mut().unwrap().canvas.fill_rects(&[viewport]).unwrap();
+
+			self.video.as_mut().unwrap().canvas.set_draw_color(Color::RGB(0xFF, 0xFF, 0xFF));
 			self.video.as_mut().unwrap().canvas.draw_rects(&[viewport]).unwrap();
 		}
 

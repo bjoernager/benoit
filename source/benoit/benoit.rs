@@ -28,4 +28,6 @@ pub mod iteration;
 pub mod render_data;
 pub mod video;
 
+pub const VERSION: u32 = 0x23;
+
 pub const PRECISION: u32 = 0x80;

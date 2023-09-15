@@ -41,7 +41,7 @@ pub fn iterate_mandelbrot(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float
 	// We can calculate the square of a complex number
 	// as:
 	//
-	// (a+ib)^2 = (a+ib)(a+ib) = a^2+iab+iab-b^2 = a^2-b^2+2iab
+	// (a+bi)^2 = (a+bi)(a+bi) = a^2+abi+abi-b^2 = a^2-b^2+2abi
 
 	za.square_mut();
 	*za -= &*zb * &*zb;

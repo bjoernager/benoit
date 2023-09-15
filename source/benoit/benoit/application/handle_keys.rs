@@ -92,8 +92,8 @@ impl Application {
 		};
 
 		match scan_code {
-			Scancode::S => self.centre_imag += &translate_ammount,
-			Scancode::W => self.centre_imag -= &translate_ammount,
+			Scancode::S => self.centre_imag -= &translate_ammount,
+			Scancode::W => self.centre_imag += &translate_ammount,
 			_           => {},
 		};
 

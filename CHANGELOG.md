@@ -1,3 +1,11 @@
+# 2↋
+
+* Optimise and refactor code
+* Update colouring
+* Log version and copyright
+* Fix complex-to-cartesian conversions (and controls)
+* Update translation feedback
+
 # 2↊
 
 * Fix Julia toggle messages

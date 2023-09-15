@@ -23,6 +23,33 @@
 
 use crate::benoit::application::Application;
 
+fn hsv_to_rgb(hue: f32, saturation: f32, value: f32) -> (f32, f32, f32) {
+	return if saturation <= 0.0 {
+		let value = value.min(1.0);
+
+		(value, value, value)
+	} else {
+		let h = hue % 1.0 * 6.0;
+		let s = saturation.min(1.0);
+		let v = value.min(1.0);
+
+		let f = h % 1.0;
+		let p = v * (1.0 - s);
+		let q = v * (1.0 - s * f);
+		let t = v * (1.0 - s * (1.0 - f));
+
+		match h.trunc() as u8 {
+			0x0   => (v, t, p),
+			0x1   => (q, v, p),
+			0x2   => (p, v, t),
+			0x3   => (p, q, v),
+			0x4   => (t, p, v),
+			0x5   => (v, p, q),
+			value => unreachable!(),
+		}
+	};
+}
+
 impl Application {
 	pub fn colour(&self, buffer: &mut [u8], iter_count_buffer: &[u32], square_dist_buffer: &[f32]) {
 		let canvas_size = self.canvas_width * self.canvas_width;
@@ -30,20 +57,13 @@ impl Application {
 		for pixel in 0x0..canvas_size {
 			let iter_count = iter_count_buffer[pixel as usize];
 
+			let distance = square_dist_buffer[pixel as usize].sqrt();
+
+			let factor_range = 16.0_f32.min(self.max_iter_count as f32);
+			let factor = (iter_count as f32 + 1.0 - distance.log2().log2()) / factor_range % 1.0;
+
 			let (red, green, blue) = if iter_count != self.max_iter_count {
-				let distance = square_dist_buffer[pixel as usize].sqrt();
-
-				let factor_range = 16.0_f32.min(self.max_iter_count as f32);
-
-				let mut factor = (iter_count as f32 + 1.0 - distance.log2().log2()) / factor_range % 1.0;
-
-				factor = (if factor >= 1.0 / 2.0 {
-					1.0 - factor
-				} else {
-					factor
-				}) * 2.0;
-
-				(factor * factor, factor * factor, factor)
+				hsv_to_rgb(factor, 7.0 / 8.0, 7.0 / 8.0)
 			} else {
 				(0.0, 0.0, 0.0)
 			};

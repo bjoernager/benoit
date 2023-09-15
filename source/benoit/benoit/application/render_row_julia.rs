@@ -28,7 +28,8 @@ use crate::benoit::render_data::RenderData;
 
 extern crate rug;
 
-use rug::Float;
+use rug::{Assign, Float};
+use rug::float::Special;
 use std::sync::Arc;
 
 impl Application {
@@ -71,12 +72,22 @@ impl Application {
 				zb
 			};
 
+			let mut za_prev = Float::with_val(PRECISION, Special::Nan);
+			let mut zb_prev = Float::with_val(PRECISION, Special::Nan);
+
 			let mut iter_count: u32 = 0x0;
 			let mut square_dist;
 			while {
 				square_dist = Float::with_val(PRECISION, &za * &za + &zb * &zb).to_f32();
+
+				let periodic = za == za_prev && zb == zb_prev;
+
+				if periodic { iter_count = data.max_iter_count }
 				square_dist <= 256.0 && iter_count < data.max_iter_count
 			} {
+				za_prev.assign(&za);
+				zb_prev.assign(&zb);
+
 				iterator(&mut za, &mut zb, ca, cb);
 
 				iter_count += 0x1;
