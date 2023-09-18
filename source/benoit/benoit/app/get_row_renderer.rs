@@ -21,16 +21,14 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::fractal::Fractal;
-use crate::benoit::application::Application;
-use crate::benoit::iteration::*;
+use crate::benoit::app::App;
+use crate::benoit::app::RowRenderer;
 
-impl Application {
-	pub fn get_iterator_function(fractal: Fractal) -> IteratorFunction {
-		return match fractal {
-			Fractal::BurningShip => iterate_burning_ship,
-			Fractal::Mandelbrot  => iterate_mandelbrot,
-			Fractal::Tricorn     => iterate_tricorn,
+impl App {
+	pub fn get_row_renderer(julia: bool) -> RowRenderer {
+		return match julia {
+			false => App::render_row_normal,
+			true  => App::render_row_julia,
 		};
 	}
 }

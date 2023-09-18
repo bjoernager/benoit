@@ -30,7 +30,7 @@ pub fn iterate_tricorn(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
 	// Mandelbrot Set in that the conjugate of (z) is
 	// used instead of just (z):
 	//
-	// z(n+1) = (Re(z(n))-Im(z(n)))^2+c
+	// z(n+1) = (Re(z(n))-Im(z(n)))^2+c.
 
 	let za_temporary = za.clone();
 
@@ -42,7 +42,7 @@ pub fn iterate_tricorn(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
 	// We can negate the value by multiplying with
 	// (-1). A multiplication can be saved, as
 	//
-	// a*2*(-1) = a*(-2)
+	// a*2*(-1) = a*(-2).
 	//
 	// Thus, we may combine these two multiplications.
 	*zb *= -2.0;

@@ -1,14 +1,18 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg height="11" version="1.1" width="29" xmlns="http://www.w3.org/2000/svg">
-    <rect fill="#212022" height="9" rx="1" ry="1" width="27" x="1" y="1" />
-    <rect fill="#FDFAF6" height="7" width="25" x="2" y="2"/>
-    <polygon fill="#212022" points="3,3 5,3 5,4 6,4 6,5 5,5 5,6 6,6 6,7 5,7 5,8 4,8 3,8" />
-    <polygon fill="#FDFAF6" points="4,4 5,4 5,5 4,5" />
-    <polygon fill="#FDFAF6" points="4,6 5,6 5,7 4,7" />
-    <polygon fill="#212022" points="7,3 10,3 10,4 8,4 8,5 9,5 9,6 8,6 8,7 10,7 10,8 7,8" />
-    <polygon fill="#212022" points="11,3 12,3 12,4 13,4 13,3 14,3 14,8 13,8 13,7 12,7 12,8 11,8" />
-    <polygon fill="#212022" points="15,3 18,3 18,8 15,8" />
-    <polygon fill="#FDFAF6" points="16,4 17,4 17,7 16,7" />
-    <polygon fill="#212022" points="19,3 22,3 22,4 21,4 21,7 22,7 22,8 19,8 19,7 20,7 20,4 19,4" />
-    <polygon fill="#212022" points="23,3 26,3 26,4 25,4 25,8 24,8 24,4 23,4" />
+<svg height="96" width="96" xmlns="http://www.w3.org/2000/svg">
+	<!-- gradients -->
+	<linearGradient id="backgroundColour" x1="0" x2="1" y1="0" y2="1">
+		<stop offset="0%" stop-color="#252525" />
+		<stop offset="100%" stop-color="#1E1E1E" />
+	</linearGradient>
+	<!-- masks -->
+	<mask id="background">
+		<polygon fill="white" points="21,21 75,21 75,57.243 57.243,75 21,75" />
+	</mask>
+	<mask id="foreground">
+		<polygon fill="white" points="24,24 40,24 48,37.856 56,24 72,24 72,56 56,72 56,51.713 48,65.569 40,51.713 40,72 24,72" />
+	</mask>
+	<!-- fills -->
+	<rect fill="url(#backgroundColour)" height="96" width="96" x="0" y="0" />
+	<rect fill="#EAEAEA" height="96" mask="url(#background)" width="96" x="0" y="0" />
+	<rect fill="#B2223B" height="48" mask="url(#foreground)" width="48" x="24" y="24" />
 </svg>

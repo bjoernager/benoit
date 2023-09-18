@@ -22,17 +22,18 @@
 */
 
 use crate::benoit::PRECISION;
-use crate::benoit::application::Application;
+use crate::benoit::app::App;
 use crate::benoit::iteration::IteratorFunction;
-use crate::benoit::render_data::RenderData;
+use crate::benoit::task::render_data::RenderData;
 
 extern crate rug;
 
 use rug::{Assign, Float};
 use rug::float::Special;
+use rug::ops::NegAssign;
 use std::sync::Arc;
 
-impl Application {
+impl App {
 	pub fn render_row_normal(data: Arc<RenderData>, y: u32, iterator: IteratorFunction) {
 		let (iter_count_buffer, square_dist_buffer) = unsafe { data.slice(y) };
 
@@ -43,9 +44,9 @@ impl Application {
 			let y_float = Float::with_val(PRECISION, y);
 
 			let ca = {
-				let tmp0 = Float::with_val(PRECISION, &canvas_width / 2.0);
-
-				let mut ca = Float::with_val(PRECISION, &x_float - &tmp0);
+				let mut ca = Float::with_val(PRECISION, &canvas_width / 2.0);
+				ca.neg_assign();
+				ca += &x_float;
 				ca *= 4.0;
 				ca /= &canvas_width;
 				ca /= &data.zoom;
@@ -55,9 +56,9 @@ impl Application {
 			};
 
 			let cb = {
-				let tmp0 = Float::with_val(PRECISION, &canvas_width / 2.0);
-
-				let mut cb = Float::with_val(PRECISION, &y_float - &tmp0);
+				let mut cb = Float::with_val(PRECISION, &canvas_width / 2.0);
+				cb.neg_assign();
+				cb += &y_float;
 				cb *= 4.0;
 				cb /= &canvas_width;
 				cb /= &data.zoom;
@@ -72,7 +73,7 @@ impl Application {
 			let mut za_prev = Float::with_val(PRECISION, Special::Nan);
 			let mut zb_prev = Float::with_val(PRECISION, Special::Nan);
 
-			let mut iter_count: u32 = 0x0;
+			let mut iter_count: u32 = 0x1;
 			let mut square_dist;
 			while {
 				square_dist = Float::with_val(PRECISION, &za * &za + &zb * &zb).to_f32();

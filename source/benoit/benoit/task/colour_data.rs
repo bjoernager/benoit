@@ -21,23 +21,20 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::VERSION;
-use crate::benoit::application::Application;
+pub mod new;
+pub mod slice;
 
-extern crate sdl2;
+pub struct ColourData {
+	pub canvas_width: u32,
 
-impl Application {
-	pub fn run(&mut self) -> i32 {
-		println!();
-		println!("Benoit {VERSION:X}");
-		println!("Copyright 2021, 2023 Gabriel Bjørnager Jensen.");
-		println!();
+	pub max_iter_count: u32,
+	pub colour_range:   f32,
 
-		eprintln!("rendering the {}", self.fractal.get_name());
+	iter_count_buffer:  *const u32,
+	square_dist_buffer: *const f32,
 
-		return match self.interactive {
-			true  => self.r#loop(),
-			false => self.animate(),
-		};
-	}
+	image: *mut u8,
 }
+
+unsafe impl Send for ColourData {}
+unsafe impl Sync for ColourData {}

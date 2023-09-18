@@ -23,7 +23,7 @@
 
 use crate::benoit::fractal::Fractal;
 use crate::benoit::iteration::IteratorFunction;
-use crate::benoit::render_data::RenderData;
+use crate::benoit::task::render_data::RenderData;
 use crate::benoit::video::Video;
 
 extern crate rug;
@@ -33,7 +33,8 @@ use std::sync::Arc;
 
 pub mod animate;
 pub mod colour;
-pub mod draw;
+pub mod colour_row;
+pub mod drop;
 pub mod dump;
 pub mod get_iterator_function;
 pub mod get_row_renderer;
@@ -48,13 +49,7 @@ pub mod run;
 
 pub type RowRenderer = fn(Arc<RenderData>, u32, IteratorFunction);
 
-pub struct PreviousPosition {
-	centre_real: Float,
-	centre_imag: Float,
-	zoom:        Float,
-}
-
-pub struct Application {
+pub struct App {
 	thread_count: u32,
 
 	fractal: Fractal,
@@ -68,6 +63,8 @@ pub struct Application {
 	centre_imag:    Float,
 	zoom:           Float,
 	max_iter_count: u32,
+
+	colour_range: f32,
 
 	dump_path: String,
 

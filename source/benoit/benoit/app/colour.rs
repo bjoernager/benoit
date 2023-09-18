@@ -21,24 +21,20 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-extern crate rug;
+use crate::benoit::app::App;
+use crate::benoit::task::colour_data::ColourData;
 
-use rug::Float;
+extern crate rayon;
 
-pub mod new;
-pub mod send;
-pub mod slice;
-pub mod sync;
+use rayon::prelude::*;
+use std::sync::Arc;
 
-pub struct RenderData {
-	pub canvas_width: u32,
+impl App {
+	pub fn colour(&self, buffer: &mut [u8], max_iter_count: u32, iter_count_buffer: &[u32], square_dist_buffer: &[f32]) {
+		let data = Arc::new(ColourData::new(buffer, self.canvas_width, max_iter_count, self.colour_range, iter_count_buffer, square_dist_buffer));
 
-	pub centre_real: Float,
-	pub centre_imag: Float,
-	pub zoom:        Float,
-
-	pub max_iter_count: u32,
-
-	iter_count_buffer:  *mut u32,
-	square_dist_buffer: *mut f32,
+		(0x0..self.canvas_width).into_par_iter().for_each(|row| {
+			App::colour_row(data.clone(), row as u32);
+		});
+	}
 }

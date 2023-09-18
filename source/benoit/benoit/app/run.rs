@@ -21,16 +21,21 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::render_data::RenderData;
+use crate::benoit::VERSION;
+use crate::benoit::app::App;
 
-use std::slice::from_raw_parts_mut;
+extern crate sdl2;
 
-impl RenderData {
-	pub unsafe fn slice(&self, row: u32) -> (&mut [u32], &mut [f32]) {
-		let offset = row as isize * self.canvas_width as isize;
-		let iter_count = from_raw_parts_mut(self.iter_count_buffer.offset(offset), self.canvas_width as usize);
-		let distance        = from_raw_parts_mut(self.square_dist_buffer.offset(offset), self.canvas_width as usize);
+impl App {
+	pub fn run(&mut self) -> i32 {
+		println!();
+		println!("Benoit {:X}.{:X}.{:X}", VERSION.major, VERSION.minor, VERSION.patch);
+		println!("Copyright 2021, 2023 Gabriel Bjørnager Jensen.");
+		println!();
 
-		return (iter_count, distance);
+		return match self.interactive {
+			true  => self.r#loop(),
+			false => self.animate(),
+		};
 	}
 }

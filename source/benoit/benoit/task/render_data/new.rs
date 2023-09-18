@@ -21,27 +21,25 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::task::render_data::RenderData;
+
 extern crate rug;
 
 use rug::Float;
 
-pub fn iterate_burning_ship(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
-	// The Burning Ship is different in that - during
-	// iteration - the real and imaginary parts of (z)
-	// are made absolute:
-	//
-	// z(n+1) = (abs(Re(z(n)))+i*abs(Im(z(n))))^2+c.
+impl RenderData {
+	pub fn new(iter_count_buffer: &mut [u32], square_dist_buffer: &mut [f32], canvas_width: u32, centre_real: Float, centre_imag: Float, zoom: Float, max_iter_count: u32) -> RenderData {
+		return RenderData {
+			canvas_width: canvas_width,
 
-	za.abs_mut();
-	zb.abs_mut();
+			centre_real: centre_real,
+			centre_imag: centre_imag,
+			zoom:        zoom,
 
-	let za_temporary = za.clone();
+			max_iter_count: max_iter_count,
 
-	za.square_mut();
-	*za -= &*zb * &*zb;
-	*za += ca;
-
-	*zb *= za_temporary;
-	*zb *= 2.0;
-	*zb += cb;
+			iter_count_buffer:  iter_count_buffer.as_mut_ptr(),
+			square_dist_buffer: square_dist_buffer.as_mut_ptr(),
+		};
+	}
 }

@@ -21,7 +21,7 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::application::Application;
+use crate::benoit::app::App;
 use crate::benoit::configuration::Configuration;
 use crate::benoit::video::Video;
 
@@ -31,8 +31,8 @@ use rayon::ThreadPoolBuilder;
 use std::env::args;
 use std::thread::available_parallelism;
 
-impl Application {
-	pub fn initialise() -> Application {
+impl App {
+	pub fn initialise() -> App {
 		let mut arguments = args();
 
 		let configuration = match arguments.nth(0x1) {
@@ -58,7 +58,9 @@ impl Application {
 
 		ThreadPoolBuilder::new().num_threads(configuration.thread_count as usize).build_global().unwrap();
 
-		return Application {
+		eprintln!("rendering the {}", configuration.fractal.get_name());
+
+		return App {
 			thread_count: thread_count,
 
 			fractal: configuration.fractal,
@@ -73,6 +75,8 @@ impl Application {
 			zoom:           configuration.zoom,
 			max_iter_count: configuration.max_iter_count,
 
+			colour_range: configuration.colour_range,
+
 			dump_path: configuration.dump_path,
 
 			video: video,
@@ -81,8 +85,8 @@ impl Application {
 			do_render:   true,
 			do_dump:     false,
 
-			row_renderer:      Application::get_row_renderer(     configuration.julia),
-			iterator_function: Application::get_iterator_function(configuration.fractal),
+			row_renderer:      App::get_row_renderer(     configuration.julia),
+			iterator_function: App::get_iterator_function(configuration.fractal),
 		};
 	}
 }

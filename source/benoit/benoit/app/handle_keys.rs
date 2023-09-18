@@ -22,7 +22,7 @@
 */
 
 use crate::benoit::PRECISION;
-use crate::benoit::application::{Application, RowRenderer};
+use crate::benoit::app::{App, RowRenderer};
 use crate::benoit::fractal::Fractal;
 use crate::benoit::iteration::IteratorFunction;
 
@@ -32,34 +32,7 @@ extern crate sdl2;
 use rug::Float;
 use sdl2::keyboard::Scancode;
 
-fn cycle_fractal(fractal: Fractal) -> (Fractal, IteratorFunction) {
-	let fractal = match fractal {
-		Fractal::BurningShip => Fractal::Mandelbrot,
-		Fractal::Mandelbrot  => Fractal::Tricorn,
-		Fractal::Tricorn     => Fractal::BurningShip,
-	};
-
-	let iterator_function = Application::get_iterator_function(fractal);
-
-	eprintln!("rendering the {}", fractal.get_name());
-
-	return (fractal, iterator_function);
-}
-
-fn toggle_julia(julia: bool) -> (bool, RowRenderer) {
-	let julia = !julia;
-
-	let row_renderer = Application::get_row_renderer(julia);
-
-	match julia {
-		false => eprintln!("disabled the julia set"),
-		true  => eprintln!("enabled the julia set"),
-	};
-
-	return (julia, row_renderer);
-}
-
-impl Application {
+impl App {
 	pub fn handle_keys(&mut self, scan_code: Scancode) -> bool {
 		match scan_code {
 			Scancode::LAlt   => (self.fractal, self.iterator_function) = cycle_fractal(self.fractal),
@@ -103,6 +76,41 @@ impl Application {
 			_           => self.max_iter_count,
 		};
 
+		const COLOUR_RANGE_FACTOR: f32 = 1.0 + 1.0 / 16.0;
+
+		self.colour_range = match scan_code {
+			Scancode::Up   => self.colour_range * COLOUR_RANGE_FACTOR,
+			Scancode::Down => self.colour_range / COLOUR_RANGE_FACTOR,
+			_              => self.colour_range,
+		};
+
 		return false;
 	}
+}
+
+fn cycle_fractal(fractal: Fractal) -> (Fractal, IteratorFunction) {
+	let fractal = match fractal {
+		Fractal::BurningShip => Fractal::Mandelbrot,
+		Fractal::Mandelbrot  => Fractal::Tricorn,
+		Fractal::Tricorn     => Fractal::BurningShip,
+	};
+
+	let iterator_function = App::get_iterator_function(fractal);
+
+	eprintln!("rendering the {}", fractal.get_name());
+
+	return (fractal, iterator_function);
+}
+
+fn toggle_julia(julia: bool) -> (bool, RowRenderer) {
+	let julia = !julia;
+
+	let row_renderer = App::get_row_renderer(julia);
+
+	match julia {
+		false => eprintln!("disabled the julia set"),
+		true  => eprintln!("enabled the julia set"),
+	};
+
+	return (julia, row_renderer);
 }

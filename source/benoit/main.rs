@@ -23,15 +23,15 @@
 
 mod benoit;
 
-use benoit::application::Application;
+use benoit::app::App;
 
 use std::mem::drop;
 use std::process::exit;
 
 fn main() {
-	let mut application = Application::initialise();
-	let code = application.run();
+	let mut app = App::initialise();
+	let code = app.run();
 
-	drop(application);
+	drop(app);
 	exit(code);
 }

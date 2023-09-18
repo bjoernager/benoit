@@ -25,23 +25,21 @@ extern crate rug;
 
 use rug::Float;
 
-pub fn iterate_burning_ship(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
-	// The Burning Ship is different in that - during
-	// iteration - the real and imaginary parts of (z)
-	// are made absolute:
-	//
-	// z(n+1) = (abs(Re(z(n)))+i*abs(Im(z(n))))^2+c.
+pub mod new;
+pub mod slice;
 
-	za.abs_mut();
-	zb.abs_mut();
+pub struct RenderData {
+	pub canvas_width: u32,
 
-	let za_temporary = za.clone();
+	pub centre_real: Float,
+	pub centre_imag: Float,
+	pub zoom:        Float,
 
-	za.square_mut();
-	*za -= &*zb * &*zb;
-	*za += ca;
+	pub max_iter_count: u32,
 
-	*zb *= za_temporary;
-	*zb *= 2.0;
-	*zb += cb;
+	iter_count_buffer:  *mut u32,
+	square_dist_buffer: *mut f32,
 }
+
+unsafe impl Send for RenderData {}
+unsafe impl Sync for RenderData {}

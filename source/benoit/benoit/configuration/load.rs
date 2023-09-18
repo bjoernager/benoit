@@ -43,13 +43,19 @@ impl Configuration {
 
 		let configuration_text = match read(path) {
 			Ok(content) => String::from_utf8_lossy(&content).to_string(),
-			Err(..)     => {
-				eprintln!("unable to read configuration file");
-				return configuration;
-			},
+			Err(..)     => panic!("unable to read configuration file"),
 		};
 
 		let configuration_table = Table::from_str(configuration_text.as_str()).expect("unable to parse configuration");
+
+		let get_boolean = |buffer: &mut bool, table: &Table, name: &str| {
+			if !table.contains_key(name) { return }
+
+			match &configuration_table[name] {
+				Value::Boolean(value) => *buffer = *value,
+				_                     => panic!("mismatched type of {name}"),
+			};
+		};
 
 		let get_integer = |buffer: &mut u32, table: &Table, name: &str| {
 			if !table.contains_key(name) { return }
@@ -96,6 +102,8 @@ impl Configuration {
 			configuration.fractal
 		};
 
+		get_boolean(&mut configuration.julia, &configuration_table, "julia");
+
 		get_integer(&mut configuration.canvas_width, &configuration_table, "canvas_width");
 		get_integer(&mut configuration.scale,        &configuration_table, "scale");
 		get_integer(&mut configuration.frame_count,  &configuration_table, "frame_count");
@@ -104,6 +112,18 @@ impl Configuration {
 		get_float(  &mut configuration.centre_imag,    &configuration_table, "imaginary");
 		get_float(  &mut configuration.zoom,           &configuration_table, "zoom");
 		get_integer(&mut configuration.max_iter_count, &configuration_table, "maximum_iteration_count");
+
+		// We allow thread counts of zero as those signal
+		// automatic thread count detection.
+		if      configuration.canvas_width == 0x0 {
+			panic!("only non-zero values for canvas_width are allowed");
+		} else if configuration.scale == 0x0 {
+			panic!("only non-zero values for scale are allowed");
+		} else if configuration.frame_count == 0x0 {
+			panic!("only non-zero values for frame_count are allowed");
+		} else if configuration.max_iter_count == 0x0 {
+			panic!("only non-zero values for maximum_iteration_count are allowed");
+		}
 
 		return configuration;
 	}

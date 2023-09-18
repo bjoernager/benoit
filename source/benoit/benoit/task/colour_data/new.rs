@@ -21,19 +21,20 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::application::Application;
+use crate::benoit::task::colour_data::ColourData;
 
-extern crate webp;
+impl ColourData {
+	pub fn new(image: &mut [u8], canvas_width: u32, max_iter_count: u32, colour_range: f32, iter_count_buffer: &[u32], square_dist_buffer: &[f32]) -> ColourData {
+		return ColourData {
+			canvas_width: canvas_width,
 
-use std::fs::write;
-use webp::Encoder;
+			max_iter_count: max_iter_count,
+			colour_range:   colour_range,
 
-impl Application {
-	pub fn dump(&self, path: String, image: &[u8], canvas_width: u32) {
-		let encoder = Encoder::from_rgb(&image[..], canvas_width, canvas_width);
+			iter_count_buffer:  iter_count_buffer.as_ptr(),
+			square_dist_buffer: square_dist_buffer.as_ptr(),
 
-		let data = encoder.encode_lossless();
-
-		write(path, &*data).expect("unable to write image");
+			image: image.as_mut_ptr(),
+		};
 	}
 }

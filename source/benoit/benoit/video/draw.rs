@@ -21,8 +21,8 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::PRECISION;
-use crate::benoit::application::{Application, PreviousPosition};
+use crate::benoit::{FeedbackInfo, PRECISION};
+use crate::benoit::video::Video;
 
 extern crate rug;
 extern crate sdl2;
@@ -31,13 +31,13 @@ use rug::Float;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 
-impl Application {
-	pub fn draw(&mut self, image: &[u8], previous_position: &PreviousPosition) {
-		let canvas_size = self.canvas_width * self.canvas_width;
+impl Video {
+	pub fn draw(&mut self, image: &[u8], canvas_width: u32, scale: u32, feedback_info: Option<&FeedbackInfo>) {
+		let canvas_size = canvas_width * canvas_width;
 
 		for pixel in 0x0..canvas_size {
-			let y = pixel as u32 / self.canvas_width;
-			let x = pixel as u32 - y * self.canvas_width;
+			let y = pixel as u32 / canvas_width;
+			let x = pixel as u32 - y * canvas_width;
 
 			let colour = {
 				let red   = image[pixel as usize * 0x3];
@@ -48,27 +48,29 @@ impl Application {
 			};
 
 			let rectangle = Rect::new(
-				(x * self.scale) as i32,
-				(y * self.scale) as i32,
-				self.scale,
-				self.scale
+				(x * scale) as i32,
+				(y * scale) as i32,
+				scale,
+				scale
 			);
 
-			self.video.as_mut().unwrap().canvas.set_draw_color(colour);
-			self.video.as_mut().unwrap().canvas.fill_rects(&[rectangle]).unwrap();
+			self.canvas.set_draw_color(colour);
+			self.canvas.fill_rects(&[rectangle]).unwrap();
 		}
 
-		if !self.julia {
+		if feedback_info.is_some() {
+			let feedback_info = unsafe { feedback_info.unwrap_unchecked() };
+
 			let canvas_width = {
-				let mut canvas_width = Float::with_val(PRECISION, self.canvas_width);
-				canvas_width *= self.scale;
+				let mut canvas_width = Float::with_val(PRECISION, canvas_width);
+				canvas_width *= scale;
 
 				canvas_width
 			};
 
 			let viewport = {
 				let ((offset_x, offset_y), width) = {
-					let zoom_ratio = Float::with_val(PRECISION, &self.zoom / &previous_position.zoom);
+					let zoom_ratio = Float::with_val(PRECISION, feedback_info.next_zoom / feedback_info.prev_zoom);
 
 					let mut width = Float::with_val(PRECISION, 1.0 / &zoom_ratio);
 
@@ -76,17 +78,17 @@ impl Application {
 					// inverted vertical axis compared to those of
 					// SDL's coordinate system.
 
-					let mut offset_x = self.centre_real.clone();
-					let mut offset_y = Float::with_val(PRECISION, -&self.centre_imag);
+					let mut offset_x = feedback_info.next_centre_real.clone();
+					let mut offset_y = Float::with_val(PRECISION, -feedback_info.next_centre_imag);
 
-					offset_x -= &previous_position.centre_real;
-					offset_y += &previous_position.centre_imag;
+					offset_x -= feedback_info.prev_centre_real;
+					offset_y += feedback_info.prev_centre_imag;
 
 					offset_x /= 4.0;
 					offset_y /= 4.0;
 
-					offset_x *= &previous_position.zoom;
-					offset_y *= &previous_position.zoom;
+					offset_x *= feedback_info.prev_zoom;
+					offset_y *= feedback_info.prev_zoom;
 
 					let mut zoom_offset = Float::with_val(PRECISION, 1.0 - &width);
 					zoom_offset /= 2.0;
@@ -109,13 +111,13 @@ impl Application {
 				)
 			};
 
-			self.video.as_mut().unwrap().canvas.set_draw_color(Color::RGBA(0x0, 0x0, 0x0, 0x3F));
-			self.video.as_mut().unwrap().canvas.fill_rects(&[viewport]).unwrap();
+			self.canvas.set_draw_color(Color::RGBA(0x0, 0x0, 0x0, 0x3F));
+			self.canvas.fill_rects(&[viewport]).unwrap();
 
-			self.video.as_mut().unwrap().canvas.set_draw_color(Color::RGB(0xFF, 0xFF, 0xFF));
-			self.video.as_mut().unwrap().canvas.draw_rects(&[viewport]).unwrap();
+			self.canvas.set_draw_color(Color::RGB(0xFF, 0xFF, 0xFF));
+			self.canvas.draw_rects(&[viewport]).unwrap();
 		}
 
-		self.video.as_mut().unwrap().canvas.present();
+		self.canvas.present();
 	}
 }

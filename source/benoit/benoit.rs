@@ -12,8 +12,8 @@
 
 	Benoit is distributed in the hope that it will
 	be useful, but WITHOUT ANY WARRANTY; without
-	even the implied warranty of MERCHANTABILITY or
-	FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+	even the implied warranty of MERCHANTABIL ITY or
+	FITNESS FOR A PARTICULAR PURPOSE. See theGNU
 	Affero General Public License for more details.
 
 	You should have received a copy of the GNU
@@ -21,13 +21,36 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod application;
+extern crate rug;
+
+use rug::Float;
+
+pub mod app;
 pub mod configuration;
 pub mod fractal;
 pub mod iteration;
-pub mod render_data;
+pub mod task;
 pub mod video;
 
-pub const VERSION: u32 = 0x23;
+pub struct Version<T> {
+	major: T,
+	minor: T,
+	patch: T,
+}
+
+pub const VERSION: Version::<u32> = Version::<u32> {
+	major: 0x1,
+	minor: 0x0,
+	patch: 0x0,
+};
 
 pub const PRECISION: u32 = 0x80;
+
+pub struct FeedbackInfo<'a> {
+	prev_centre_real: &'a Float,
+	prev_centre_imag: &'a Float,
+	prev_zoom:        &'a Float,
+	next_centre_real:      &'a Float,
+	next_centre_imag:      &'a Float,
+	next_zoom:             &'a Float,
+}

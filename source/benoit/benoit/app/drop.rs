@@ -21,27 +21,11 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-extern crate rug;
+use crate::benoit::app::App;
 
-use rug::Float;
-
-pub fn iterate_burning_ship(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
-	// The Burning Ship is different in that - during
-	// iteration - the real and imaginary parts of (z)
-	// are made absolute:
-	//
-	// z(n+1) = (abs(Re(z(n)))+i*abs(Im(z(n))))^2+c.
-
-	za.abs_mut();
-	zb.abs_mut();
-
-	let za_temporary = za.clone();
-
-	za.square_mut();
-	*za -= &*zb * &*zb;
-	*za += ca;
-
-	*zb *= za_temporary;
-	*zb *= 2.0;
-	*zb += cb;
+impl Drop for App {
+	fn drop(&mut self) {
+		eprintln!();
+		eprintln!("Goodbye!");
+	}
 }

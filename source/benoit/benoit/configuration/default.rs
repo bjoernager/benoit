@@ -46,6 +46,8 @@ impl Configuration {
 			zoom:           Float::with_val(PRECISION, 1.0),
 			max_iter_count: 0x100,
 
+			colour_range: 16.0,
+
 			dump_path: "./render/".to_string(),
 
 			interactive: true,

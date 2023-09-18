@@ -45,6 +45,8 @@ pub struct Configuration {
 	pub zoom:           Float,
 	pub max_iter_count: u32,
 
+	pub colour_range: f32,
+
 	pub dump_path: String,
 
 	pub interactive: bool,

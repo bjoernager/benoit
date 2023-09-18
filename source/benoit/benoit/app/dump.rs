@@ -21,6 +21,19 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::render_data::RenderData;
+use crate::benoit::app::App;
 
-unsafe impl Send for RenderData {}
+extern crate webp;
+
+use std::fs::write;
+use webp::Encoder;
+
+impl App {
+	pub fn dump(&self, path: String, image: &[u8], canvas_width: u32) {
+		let encoder = Encoder::from_rgb(&image[..], canvas_width, canvas_width);
+
+		let data = encoder.encode_lossless();
+
+		write(path, &*data).expect("unable to write image");
+	}
+}

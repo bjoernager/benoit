@@ -23,12 +23,15 @@
 
 extern crate sdl2;
 
-use sdl2::Sdl;
+use sdl2::{Sdl, VideoSubsystem};
 use sdl2::render::WindowCanvas;
 
+pub mod draw;
 pub mod initialise;
+pub mod sync;
 
 pub struct Video {
-	pub sdl:    Sdl,
-	pub canvas: WindowCanvas,
+	pub sdl:       Sdl,
+	pub sdl_video: VideoSubsystem,
+	pub canvas:    WindowCanvas,
 }

@@ -21,6 +21,16 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::render_data::RenderData;
+use crate::benoit::fractal::Fractal;
+use crate::benoit::app::App;
+use crate::benoit::iteration::*;
 
-unsafe impl Sync for RenderData {}
+impl App {
+	pub fn get_iterator_function(fractal: Fractal) -> IteratorFunction {
+		return match fractal {
+			Fractal::BurningShip => iterate_burning_ship,
+			Fractal::Mandelbrot  => iterate_mandelbrot,
+			Fractal::Tricorn     => iterate_tricorn,
+		};
+	}
+}

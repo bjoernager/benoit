@@ -21,27 +21,17 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-extern crate rug;
+use crate::benoit::task::render_data::RenderData;
 
-use rug::Float;
+use std::slice::from_raw_parts_mut;
 
-pub fn iterate_burning_ship(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
-	// The Burning Ship is different in that - during
-	// iteration - the real and imaginary parts of (z)
-	// are made absolute:
-	//
-	// z(n+1) = (abs(Re(z(n)))+i*abs(Im(z(n))))^2+c.
+impl RenderData {
+	pub unsafe fn slice(&self, row: u32) -> (&mut [u32], &mut [f32]) {
+		let offset = row as isize * self.canvas_width as isize;
 
-	za.abs_mut();
-	zb.abs_mut();
+		let iter_count = from_raw_parts_mut(self.iter_count_buffer.offset(offset), self.canvas_width as usize);
+		let dist       = from_raw_parts_mut(self.square_dist_buffer.offset(offset), self.canvas_width as usize);
 
-	let za_temporary = za.clone();
-
-	za.square_mut();
-	*za -= &*zb * &*zb;
-	*za += ca;
-
-	*zb *= za_temporary;
-	*zb *= 2.0;
-	*zb += cb;
+		return (iter_count, dist);
+	}
 }

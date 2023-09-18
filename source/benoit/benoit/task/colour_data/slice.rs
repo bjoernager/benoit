@@ -21,14 +21,21 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::application::Application;
-use crate::benoit::application::RowRenderer;
+use crate::benoit::task::colour_data::ColourData;
 
-impl Application {
-	pub fn get_row_renderer(julia: bool) -> RowRenderer {
-		return match julia {
-			false => Application::render_row_normal,
-			true  => Application::render_row_julia,
-		};
+use std::slice::{from_raw_parts, from_raw_parts_mut};
+
+impl ColourData {
+	pub unsafe fn slice(&self, row: u32) -> (&[u32], &[f32], &mut [u8]) {
+		let offset = row as isize * self.canvas_width as isize;
+
+		let iter_count = from_raw_parts(self.iter_count_buffer.offset(offset), self.canvas_width as usize);
+		let dist       = from_raw_parts(self.square_dist_buffer.offset(offset), self.canvas_width as usize);
+
+		let offset = offset * 0x3;
+
+		let image = from_raw_parts_mut(self.image.offset(offset), self.canvas_width as usize * 0x3);
+
+		return (iter_count, dist, image);
 	}
 }

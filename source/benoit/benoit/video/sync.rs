@@ -21,32 +21,26 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::application::Application;
+use crate::benoit::video::Video;
 
-extern crate sdl2;
+use std::thread::sleep;
+use std::time::{Duration, Instant};
 
-use sdl2::EventPump;
-use sdl2::event::Event;
+impl Video {
+	pub fn sync(&self, frame_start: &Instant) {
+		let frame_duration = {
+			let index = self.canvas.window().display_index().expect("unable to get display index");
 
-impl Application {
-	pub fn poll_events(&mut self, event_pump: &mut EventPump) -> bool {
-		for event in event_pump.poll_iter() {
-			let quit = match event {
-				Event::KeyDown {
-					timestamp: _,
-					window_id: _,
-					keycode:   _,
-					scancode:  scan_code,
-					keymod:    _,
-					repeat:    _,
-				} => self.handle_keys(scan_code.unwrap()),
-				Event::Quit { .. } => true,
-				_ => false,
-			};
+			let mode = self.sdl_video.current_display_mode(index).expect("unable to get display mode");
 
-			if quit { return true }
-		}
+			Duration::from_secs(0x1) / mode.refresh_rate as u32
+		};
 
-		return false;
+		let remaining = match frame_duration.checked_sub(frame_start.elapsed()) {
+			Some(value) => value,
+			None        => Duration::from_secs(0x0),
+		};
+
+		sleep(remaining);
 	}
 }

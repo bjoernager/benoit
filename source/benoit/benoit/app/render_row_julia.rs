@@ -22,17 +22,18 @@
 */
 
 use crate::benoit::PRECISION;
-use crate::benoit::application::Application;
+use crate::benoit::app::App;
 use crate::benoit::iteration::IteratorFunction;
-use crate::benoit::render_data::RenderData;
+use crate::benoit::task::render_data::RenderData;
 
 extern crate rug;
 
 use rug::{Assign, Float};
 use rug::float::Special;
+use rug::ops::NegAssign;
 use std::sync::Arc;
 
-impl Application {
+impl App {
 	pub fn render_row_julia(data: Arc<RenderData>, y: u32, iterator: IteratorFunction) {
 		let (iter_count_buffer, square_dist_buffer) = unsafe { data.slice(y) };
 
@@ -53,9 +54,9 @@ impl Application {
 			// position-determined value that (c) would've had.
 
 			let mut za = {
-				let tmp0 = Float::with_val(PRECISION, &canvas_width / 2.0);
-
-				let mut za = Float::with_val(PRECISION, &x_float - &tmp0);
+				let mut za = Float::with_val(PRECISION, &canvas_width / 2.0);
+				za.neg_assign();
+				za += &x_float;
 				za *= 4.0;
 				za /= &canvas_width;
 
@@ -63,9 +64,9 @@ impl Application {
 			};
 
 			let mut zb = {
-				let tmp0 = Float::with_val(PRECISION, &canvas_width / 2.0);
-
-				let mut zb = Float::with_val(PRECISION, &y_float - &tmp0);
+				let mut zb = Float::with_val(PRECISION, &canvas_width / 2.0);
+				zb.neg_assign();
+				zb += &y_float;
 				zb *= 4.0;
 				zb /= &canvas_width;
 

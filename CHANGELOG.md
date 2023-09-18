@@ -1,4 +1,20 @@
-# 2↋
+# 1.0.0
+
+* Use hexadecimal versioning (with major.minor.patch)
+* Don't animate single frames
+* Support enabling of Julia rendering from configuration
+* Perform configuration checks
+* Colour in thread pools
+* Update naming convention
+* Synchronise with screen refresh rate
+* Rework logs and timings
+* Fix zoom animation
+* Panic on missing configuration
+* Add new logo
+* Restructure code
+* Update colouring (change using controls)
+
+# 23
 
 * Optimise and refactor code
 * Update colouring
@@ -6,34 +22,34 @@
 * Fix complex-to-cartesian conversions (and controls)
 * Update translation feedback
 
-# 2↊
+# 22
 
 * Fix Julia toggle messages
 * Fix configuration parameter names
 * Bump dependency versions
 
-# 29
+# 21
 
 * Support offsets in viewport feedback
 * Remove support for non-square canvasses (update configuration)
 
-# 28
+# 20
 
 * Draw positional feedback before renders (does not currently support offsets)
 * Rename objects (allow some abbreviations)
 
-# 27
+# 1F
 
 * Bring back Julia sets (using row renderers)
 * Update controls (decrease sensitivity of zooms)
 * Scale by default
 
-# 26
+# 1E
 
 * Update colouring for small iteration counts
 * Revert start zoom for interactive renders
 
-# 25
+# 1D
 
 * Update colouring (smooth)
 * Yield square distances from renders
@@ -41,7 +57,7 @@
 * Add control for cycling fractals
 * Add function for getting the name of a fractal
 
-# 24
+# 1C
 
 * Optimise rendering
 * Use Rayon for threading
@@ -50,7 +66,7 @@
 * Fix render garbage (somehow)
 * Lower precision
 
-# 23
+# 1B
 
 * Support rendering of the Tricorn and Burning Ship fractals
 * Update configuration
@@ -60,28 +76,28 @@
 * Update messages
 * Update commenting
 
-# 22
+# 1A
 
 * Support rendering of Julia sets
 * Update controls
 * Refactor code
 * Update configuration
 
-# 21
+# 19
 
 * Update controls guide (fix typo)
 
-# 20
+# 18
 
 * Optimise renderer
 * Update commenting
 
-# 1↋
+# 17
 
 * Make configuration support more precise numbers (must be parsed as strings now)
 * Use global constant for precision
 
-# 1↊
+# 16
 
 * Use arbitrary-precision calculations
 * Depend on Rug
@@ -95,19 +111,19 @@
 * Refactor application structure
 * Print controls
 
-# 19
+# 15
 
 * Update controls
 * Update configuration format
 * Optimise renderer
 * Fix thread count not being loaded
 
-# 18
+# 14
 
 * Rename handle_key to handle_keys
 * Only load configuration if provided
 
-# 17
+# 13
 
 * Modulise code
 * Check I/O errors
@@ -115,34 +131,34 @@
 * Depend on toml
 * Update gitignore
 
-# 16
+# 12
 
 * Clean up code
 * Support rendering to files
 * Depend on webp
 * Modulise code
 
-# 15
+# 11
 
 * Render using multiple threads
 
-# 14
+# 10
 
 * Update colouring
 * Rename changelog file: changelog.md => CHANGELOG.md
 
-# 13
+# F
 
 * Update render message
 * Add scaling setting
 
-# 12
+# E
 
 * Render and draw in different passes
 * Update colouring
 * Actually remove old makefile
 
-# 11
+# D
 
 * Remove old makefile
 * Optimise renderer
@@ -150,7 +166,7 @@
 * Check keyboard input (allow viewpoint movement)
 * Update colouring
 
-# 10
+# C
 
 * Rewrite in Rust again
 * Update gitignore
@@ -158,7 +174,7 @@
 * Update changelog format
 * Use git tagging for versioning
 
-# ↋
+# B
 
 * Drop *boost::multiprecision::mpfr_float* in favour of the standard type *::__float128* for multiprecision
 * Create a prettier colour palette
@@ -166,7 +182,7 @@
 * Automatically create a configuration file if one doesn't already exist
 * Greatly improve render time
 
-# ↊
+# A
 
 * Fix #3
 * Implement a working, multithreaded renderer forked from MandelbrotSDL

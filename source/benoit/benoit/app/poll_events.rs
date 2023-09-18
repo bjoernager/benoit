@@ -21,28 +21,32 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::render_data::RenderData;
+use crate::benoit::app::App;
 
-extern crate rug;
+extern crate sdl2;
 
-use rug::Float;
+use sdl2::EventPump;
+use sdl2::event::Event;
 
-impl RenderData {
-	pub fn new(iter_count_buffer: &mut [u32], square_dist_buffer: &mut [f32], canvas_width: u32, centre_real: Float, centre_imag: Float, zoom: Float, max_iter_count: u32) -> RenderData {
-		let iter_count_buffer_pointer  = iter_count_buffer.as_mut_ptr();
-		let square_dist_buffer_pointer = square_dist_buffer.as_mut_ptr();
+impl App {
+	pub fn poll_events(&mut self, event_pump: &mut EventPump) -> bool {
+		for event in event_pump.poll_iter() {
+			let quit = match event {
+				Event::KeyDown {
+					timestamp: _,
+					window_id: _,
+					keycode:   _,
+					scancode:  scan_code,
+					keymod:    _,
+					repeat:    _,
+				} => self.handle_keys(scan_code.unwrap()),
+				Event::Quit { .. } => true,
+				_ => false,
+			};
 
-		return RenderData {
-			canvas_width: canvas_width,
+			if quit { return true }
+		}
 
-			centre_real: centre_real,
-			centre_imag: centre_imag,
-			zoom:        zoom,
-
-			max_iter_count: max_iter_count,
-
-			iter_count_buffer: iter_count_buffer_pointer,
-			square_dist_buffer: square_dist_buffer_pointer,
-		};
+		return false;
 	}
 }
