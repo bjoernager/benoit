@@ -66,6 +66,15 @@ impl Configuration {
 			};
 		};
 
+		let get_float32 = |buffer: &mut f32, table: &Table, name: &str| {
+			if !table.contains_key(name) { return }
+
+			match &configuration_table[name] {
+				Value::Float(value) => *buffer = *value as f32,
+				_                   => panic!("mismatched type of {name}"),
+			};
+		};
+
 		let get_float = |buffer: &mut Float, table: &Table, name: &str| {
 			if !table.contains_key(name) { return }
 
@@ -112,6 +121,8 @@ impl Configuration {
 		get_float(  &mut configuration.centre_imag,    &configuration_table, "imaginary");
 		get_float(  &mut configuration.zoom,           &configuration_table, "zoom");
 		get_integer(&mut configuration.max_iter_count, &configuration_table, "maximum_iteration_count");
+
+		get_float32(&mut configuration.colour_range, &configuration_table, "colour_range");
 
 		// We allow thread counts of zero as those signal
 		// automatic thread count detection.

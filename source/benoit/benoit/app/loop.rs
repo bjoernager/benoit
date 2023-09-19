@@ -106,7 +106,12 @@ impl App {
 					next_zoom:        &self.zoom,
 				};
 
-				unsafe { self.video.as_mut().unwrap_unchecked().draw(&image[..], self.canvas_width, self.scale, Some(&feedback_info)) };
+				let feedback_info = match self.julia {
+					false => Some(&feedback_info),
+					true  => None,
+				};
+
+				unsafe { self.video.as_mut().unwrap_unchecked().draw(&image[..], self.canvas_width, self.scale, feedback_info) };
 			}
 
 			if self.do_dump {

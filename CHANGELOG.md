@@ -1,3 +1,9 @@
+# 1.1.0
+
+* Bump minor version
+* Set colour range in configuration
+* Don't draw feedback on Julia
+
 # 1.0.0
 
 * Use hexadecimal versioning (with major.minor.patch)

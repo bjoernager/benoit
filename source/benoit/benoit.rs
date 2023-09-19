@@ -12,8 +12,8 @@
 
 	Benoit is distributed in the hope that it will
 	be useful, but WITHOUT ANY WARRANTY; without
-	even the implied warranty of MERCHANTABIL ITY or
-	FITNESS FOR A PARTICULAR PURPOSE. See theGNU
+	even the implied warranty of MERCHANTABILITY or
+	FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 	Affero General Public License for more details.
 
 	You should have received a copy of the GNU
@@ -40,7 +40,7 @@ pub struct Version<T> {
 
 pub const VERSION: Version::<u32> = Version::<u32> {
 	major: 0x1,
-	minor: 0x0,
+	minor: 0x1,
 	patch: 0x0,
 };
 
