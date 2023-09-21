@@ -40,9 +40,6 @@ impl App {
 		for x in 0x0..data.canvas_width {
 			let canvas_width = Float::with_val(PRECISION, data.canvas_width);
 
-			let x_float = Float::with_val(PRECISION, x);
-			let y_float = Float::with_val(PRECISION, y);
-
 			// For more information, see render_row_normal.
 
 			let ca = &data.centre_real;
@@ -56,7 +53,7 @@ impl App {
 			let mut za = {
 				let mut za = Float::with_val(PRECISION, &canvas_width / 2.0);
 				za.neg_assign();
-				za += &x_float;
+				za += x;
 				za *= 4.0;
 				za /= &canvas_width;
 
@@ -66,7 +63,7 @@ impl App {
 			let mut zb = {
 				let mut zb = Float::with_val(PRECISION, &canvas_width / 2.0);
 				zb.neg_assign();
-				zb += &y_float;
+				zb += y;
 				zb *= 4.0;
 				zb /= &canvas_width;
 

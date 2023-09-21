@@ -21,7 +21,7 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::PRECISION;
+use crate::benoit::{ImageFormat, PRECISION};
 use crate::benoit::configuration::Configuration;
 use crate::benoit::fractal::Fractal;
 
@@ -100,21 +100,18 @@ impl Configuration {
 
 		get_integer(&mut configuration.thread_count, &configuration_table, "thread_count");
 
-		configuration.fractal = if let Some(name) = get_string(&configuration_table, "fractal") {
-			match name.as_str() {
+		if let Some(name) = get_string(&configuration_table, "fractal") {
+			configuration.fractal = match name.as_str() {
 				"burningship" => Fractal::BurningShip,
 				"mandelbrot"  => Fractal::Mandelbrot,
 				"tricorn"     => Fractal::Tricorn,
-				name          => panic!("invalid fractal name {name}"),
+				name          => panic!("invalid fractal name \"{name}\""),
 			}
-		} else {
-			configuration.fractal
-		};
+		}
 
 		get_boolean(&mut configuration.julia, &configuration_table, "julia");
 
 		get_integer(&mut configuration.canvas_width, &configuration_table, "canvas_width");
-		get_integer(&mut configuration.scale,        &configuration_table, "scale");
 		get_integer(&mut configuration.frame_count,  &configuration_table, "frame_count");
 
 		get_float(  &mut configuration.centre_real,    &configuration_table, "real");
@@ -124,18 +121,39 @@ impl Configuration {
 
 		get_float32(&mut configuration.colour_range, &configuration_table, "colour_range");
 
-		// We allow thread counts of zero as those signal
-		// automatic thread count detection.
-		if      configuration.canvas_width == 0x0 {
-			panic!("only non-zero values for canvas_width are allowed");
-		} else if configuration.scale == 0x0 {
-			panic!("only non-zero values for scale are allowed");
-		} else if configuration.frame_count == 0x0 {
-			panic!("only non-zero values for frame_count are allowed");
-		} else if configuration.max_iter_count == 0x0 {
-			panic!("only non-zero values for maximum_iteration_count are allowed");
+		if let Some(path) = get_string(&configuration_table, "dump_path") {
+			configuration.dump_path = path.clone();
+		}
+
+		if let Some(name) = get_string(&configuration_table, "image_format") {
+			configuration.image_format = match name.as_str() {
+				"png"  => ImageFormat::Png,
+				"webp" => ImageFormat::Webp,
+				name   => panic!("invalid image format \"{name}\""),
+			}
+		}
+
+		match check_configuration(&configuration) {
+			Err(message) => panic!("invalid configuration: {message}"),
+			_            => {},
 		}
 
 		return configuration;
 	}
+}
+
+fn check_configuration(configuration: &Configuration) -> Result<(), &str> {
+	// We allow thread counts of zero as those signal
+	// automatic thread count detection.
+	if configuration.canvas_width == 0x0 {
+		return Err("only non-zero values for canvas_width are allowed");
+	} else if configuration.scale == 0x0 {
+		return Err("only non-zero values for scale are allowed");
+	} else if configuration.frame_count == 0x0 {
+		return Err("only non-zero values for frame_count are allowed");
+	} else if configuration.max_iter_count == 0x0 {
+		return Err("only non-zero values for maximum_iteration_count are allowed");
+	}
+
+	return Ok(());
 }

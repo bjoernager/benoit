@@ -1,3 +1,19 @@
+# 1.2.0
+
+* Bump minor version
+* Update logging
+* Support PNG encoding (set using configuration, depend on png)
+* Make window borderless
+* Update readme
+* Don't set scale from configuration
+* Update feedback
+* Support setting dump path from configuration
+* Update controls
+* Colour according to new maximum iteration count if less than previous
+* Update default colour range
+* Modulise code
+* Also dump colour range
+
 # 1.1.0
 
 * Bump minor version

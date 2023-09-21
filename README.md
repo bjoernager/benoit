@@ -1,6 +1,32 @@
-# Benoit
+# BENOÎT
 
-[*Benoit*](https://mandelbrot.dk/benoit) is a free and open-source Mandelbrot renderer written in Rust. It is aimed at producing accurate renders at arbitrary positions in the set as fast as possible.
+[*Benoit*](https://mandelbrot.dk/benoit) is a free and open‐source Mandelbrot renderer written in Rust. It is aimed at producing accurate renders at arbitrary positions in the set as fast as possible. Usage:
+
+```
+benoit [path]
+```
+
+… where *path* denotes the configuration file to read (optional). If no path is provided, the program is run in *interactive* mode, wherein the fractal is rendered in real‐time.
+
+# Dependencies
+
+Benoit makes use of the following external libraries:
+
+* [PNG](https://crates.io/crates/png) for encoding PNG images
+* [Rayon](https://crates.io/crates/rayon) for threadpooling
+* [Rug](https://crates.io/crates/rug) for multi‐precision
+* [SDL2](https://crates.io/crates/sdl2) for interactive viewports
+* [TOML](https://crates.io/crates/toml) for parsing TOML files
+* [WebP](https://crates.io/crates/webp) for encoding WebP images
+
+# Mirrors
+
+Benoit is officially hosted on the following mirrors:
+
+* [mandelbrot.dk](https://mandelbrot.dk/benoit)
+---
+* [mandelbrot.dk](https://mandelbrot.dk/benoit)
+* [mandelbrot.dk](https://mandelbrot.dk/benoit)
 
 # Copyright & License
 

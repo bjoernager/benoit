@@ -40,13 +40,35 @@ impl App {
 			Scancode::C      => self.do_render = true,
 			Scancode::Tab    => (self.julia, self.row_renderer) = toggle_julia(self.julia),
 			Scancode::X      => self.do_dump = true,
-			Scancode::Z      => eprintln!("c = {}{:+}i -- {}x @ {} iter.", &self.centre_real, &self.centre_imag, &self.zoom, self.max_iter_count),
+			Scancode::Z      => eprintln!("c = {}{:+}i -- {}x @ {} iter. (range: {:.3})", &self.centre_real, &self.centre_imag, &self.zoom, self.max_iter_count, self.colour_range),
 			_                => {},
 		}
 
+		self.handle_translation(scan_code);
+
+		self.max_iter_count = match scan_code {
+			Scancode::F => self.max_iter_count * 0x2,
+			Scancode::R => self.max_iter_count / 0x2,
+			_           => self.max_iter_count,
+		};
+
+		const COLOUR_RANGE_FACTOR: f32 = 1.0 + 1.0 / 16.0;
+
+		self.colour_range = match scan_code {
+			Scancode::Up   => self.colour_range * COLOUR_RANGE_FACTOR,
+			Scancode::Down => self.colour_range / COLOUR_RANGE_FACTOR,
+			_              => self.colour_range,
+		};
+
+		return false;
+	}
+
+	fn handle_translation(&mut self, scan_code: Scancode) {
+		const ZOOM_FACTOR: f32 = 1.0 + 1.0 / 4.0;
+
 		match scan_code {
-			Scancode::E => self.zoom *= 2.0,
-			Scancode::Q => self.zoom /= 2.0,
+			Scancode::E => self.zoom *= ZOOM_FACTOR,
+			Scancode::Q => self.zoom /= ZOOM_FACTOR,
 			_           => {},
 		};
 
@@ -69,22 +91,6 @@ impl App {
 			Scancode::W => self.centre_imag += &translate_ammount,
 			_           => {},
 		};
-
-		self.max_iter_count = match scan_code {
-			Scancode::F => self.max_iter_count * 0x2,
-			Scancode::R => self.max_iter_count / 0x2,
-			_           => self.max_iter_count,
-		};
-
-		const COLOUR_RANGE_FACTOR: f32 = 1.0 + 1.0 / 16.0;
-
-		self.colour_range = match scan_code {
-			Scancode::Up   => self.colour_range * COLOUR_RANGE_FACTOR,
-			Scancode::Down => self.colour_range / COLOUR_RANGE_FACTOR,
-			_              => self.colour_range,
-		};
-
-		return false;
 	}
 }
 

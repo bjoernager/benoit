@@ -21,6 +21,7 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::ImageFormat;
 use crate::benoit::fractal::Fractal;
 use crate::benoit::iteration::IteratorFunction;
 use crate::benoit::task::render_data::RenderData;
@@ -39,6 +40,7 @@ pub mod dump;
 pub mod get_iterator_function;
 pub mod get_row_renderer;
 pub mod handle_keys;
+pub mod image_filename;
 pub mod initialise;
 pub mod r#loop;
 pub mod poll_events;
@@ -50,6 +52,7 @@ pub mod run;
 pub type RowRenderer = fn(Arc<RenderData>, u32, IteratorFunction);
 
 pub struct App {
+	#[allow(dead_code)]
 	thread_count: u32,
 
 	fractal: Fractal,
@@ -66,7 +69,8 @@ pub struct App {
 
 	colour_range: f32,
 
-	dump_path: String,
+	dump_path:    String,
+	image_format: ImageFormat,
 
 	video: Option<Video>,
 

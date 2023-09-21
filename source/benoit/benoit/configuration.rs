@@ -21,6 +21,7 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::ImageFormat;
 use crate::benoit::fractal::Fractal;
 
 extern crate rug;
@@ -47,7 +48,8 @@ pub struct Configuration {
 
 	pub colour_range: f32,
 
-	pub dump_path: String,
+	pub dump_path:    String,
+	pub image_format: ImageFormat,
 
 	pub interactive: bool,
 }

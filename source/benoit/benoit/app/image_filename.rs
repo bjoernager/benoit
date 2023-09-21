@@ -21,37 +21,16 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::{ImageFormat, PRECISION};
-use crate::benoit::configuration::Configuration;
-use crate::benoit::fractal::Fractal;
+use crate::benoit::ImageFormat;
+use crate::benoit::app::App;
 
-extern crate rug;
-
-use rug::Float;
-
-impl Configuration {
-	pub fn default() -> Configuration {
-		return Configuration {
-			thread_count: 0x0,
-
-			fractal: Fractal::Mandelbrot,
-			julia:   false,
-
-			canvas_width: 0x100,
-			scale:        0x2,
-			frame_count:  0x10,
-
-			centre_real:    Float::with_val(PRECISION, 0.0),
-			centre_imag:    Float::with_val(PRECISION, 0.0),
-			zoom:           Float::with_val(PRECISION, 1.0),
-			max_iter_count: 0x100,
-
-			colour_range: 64.0,
-
-			dump_path:    "./render/".to_string(),
-			image_format: ImageFormat::Png,
-
-			interactive: true,
+impl App {
+	pub fn image_filename(name: &str, image_format: ImageFormat) -> String {
+		let file_extension = match image_format {
+			ImageFormat::Png  => ".png",
+			ImageFormat::Webp => ".webp",
 		};
+
+		return name.to_owned() + file_extension;
 	}
 }

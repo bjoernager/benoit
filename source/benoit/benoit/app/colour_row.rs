@@ -34,12 +34,12 @@ impl App {
 		for x in 0x0..data.canvas_width {
 			let x = x as usize;
 
-			let iter_count = iter_count_buffer[ x];
-			let distance   = square_dist_buffer[x].sqrt();
+			let iter_count = unsafe { *iter_count_buffer.get_unchecked( x) };
+			let distance   = unsafe { *square_dist_buffer.get_unchecked(x) }.sqrt();
 
 			let factor = (iter_count as f32 + 1.0 - distance.log2().log2()) / data.colour_range % 1.0;
 
-			let (red, green, blue) = if iter_count != data.max_iter_count {
+			let (red, green, blue) = if iter_count < data.max_iter_count {
 				hsv_to_rgb(factor, 7.0 / 8.0, 7.0 / 8.0)
 			} else {
 				(0.0, 0.0, 0.0)

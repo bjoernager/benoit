@@ -84,7 +84,7 @@ impl App {
 				self.render(&mut iter_count_buffer[..], &mut square_dist_buffer[..], &self.centre_real, &self.centre_imag, &self.zoom, self.max_iter_count);
 				let render_time = time_start.elapsed();
 
-				eprintln!(" rend. {:.3}ms", render_time.as_micros() as f32 / 1000.0);
+				eprintln!(" {:.3}ms", render_time.as_micros() as f32 / 1000.0);
 
 				prev_centre_real.assign(&self.centre_real);
 				prev_centre_imag.assign(&self.centre_imag);
@@ -94,7 +94,7 @@ impl App {
 				self.do_render = false;
 			}
 
-			self.colour(&mut image[..], prev_max_iter_count, &mut iter_count_buffer[..], &mut square_dist_buffer[..]);
+			self.colour(&mut image[..], prev_max_iter_count.min(self.max_iter_count), &mut iter_count_buffer[..], &mut square_dist_buffer[..]);
 
 			{
 				let feedback_info = FeedbackInfo {
@@ -106,16 +106,25 @@ impl App {
 					next_zoom:        &self.zoom,
 				};
 
-				let feedback_info = match self.julia {
-					false => Some(&feedback_info),
-					true  => None,
+				let feedback_info = if {
+					// Don't draw feedback if rendering a Julia set or
+					// if we haven't done any viewport translations.
+
+					   !self.julia
+					&& (self.centre_real != prev_centre_real
+					||  self.centre_imag != prev_centre_imag
+					||  self.zoom        != prev_zoom)
+				} {
+					Some(&feedback_info)
+				} else {
+					None
 				};
 
 				unsafe { self.video.as_mut().unwrap_unchecked().draw(&image[..], self.canvas_width, self.scale, feedback_info) };
 			}
 
 			if self.do_dump {
-				let path = format!("{}/image.webp", self.dump_path);
+				let path = App::image_filename(format!("{}/image", self.dump_path).as_str(), self.image_format);
 
 				eprintln!("dumping image at \"{path}\"");
 				self.dump(path, &image, self.canvas_width);

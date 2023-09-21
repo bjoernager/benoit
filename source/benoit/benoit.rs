@@ -40,11 +40,17 @@ pub struct Version<T> {
 
 pub const VERSION: Version::<u32> = Version::<u32> {
 	major: 0x1,
-	minor: 0x1,
+	minor: 0x2,
 	patch: 0x0,
 };
 
 pub const PRECISION: u32 = 0x80;
+
+#[derive(Clone, Copy)]
+pub enum ImageFormat {
+	Png,
+	Webp,
+}
 
 pub struct FeedbackInfo<'a> {
 	prev_centre_real: &'a Float,

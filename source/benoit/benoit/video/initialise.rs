@@ -33,11 +33,18 @@ impl Video {
 		let sdl       = sdl2::init().expect("unable to initialise sdl2");
 		let sdl_video = sdl.video().expect("unable to initialise video");
 
-		let window = sdl_video.window(format!("Benoit {:X}.{:X}.{:X}", VERSION.major, VERSION.minor, VERSION.patch).as_str(), canvas_width * scale, canvas_width * scale).position_centered().build().expect("unable to open window");
+		let mut window_builder = sdl_video.window(format!("Beno\u{00EE}t {:X}.{:X}.{:X}", VERSION.major, VERSION.minor, VERSION.patch).as_str(), canvas_width * scale, canvas_width * scale);
+		window_builder.borderless();
+		window_builder.position_centered();
+
+		let window = window_builder.build().expect("unable to open window");
 
 		let mut canvas = window.into_canvas().build().expect("unable to create canvas");
 
 		canvas.set_blend_mode(BlendMode::Blend);
+
+		// We only want to scale the render, not the
+		// feedback, so we can't use SDL's scaling feature.
 
 		return Video {
 			sdl:       sdl,

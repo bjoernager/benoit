@@ -40,13 +40,10 @@ impl App {
 		for x in 0x0..data.canvas_width {
 			let canvas_width = Float::with_val(PRECISION, data.canvas_width);
 
-			let x_float = Float::with_val(PRECISION, x);
-			let y_float = Float::with_val(PRECISION, y);
-
 			let ca = {
 				let mut ca = Float::with_val(PRECISION, &canvas_width / 2.0);
 				ca.neg_assign();
-				ca += &x_float;
+				ca += x;
 				ca *= 4.0;
 				ca /= &canvas_width;
 				ca /= &data.zoom;
@@ -58,7 +55,7 @@ impl App {
 			let cb = {
 				let mut cb = Float::with_val(PRECISION, &canvas_width / 2.0);
 				cb.neg_assign();
-				cb += &y_float;
+				cb += y;
 				cb *= 4.0;
 				cb /= &canvas_width;
 				cb /= &data.zoom;

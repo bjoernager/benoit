@@ -77,7 +77,8 @@ impl App {
 
 			colour_range: configuration.colour_range,
 
-			dump_path: configuration.dump_path,
+			dump_path:    configuration.dump_path,
+			image_format: configuration.image_format,
 
 			video: video,
 

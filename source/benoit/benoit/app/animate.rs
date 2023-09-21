@@ -51,12 +51,16 @@ impl App {
 			self.render(&mut iter_count_buffer[..], &mut square_dist_buffer[..], &self.centre_real, &self.centre_imag, &self.zoom, self.max_iter_count);
 			let render_time = time_start.elapsed();
 
+			eprint!(" {:.3}ms, colouring...", render_time.as_micros() as f32 / 1000.0);
+
 			self.colour(&mut image[..], self.max_iter_count, &mut iter_count_buffer[..], &mut square_dist_buffer[..]);
 			let colour_time = time_start.elapsed() - render_time;
 
+			eprint!(" {:.3}ms...", colour_time.as_micros() as f32 / 1000.0);
+
 			self.dump(format!("{}/render.webp", self.dump_path), &image, self.canvas_width);
 
-			eprintln!(" rend. {:.3}ms, col. {:.3}ms", render_time.as_micros() as f32 / 1000.0, colour_time.as_micros() as f32 / 1000.0);
+			eprintln!(" done");
 
 			return 0x0;
 		}
@@ -98,15 +102,23 @@ impl App {
 		eprintln!("animating {} frames at {}{:+}i to {:.3} (fac. {:.3})", self.frame_count, self.centre_real.to_f64(), self.centre_imag.to_f64(), zoom_stop.to_f64(), zoom_factor.to_f64());
 
 		for frame in 0x0..self.frame_count {
-			eprint!("{frame:010} ({:.3}x)...", zoom.to_f32());
+			eprint!("{frame:010} (2^{:.9}x)...", zoom.to_f64().log2());
 
 			let time_start = Instant::now();
 
 			self.render(&mut iter_count_buffer[..], &mut square_dist_buffer[..], &self.centre_real, &self.centre_imag, &zoom, self.max_iter_count);
 			let render_time = time_start.elapsed();
 
+			eprint!(" {:.3}ms, colouring...", render_time.as_micros() as f32 / 1000.0);
+
 			self.colour(&mut image[..], self.max_iter_count, &mut iter_count_buffer[..], &mut square_dist_buffer[..]);
 			let colour_time = time_start.elapsed() - render_time;
+
+			eprint!(" {:.3}ms...", colour_time.as_micros() as f32 / 1000.0);
+
+			self.dump(format!("{}/render.webp", self.dump_path), &image, self.canvas_width);
+
+			eprintln!(" done");
 
 			self.dump(format!("{}/frame{frame:010}.webp", self.dump_path), &image, self.canvas_width);
 
