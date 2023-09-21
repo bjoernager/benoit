@@ -41,7 +41,7 @@ pub struct Version<T> {
 pub const VERSION: Version::<u32> = Version::<u32> {
 	major: 0x1,
 	minor: 0x2,
-	patch: 0x0,
+	patch: 0x1,
 };
 
 pub const PRECISION: u32 = 0x80;

@@ -24,9 +24,8 @@ Benoit makes use of the following external libraries:
 Benoit is officially hosted on the following mirrors:
 
 * [mandelbrot.dk](https://mandelbrot.dk/benoit)
----
-* [mandelbrot.dk](https://mandelbrot.dk/benoit)
-* [mandelbrot.dk](https://mandelbrot.dk/benoit)
+* [GitLab](https://gitlab.com/bjoernager/benoit)
+* [GitHub](https://github.com/bjoernager/benoit)
 
 # Copyright & License
 

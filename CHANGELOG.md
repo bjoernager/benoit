@@ -1,3 +1,7 @@
+# 1.2.1
+
+* Fix readme
+
 # 1.2.0
 
 * Bump minor version
