@@ -31,19 +31,19 @@ use std::fs::{File, write};
 use std::io::BufWriter;
 
 impl App {
-	pub fn dump(&self, path: String, image: &[u8], canvas_width: u32) {
+	pub fn dump(&self, path: &str, image: &[u8], canvas_width: u32, canvas_height: u32) {
 		match self.image_format {
-			ImageFormat::Png  => dump_png( &path, image, canvas_width),
-			ImageFormat::Webp => dump_webp(&path, image, canvas_width),
+			ImageFormat::Png  => dump_png( path, image, canvas_width, canvas_height),
+			ImageFormat::Webp => dump_webp(path, image, canvas_width, canvas_height),
 		}
 	}
 }
 
-fn dump_png(path: &String, image: &[u8], canvas_width: u32) {
+fn dump_png(path: &str, image: &[u8], canvas_width: u32, canvas_height: u32) {
 	let file        = File::create(path).expect("unable to create file");
 	let file_buffer = BufWriter::new(file);
 
-	let mut encoder = png::Encoder::new(file_buffer, canvas_width, canvas_width);
+	let mut encoder = png::Encoder::new(file_buffer, canvas_width, canvas_height);
 	encoder.set_color(png::ColorType::Rgb);
 	encoder.set_depth(png::BitDepth::Eight);
 	encoder.set_compression(png::Compression::Fast);
@@ -53,8 +53,8 @@ fn dump_png(path: &String, image: &[u8], canvas_width: u32) {
 	writer.write_image_data(image).expect("unable to write image");
 }
 
-fn dump_webp(path: &String, image: &[u8], canvas_width: u32) {
-	let encoder = webp::Encoder::from_rgb(&image[..], canvas_width, canvas_width);
+fn dump_webp(path: &str, image: &[u8], canvas_width: u32, canvas_height: u32) {
+	let encoder = webp::Encoder::from_rgb(&image[..], canvas_width, canvas_height);
 
 	let data = encoder.encode_lossless();
 

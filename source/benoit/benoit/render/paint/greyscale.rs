@@ -21,14 +21,23 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::fractal::Fractal;
+// Original palette function after the Rust-
+// rewrite (version 10).
 
-impl Fractal {
-	pub fn get_name(self) -> &'static str {
-		return match self {
-			Fractal::BurningShip => "burning ship",
-			Fractal::Mandelbrot  => "mandelbrot set",
-			Fractal::Tricorn     => "tricorn",
-		};
-	}
+pub fn greyscale(factor: f32) -> (f32, f32, f32) {
+	let factor = factor % 1.0;
+
+	let factor = (if factor >= 1.0 / 2.0 {
+		1.0 - factor
+	} else {
+		factor
+	}) * 2.0;
+
+	let (red, green, blue) = if !factor.is_nan() {
+		(factor, factor, factor)
+	} else {
+		(0.0, 0.0, 0.0)
+	};
+
+	return (red, green, blue);
 }

@@ -21,25 +21,10 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-extern crate rug;
+// Classic colour palette, fixed from version ↋.
 
-use rug::Float;
+pub fn smooth(iter_count: u32, distance: f32, colour_range: f32, exponent: f32) -> f32 {
+	let factor = (iter_count as f32 + 1.0 - distance.log(exponent).log(exponent)) / colour_range;
 
-pub mod new;
-pub mod slice;
-
-pub struct RenderData {
-	pub canvas_width: u32,
-
-	pub centre_real: Float,
-	pub centre_imag: Float,
-	pub zoom:        Float,
-
-	pub max_iter_count: u32,
-
-	iter_count_buffer:  *mut u32,
-	square_dist_buffer: *mut f32,
+	return factor;
 }
-
-unsafe impl Send for RenderData {}
-unsafe impl Sync for RenderData {}

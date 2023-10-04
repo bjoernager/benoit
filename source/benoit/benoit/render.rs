@@ -21,23 +21,27 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::app::App;
-use crate::benoit::render::colour_data::ColourData;
+use crate::benoit::render::render_data::RenderData;
 
-extern crate rayon;
+extern crate rug;
 
-use rayon::prelude::*;
+use rug::Float;
 use std::sync::Arc;
 
-impl App {
-	pub fn colour(&self, buffer: &mut [u8], multibrot_exponent: f32, max_iter_count: u32, iter_count_buffer: &[u32], square_dist_buffer: &[f32]) {
-		let data = Arc::new(ColourData::new(buffer, self.canvas_width, multibrot_exponent, max_iter_count, self.colour_range, iter_count_buffer, square_dist_buffer));
+pub mod colour_data;
+pub mod factorise;
+pub mod iterate;
+pub mod paint;
+pub mod render_data;
+pub mod render_row;
 
-		let factoriser       = self.factoriser;
-		let palette_function = self.palette_function;
+pub type IteratorFunction = fn(&mut Float, &mut Float, &Float, &Float);
 
-		(0x0..self.canvas_height).into_par_iter().for_each(|row| {
-			App::colour_row(data.clone(), row as u32, factoriser, palette_function);
-		});
-	}
-}
+pub type RowRenderer = fn(Arc<RenderData>, u32, IteratorFunction);
+
+// We pass the multibrot exponent to the factoriser
+// as it is important with regard to smoothing, as
+// the distance grows according to this exponent.
+pub type FactoriserFunction = fn(u32, f32, f32, f32) -> f32;
+
+pub type PaletteFunction = fn(f32) -> (f32, f32, f32);

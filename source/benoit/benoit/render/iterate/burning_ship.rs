@@ -25,12 +25,15 @@ extern crate rug;
 
 use rug::Float;
 
-pub fn iterate_tricorn(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
-	// The Tricorn is only different from the
-	// Mandelbrot Set in that the conjugate of (z) is
-	// used instead of just (z):
+pub fn burning_ship(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
+	// The Burning Ship is different in that - during
+	// iteration - the real and imaginary parts of (z)
+	// are made absolute:
 	//
-	// z(n+1) = (Re(z(n))-Im(z(n)))^2+c.
+	// z(n+1) = (abs(Re(z(n)))+i*abs(Im(z(n))))^2+c.
+
+	za.abs_mut();
+	zb.abs_mut();
 
 	let za_temporary = za.clone();
 
@@ -39,12 +42,6 @@ pub fn iterate_tricorn(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
 	*za += ca;
 
 	*zb *= za_temporary;
-	// We can negate the value by multiplying with
-	// (-1). A multiplication can be saved, as
-	//
-	// a*2*(-1) = a*(-2).
-	//
-	// Thus, we may combine these two multiplications.
-	*zb *= -2.0;
+	*zb *= 2.0;
 	*zb += cb;
 }

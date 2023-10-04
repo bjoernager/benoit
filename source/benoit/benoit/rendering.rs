@@ -21,14 +21,30 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::app::App;
-use crate::benoit::app::RowRenderer;
+use crate::benoit::render::RowRenderer;
+use crate::benoit::render::render_row;
 
-impl App {
-	pub fn get_row_renderer(julia: bool) -> RowRenderer {
-		return match julia {
-			false => App::render_row_normal,
-			true  => App::render_row_julia,
+use std::mem::transmute;
+
+#[derive(Clone, Copy)]
+pub enum Rendering {
+	Julia,
+	Normal,
+}
+
+impl Rendering {
+	pub fn get_row_renderer(self) -> RowRenderer {
+		return match self {
+			Rendering::Julia  => render_row::julia,
+			Rendering::Normal => render_row::normal,
 		};
+	}
+
+	pub fn cycle(self) -> Self {
+		let raw = !(self as u8) & 0b00000001;
+
+		let new: Self = unsafe { transmute(raw) };
+
+		return new;
 	}
 }

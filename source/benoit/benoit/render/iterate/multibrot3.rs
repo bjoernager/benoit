@@ -21,42 +21,40 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::ImageFormat;
-use crate::benoit::factorisation::Factorisation;
-use crate::benoit::fractal::Fractal;
-use crate::benoit::palette::Palette;
-use crate::benoit::rendering::Rendering;
+use crate::benoit::PRECISION;
 
 extern crate rug;
 
 use rug::Float;
 
-pub mod default;
-pub mod load;
+pub fn multibrot3(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
+	let za_temporary = za.clone(); // a
 
-pub struct Configuration {
-	pub thread_count: u32,
+	//   (a+bi)^3
+	// = (a+bi)(a+bi)(a+bi)
+	// = (a^2-b^2+2abi)(a+bi)
+	// = a^3+(a^2)bi-ab^2-(b^3)i+2(a^2)bi-2ab^2
+	// = a^3+3(a^2)bi-3ab^2-(b^3)i
+	//
+	// <=> z_a = a^3-3ab^2
+	//     z_b = 3(a^2)b-b^3
 
-	pub fractal:   Fractal,
-	pub rendering: Rendering,
+	let mut tmp0 = Float::with_val(PRECISION, &*zb * &*zb); // b^2
 
-	pub canvas_width:  u32,
-	pub canvas_height: u32,
-	pub scale:         u32,
-	pub frame_count:   u32,
+	let tmp1 = Float::with_val(PRECISION, &tmp0 * &*zb); // b^3
 
-	pub centre_real: Float,
-	pub centre_imag: Float,
-	pub zoom:        Float,
+	tmp0 *= &*za; // ab^2
+	tmp0 *= 0x3;  // 3ab^2
 
-	pub max_iter_count: u32,
+	za.square_mut(); // a^2
 
-	pub factorisation: Factorisation,
-	pub palette:       Palette,
-	pub colour_range:  f32,
+	*zb *= &*za; // (a^2)b
 
-	pub dump_path:    String,
-	pub image_format: ImageFormat,
+	*za *= &za_temporary; // a^3
+	*za -= &tmp0;         // a^3-3ab^2
+	*za += ca;            // a^3-3ab^2+Re(c)
 
-	pub interactive: bool,
+	*zb *= 3.0;   // 3(a^2)b
+	*zb -= &tmp1; // 3(a^2)b-b^3
+	*zb += cb;    // 3(a^2)b-b^3+Im(c)
 }

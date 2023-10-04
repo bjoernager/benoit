@@ -21,33 +21,8 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-extern crate rug;
+pub mod julia;
+pub mod normal;
 
-use rug::Float;
-
-pub fn iterate_mandelbrot(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
-	// The Mandelbrot Set (M) is defined as the set of
-	// values in the complex plane where the iterating
-	// function
-	//
-	// z(n+1) = z(n)^2+c
-	//
-	// stays bounded: I.e. the absolute value of (z) stays bounded:
-	//
-	// abs(z) = sqrt(Re(z)^2+Im(z)^2) <= 2^2 = 4.
-
-	let za_temporary = za.clone();
-
-	// We can calculate the square of a complex number
-	// as:
-	//
-	// (a+bi)^2 = (a+bi)(a+bi) = a^2+abi+abi-b^2 = a^2-b^2+2abi.
-
-	za.square_mut();
-	*za -= &*zb * &*zb;
-	*za += ca;
-
-	*zb *= za_temporary;
-	*zb *= 2.0;
-	*zb += cb;
-}
+pub use julia::*;
+pub use normal::*;

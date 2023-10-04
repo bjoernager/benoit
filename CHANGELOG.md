@@ -1,3 +1,18 @@
+# 2.0.0
+
+* Bump major version
+* Update controls
+* Support non-square canvasses again
+* Modulise and refactor code
+* Draw textual feedback to window (enable with F1)
+* Bump dependency versions
+* Support multiple palette functions (reflect in configuration)
+* Add multibrot3 fractal
+* Improve commenting
+* Check interactive input
+* Remove dumping from interactive mode
+* Fix image file extensions
+
 # 1.2.1
 
 * Fix readme

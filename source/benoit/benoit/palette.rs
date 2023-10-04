@@ -21,62 +21,58 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::render::IteratorFunction;
-use crate::benoit::render::iterate;
+use crate::benoit::render::PaletteFunction;
+use crate::benoit::render::paint;
 
 use std::mem::transmute;
 use std::ops::Add;
 
 #[derive(Clone, Copy)]
-pub enum Fractal {
-	BurningShip,
-	Mandelbrot,
-	Multibrot3,
-	Tricorn,
+pub enum Palette {
+	Ancient,
+	Fire,
+	Greyscale,
+	Hsv,
+	Lch,
+	Sapphire,
 }
 
-impl Fractal {
-	const MAX: u8 = Fractal::Tricorn as u8;
+impl Palette {
+	const MAX: u8 = Palette::Sapphire as u8;
 
 	pub fn get_name(self) -> &'static str {
 		return match self {
-			Fractal::BurningShip => "burning ship",
-			Fractal::Mandelbrot  => "mandelbrot set",
-			Fractal::Multibrot3  => "multibrot (d=3)",
-			Fractal::Tricorn     => "tricorn",
+			Palette::Ancient   => "ancient",
+			Palette::Fire      => "fire",
+			Palette::Greyscale => "greyscale",
+			Palette::Hsv       => "hsv",
+			Palette::Lch       => "lch",
+			Palette::Sapphire  => "sapphire",
 		};
 	}
 
-	pub fn get_exponent(self) -> f32 {
+	pub fn get_function(self) -> PaletteFunction {
 		return match self {
-			Fractal::BurningShip => 2.0,
-			Fractal::Mandelbrot  => 2.0,
-			Fractal::Multibrot3  => 3.0,
-			Fractal::Tricorn     => 2.0,
+			Palette::Ancient   => paint::ancient,
+			Palette::Fire      => paint::fire,
+			Palette::Greyscale => paint::greyscale,
+			Palette::Hsv       => paint::hsv,
+			Palette::Lch       => paint::lch,
+			Palette::Sapphire  => paint::sapphire,
 		};
 	}
-
-	pub fn get_iterator(self) -> IteratorFunction {
-		return match self {
-			Fractal::BurningShip => iterate::burning_ship,
-			Fractal::Mandelbrot  => iterate::mandelbrot,
-			Fractal::Multibrot3  => iterate::multibrot3,
-			Fractal::Tricorn     => iterate::tricorn,
-		};
-	}
-
 }
 
-impl Add<i8> for Fractal {
-	type Output = Fractal;
+impl Add<i8> for Palette {
+	type Output = Palette;
 
 	fn add(self, direction: i8) -> Self {
 		assert!(direction != 0x0);
 
 		let raw = self as i8 + direction;
 		let raw: u8 = if raw < 0x0 {
-			Fractal::MAX
-		} else if raw > Fractal::MAX as i8 {
+			Palette::MAX
+		} else if raw > Palette::MAX as i8 {
 			0x0
 		} else {
 			raw as u8

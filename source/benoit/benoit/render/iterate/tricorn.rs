@@ -21,20 +21,30 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::task::colour_data::ColourData;
+extern crate rug;
 
-impl ColourData {
-	pub fn new(image: &mut [u8], canvas_width: u32, max_iter_count: u32, colour_range: f32, iter_count_buffer: &[u32], square_dist_buffer: &[f32]) -> ColourData {
-		return ColourData {
-			canvas_width: canvas_width,
+use rug::Float;
 
-			max_iter_count: max_iter_count,
-			colour_range:   colour_range,
+pub fn tricorn(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
+	// The Tricorn is only different from the
+	// Mandelbrot Set in that the conjugate of (z) is
+	// used instead of just (z):
+	//
+	// z(n+1) = (Re(z(n))-Im(z(n))i)^2+c.
 
-			iter_count_buffer:  iter_count_buffer.as_ptr(),
-			square_dist_buffer: square_dist_buffer.as_ptr(),
+	let za_temporary = za.clone(); // a
 
-			image: image.as_mut_ptr(),
-		};
-	}
+	za.square_mut();    // a^2
+	*za -= &*zb * &*zb; // a^2-b^2
+	*za += ca;          // a^2
+
+	*zb *= za_temporary;
+	// We can negate the value by multiplying with
+	// (-1). A multiplication can be saved, as
+	//
+	// a*2*(-1) = a*(-2).
+	//
+	// Thus, we may combine these two multiplications.
+	*zb *= -2.0;
+	*zb += cb;
 }

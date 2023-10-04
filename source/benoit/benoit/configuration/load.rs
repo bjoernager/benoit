@@ -22,8 +22,11 @@
 */
 
 use crate::benoit::{ImageFormat, PRECISION};
-use crate::benoit::configuration::Configuration;
+use crate::benoit::factorisation::Factorisation;
 use crate::benoit::fractal::Fractal;
+use crate::benoit::palette::Palette;
+use crate::benoit::rendering::Rendering;
+use crate::benoit::configuration::Configuration;
 
 extern crate rug;
 extern crate toml;
@@ -48,78 +51,57 @@ impl Configuration {
 
 		let configuration_table = Table::from_str(configuration_text.as_str()).expect("unable to parse configuration");
 
-		let get_boolean = |buffer: &mut bool, table: &Table, name: &str| {
-			if !table.contains_key(name) { return }
-
-			match &configuration_table[name] {
-				Value::Boolean(value) => *buffer = *value,
-				_                     => panic!("mismatched type of {name}"),
-			};
-		};
-
-		let get_integer = |buffer: &mut u32, table: &Table, name: &str| {
-			if !table.contains_key(name) { return }
-
-			match &configuration_table[name] {
-				Value::Integer(value) => *buffer = *value as u32,
-				_                     => panic!("mismatched type of {name}"),
-			};
-		};
-
-		let get_float32 = |buffer: &mut f32, table: &Table, name: &str| {
-			if !table.contains_key(name) { return }
-
-			match &configuration_table[name] {
-				Value::Float(value) => *buffer = *value as f32,
-				_                   => panic!("mismatched type of {name}"),
-			};
-		};
-
-		let get_float = |buffer: &mut Float, table: &Table, name: &str| {
-			if !table.contains_key(name) { return }
-
-			match &configuration_table[name] {
-				Value::String(string) => {
-					*buffer = match Float::parse(string) {
-						Ok(value) => Float::with_val(PRECISION, value),
-						_         => panic!("invalid format of {name}"),
-					}
-				},
-				_ => panic!("mismatched type of {name}"),
-			};
-		};
-
-		let get_string = |table: &Table, name: &str| -> Option<&String> {
-			if !table.contains_key(name) { return None }
-
-			match &configuration_table[name] {
-				Value::String(value) => return Some(value),
-				_                    => panic!("mismatched type of {name}"),
-			};
-		};
-
 		get_integer(&mut configuration.thread_count, &configuration_table, "thread_count");
 
 		if let Some(name) = get_string(&configuration_table, "fractal") {
 			configuration.fractal = match name.as_str() {
 				"burningship" => Fractal::BurningShip,
 				"mandelbrot"  => Fractal::Mandelbrot,
+				"multibrot3"  => Fractal::Multibrot3,
 				"tricorn"     => Fractal::Tricorn,
-				name          => panic!("invalid fractal name \"{name}\""),
+				name          => panic!("invalid fractal kind \"{name}\""),
 			}
 		}
 
-		get_boolean(&mut configuration.julia, &configuration_table, "julia");
+		if let Some(name) = get_string(&configuration_table, "rendering") {
+			configuration.rendering = match name.as_str() {
+				"julia"  => Rendering::Julia,
+				"normal" => Rendering::Normal,
+				name     => panic!("invalid rendering method \"{name}\""),
+			};
+		}
 
-		get_integer(&mut configuration.canvas_width, &configuration_table, "canvas_width");
-		get_integer(&mut configuration.frame_count,  &configuration_table, "frame_count");
+		get_integer(&mut configuration.canvas_width,  &configuration_table, "canvas_width");
+		get_integer(&mut configuration.canvas_height, &configuration_table, "canvas_height");
+		get_integer(&mut configuration.frame_count,   &configuration_table, "frame_count");
 
-		get_float(  &mut configuration.centre_real,    &configuration_table, "real");
-		get_float(  &mut configuration.centre_imag,    &configuration_table, "imaginary");
-		get_float(  &mut configuration.zoom,           &configuration_table, "zoom");
+		get_bigfloat(&mut configuration.centre_real,    &configuration_table, "real");
+		get_bigfloat(&mut configuration.centre_imag,    &configuration_table, "imaginary");
+		get_bigfloat(&mut configuration.zoom,           &configuration_table, "zoom");
+
 		get_integer(&mut configuration.max_iter_count, &configuration_table, "maximum_iteration_count");
 
-		get_float32(&mut configuration.colour_range, &configuration_table, "colour_range");
+		if let Some(name) = get_string(&configuration_table, "factorisation") {
+			configuration.factorisation = match name.as_str() {
+				"smooth"  => Factorisation::Smooth,
+				"stepped" => Factorisation::Stepped,
+				name      => panic!("invalid factorisation method \"{name}\""),
+			};
+		}
+
+		if let Some(name) = get_string(&configuration_table, "palette") {
+			configuration.palette = match name.as_str() {
+				"ancient"   => Palette::Ancient,
+				"fire"      => Palette::Fire,
+				"greyscale" => Palette::Greyscale,
+				"hsv"       => Palette::Hsv,
+				"lch"       => Palette::Lch,
+				"sapphire"  => Palette::Sapphire,
+				name        => panic!("invalid palette \"{name}\""),
+			};
+		}
+
+		get_float(&mut configuration.colour_range, &configuration_table, "colour_range");
 
 		if let Some(path) = get_string(&configuration_table, "dump_path") {
 			configuration.dump_path = path.clone();
@@ -130,7 +112,7 @@ impl Configuration {
 				"png"  => ImageFormat::Png,
 				"webp" => ImageFormat::Webp,
 				name   => panic!("invalid image format \"{name}\""),
-			}
+			};
 		}
 
 		match check_configuration(&configuration) {
@@ -156,4 +138,47 @@ fn check_configuration(configuration: &Configuration) -> Result<(), &str> {
 	}
 
 	return Ok(());
+}
+
+fn get_value<'a>(table: &'a Table, name: &str) -> Option<&'a Value> {
+	if !table.contains_key(name) { return None };
+
+	return Some(&table[name]);
+}
+
+fn get_integer(buffer: &mut u32, table: &Table, name: &str) {
+	match get_value(table, name) {
+		Some(Value::Integer(value)) => *buffer = (*value) as u32,
+		Some(_)                     => panic!("\"{name}\" should be an integer"),
+		_                           => {},
+	};
+}
+
+fn get_float(buffer: &mut f32, table: &Table, name: &str) {
+	match get_value(table, name) {
+		Some(Value::Float(value)) => *buffer = (*value) as f32,
+		Some(_)                   => panic!("\"{name}\" should be a float"),
+		_                         => {},
+	};
+}
+
+fn get_bigfloat(buffer: &mut Float, table: &Table, name: &str) {
+	return match get_value(table, name) {
+		Some(Value::String(string)) => {
+			*buffer = match Float::parse(string) {
+				Ok(value) => Float::with_val(PRECISION, value),
+				_         => panic!("invalid format of \"{name}\""),
+			}
+		},
+		Some(_) => panic!("\"{name}“ should be a quoted float"),
+		_ => {},
+	};
+}
+
+fn get_string(table: &Table, name: &str) -> Option<String> {
+	return match get_value(table, name) {
+		Some(Value::String(value)) => Some(value.clone()),
+		Some(_)                    => panic!("\"{name}\" should be a string"),
+		_                          => None,
+	};
 }

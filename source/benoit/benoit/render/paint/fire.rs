@@ -21,16 +21,31 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::fractal::Fractal;
-use crate::benoit::app::App;
-use crate::benoit::iteration::*;
+// Classic colour palette, fixed (and smoothed)
+// from version ↋.
 
-impl App {
-	pub fn get_iterator_function(fractal: Fractal) -> IteratorFunction {
-		return match fractal {
-			Fractal::BurningShip => iterate_burning_ship,
-			Fractal::Mandelbrot  => iterate_mandelbrot,
-			Fractal::Tricorn     => iterate_tricorn,
-		};
-	}
+pub fn fire(factor: f32) -> (f32, f32, f32) {
+	let factor = factor % 1.0;
+
+	let (red, green, blue) = if !factor.is_nan() {
+		if factor <= 1.0 / 4.0 {
+			(factor * 4.0, 0.0, 0.0)
+		} else if factor <= 1.0 / 2.0 {
+			let factor = factor - (1.0 / 4.0);
+
+			(1.0, factor * 4.0, 0.0)
+		} else if factor <= 3.0 / 4.0 {
+			let factor = factor - (1.0 / 2.0);
+
+			(1.0, 1.0, factor * 4.0)
+		} else {
+			let factor = 1.0 - factor;
+
+			(factor * 4.0, factor * 4.0, factor * 4.0)
+		}
+	} else {
+		(0.0, 0.0, 0.0)
+	};
+
+	return (red, green, blue);
 }

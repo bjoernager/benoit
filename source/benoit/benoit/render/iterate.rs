@@ -21,20 +21,12 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod new;
-pub mod slice;
+pub mod burning_ship;
+pub mod mandelbrot;
+pub mod multibrot3;
+pub mod tricorn;
 
-pub struct ColourData {
-	pub canvas_width: u32,
-
-	pub max_iter_count: u32,
-	pub colour_range:   f32,
-
-	iter_count_buffer:  *const u32,
-	square_dist_buffer: *const f32,
-
-	image: *mut u8,
-}
-
-unsafe impl Send for ColourData {}
-unsafe impl Sync for ColourData {}
+pub use burning_ship::*;
+pub use mandelbrot::*;
+pub use multibrot3::*;
+pub use tricorn::*;

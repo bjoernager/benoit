@@ -21,11 +21,37 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::task::colour_data::ColourData;
-
 use std::slice::{from_raw_parts, from_raw_parts_mut};
 
+pub struct ColourData {
+	pub canvas_width: u32,
+
+	pub exponent:       f32,
+	pub max_iter_count: u32,
+	pub colour_range:   f32,
+
+	iter_count_buffer:  *const u32,
+	square_dist_buffer: *const f32,
+
+	image: *mut u8,
+}
+
 impl ColourData {
+	pub fn new(image: &mut [u8], canvas_width: u32, exponent: f32, max_iter_count: u32, colour_range: f32, iter_count_buffer: &[u32], square_dist_buffer: &[f32]) -> ColourData {
+		return ColourData {
+			canvas_width: canvas_width,
+
+			exponent:       exponent,
+			max_iter_count: max_iter_count,
+			colour_range:   colour_range,
+
+			iter_count_buffer:  iter_count_buffer.as_ptr(),
+			square_dist_buffer: square_dist_buffer.as_ptr(),
+
+			image: image.as_mut_ptr(),
+		};
+	}
+
 	pub unsafe fn slice(&self, row: u32) -> (&[u32], &[f32], &mut [u8]) {
 		let offset = row as isize * self.canvas_width as isize;
 
@@ -39,3 +65,6 @@ impl ColourData {
 		return (iter_count, dist, image);
 	}
 }
+
+unsafe impl Send for ColourData {}
+unsafe impl Sync for ColourData {}

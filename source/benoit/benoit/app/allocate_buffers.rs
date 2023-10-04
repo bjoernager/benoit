@@ -21,5 +21,17 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod colour_data;
-pub mod render_data;
+use crate::benoit::app::App;
+
+impl App {
+	pub fn allocate_buffers(canvas_width: u32, canvas_height: u32) -> (Vec::<u32>, Vec::<f32>, Vec::<u8>) {
+		let canvas_size = canvas_height as usize * canvas_width as usize;
+
+		let iter_count_buffer:  Vec::<u32> = vec![0x0; canvas_size];
+		let square_dist_buffer: Vec::<f32> = vec![0.0; canvas_size];
+
+		let image: Vec::<u8>  = vec![0x0; canvas_size * 0x3];
+
+		return (iter_count_buffer, square_dist_buffer, image);
+	}
+}

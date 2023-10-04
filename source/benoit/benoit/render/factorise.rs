@@ -21,25 +21,8 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::task::render_data::RenderData;
+pub mod smooth;
+pub mod stepped;
 
-extern crate rug;
-
-use rug::Float;
-
-impl RenderData {
-	pub fn new(iter_count_buffer: &mut [u32], square_dist_buffer: &mut [f32], canvas_width: u32, centre_real: Float, centre_imag: Float, zoom: Float, max_iter_count: u32) -> RenderData {
-		return RenderData {
-			canvas_width: canvas_width,
-
-			centre_real: centre_real,
-			centre_imag: centre_imag,
-			zoom:        zoom,
-
-			max_iter_count: max_iter_count,
-
-			iter_count_buffer:  iter_count_buffer.as_mut_ptr(),
-			square_dist_buffer: square_dist_buffer.as_mut_ptr(),
-		};
-	}
-}
+pub use smooth::*;
+pub use stepped::*;

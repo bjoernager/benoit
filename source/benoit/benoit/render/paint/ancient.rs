@@ -21,17 +21,21 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::task::render_data::RenderData;
+// Palette function from mandelbrotsdl, my first
+// Mandelbrot renderer.
 
-use std::slice::from_raw_parts_mut;
+pub fn ancient(factor: f32) -> (f32, f32, f32) {
+	let factor = factor % 1.0;
 
-impl RenderData {
-	pub unsafe fn slice(&self, row: u32) -> (&mut [u32], &mut [f32]) {
-		let offset = row as isize * self.canvas_width as isize;
+	let (red, green, blue) = if !factor.is_nan() {
+		let red   = 9.0  * (1.0 - factor) * factor         * factor         * factor;
+		let green = 15.0 * (1.0 - factor) * (1.0 - factor) * factor         * factor;
+		let blue  = 8.5  * (1.0 - factor) * (1.0 - factor) * (1.0 - factor) * factor;
 
-		let iter_count = from_raw_parts_mut(self.iter_count_buffer.offset(offset), self.canvas_width as usize);
-		let dist       = from_raw_parts_mut(self.square_dist_buffer.offset(offset), self.canvas_width as usize);
+		(red, green, blue)
+	} else {
+		(0.0, 0.0, 0.0)
+	};
 
-		return (iter_count, dist);
-	}
+	return (red, green, blue);
 }

@@ -44,7 +44,7 @@ impl App {
 				_ => false,
 			};
 
-			if quit { return true }
+			if quit { return true };
 		}
 
 		return false;

@@ -22,9 +22,12 @@
 */
 
 use crate::benoit::PRECISION;
-use crate::benoit::app::{App, RowRenderer};
+use crate::benoit::app::App;
+use crate::benoit::factorisation::Factorisation;
 use crate::benoit::fractal::Fractal;
-use crate::benoit::iteration::IteratorFunction;
+use crate::benoit::palette::Palette;
+use crate::benoit::render::{FactoriserFunction, IteratorFunction, PaletteFunction, RowRenderer};
+use crate::benoit::rendering::Rendering;
 
 extern crate rug;
 extern crate sdl2;
@@ -35,12 +38,16 @@ use sdl2::keyboard::Scancode;
 impl App {
 	pub fn handle_keys(&mut self, scan_code: Scancode) -> bool {
 		match scan_code {
-			Scancode::LAlt   => (self.fractal, self.iterator_function) = cycle_fractal(self.fractal),
-			Scancode::Escape => return true,
 			Scancode::C      => self.do_render = true,
-			Scancode::Tab    => (self.julia, self.row_renderer) = toggle_julia(self.julia),
-			Scancode::X      => self.do_dump = true,
-			Scancode::Z      => eprintln!("c = {}{:+}i -- {}x @ {} iter. (range: {:.3})", &self.centre_real, &self.centre_imag, &self.zoom, self.max_iter_count, self.colour_range),
+			Scancode::Escape => return true,
+			Scancode::F1     => self.do_textual_feedback = !self.do_textual_feedback,
+			Scancode::LAlt   => (self.fractal, self.multibrot_exponent, self.iterator_function) = cycle_fractal(self.fractal, -0x1),
+			Scancode::LCtrl  => (self.factorisation, self.factoriser) = toggle_smooth(self.factorisation),
+			Scancode::Left   => (self.palette, self.palette_function) = cycle_palette(self.palette, -0x1),
+			Scancode::RAlt   => (self.fractal, self.multibrot_exponent, self.iterator_function) = cycle_fractal(self.fractal, 0x1),
+			Scancode::Right  => (self.palette, self.palette_function) = cycle_palette(self.palette, 0x1),
+			Scancode::Tab    => (self.rendering, self.row_renderer) = toggle_julia(self.rendering),
+			Scancode::Z      => eprintln!("c = {}{:+}i, {}x @ {} iter. (range.: {:.3})", &self.centre_real, &self.centre_imag, &self.zoom, self.max_iter_count, self.colour_range),
 			_                => {},
 		}
 
@@ -48,7 +55,7 @@ impl App {
 
 		self.max_iter_count = match scan_code {
 			Scancode::F => self.max_iter_count * 0x2,
-			Scancode::R => self.max_iter_count / 0x2,
+			Scancode::R => (self.max_iter_count / 0x2).max(0x1),
 			_           => self.max_iter_count,
 		};
 
@@ -56,7 +63,7 @@ impl App {
 
 		self.colour_range = match scan_code {
 			Scancode::Up   => self.colour_range * COLOUR_RANGE_FACTOR,
-			Scancode::Down => self.colour_range / COLOUR_RANGE_FACTOR,
+			Scancode::Down => (self.colour_range / COLOUR_RANGE_FACTOR).max(2.0),
 			_              => self.colour_range,
 		};
 
@@ -94,29 +101,48 @@ impl App {
 	}
 }
 
-fn cycle_fractal(fractal: Fractal) -> (Fractal, IteratorFunction) {
-	let fractal = match fractal {
-		Fractal::BurningShip => Fractal::Mandelbrot,
-		Fractal::Mandelbrot  => Fractal::Tricorn,
-		Fractal::Tricorn     => Fractal::BurningShip,
-	};
+fn cycle_fractal(fractal: Fractal, distance: i8) -> (Fractal, f32, IteratorFunction) {
+	let fractal  = fractal + distance;
+	let exponent = fractal.get_exponent();
 
-	let iterator_function = App::get_iterator_function(fractal);
+	let iterator_function = fractal.get_iterator();
 
 	eprintln!("rendering the {}", fractal.get_name());
 
-	return (fractal, iterator_function);
+	return (fractal, exponent, iterator_function);
 }
 
-fn toggle_julia(julia: bool) -> (bool, RowRenderer) {
-	let julia = !julia;
+fn toggle_julia(rendering: Rendering) -> (Rendering, RowRenderer) {
+	let rendering = rendering.cycle();
 
-	let row_renderer = App::get_row_renderer(julia);
+	let row_renderer = rendering.get_row_renderer();
 
-	match julia {
-		false => eprintln!("disabled the julia set"),
-		true  => eprintln!("enabled the julia set"),
+	match rendering {
+		Rendering::Julia  => eprintln!("enabled the julia set"),
+		Rendering::Normal => eprintln!("disabled the julia set"),
 	};
 
-	return (julia, row_renderer);
+	return (rendering, row_renderer);
+}
+
+fn toggle_smooth(factorisation: Factorisation) -> (Factorisation, FactoriserFunction) {
+	let factorisation = factorisation.cycle();
+
+	let factoriser = factorisation.get_factoriser();
+
+	match factorisation {
+		Factorisation::Smooth  => eprintln!("disabled smoothing"),
+		Factorisation::Stepped => eprintln!("enabled smoothing"),
+	};
+
+	return (factorisation, factoriser);
+}
+
+fn cycle_palette(palette: Palette, direction: i8) -> (Palette, PaletteFunction) {
+	let palette = palette + direction;
+	let palette_function = palette.get_function();
+
+	eprintln!("using palette \"{}\"", palette.get_name());
+
+	return (palette, palette_function);
 }

@@ -52,42 +52,49 @@ impl App {
 		eprintln!("using {thread_count} threads");
 
 		let video = match configuration.interactive {
-			true  => Some(Video::initialise(configuration.canvas_width, configuration.scale)),
+			true  => Some(Video::initialise(configuration.canvas_width, configuration.canvas_height, configuration.scale)),
 			false => None,
 		};
 
 		ThreadPoolBuilder::new().num_threads(configuration.thread_count as usize).build_global().unwrap();
 
-		eprintln!("rendering the {}", configuration.fractal.get_name());
-
 		return App {
 			thread_count: thread_count,
 
-			fractal: configuration.fractal,
-			julia:   configuration.julia,
+			fractal:   configuration.fractal,
+			rendering: configuration.rendering,
 
-			canvas_width: configuration.canvas_width,
-			scale:        configuration.scale,
-			frame_count:  configuration.frame_count,
+			canvas_width:  configuration.canvas_width,
+			canvas_height: configuration.canvas_height,
+			scale:         configuration.scale,
+			frame_count:   configuration.frame_count,
 
-			centre_real:    configuration.centre_real,
-			centre_imag:    configuration.centre_imag,
-			zoom:           configuration.zoom,
+			centre_real: configuration.centre_real,
+			centre_imag: configuration.centre_imag,
+			zoom:        configuration.zoom,
+
+			multibrot_exponent: 2.0,
+
 			max_iter_count: configuration.max_iter_count,
 
-			colour_range: configuration.colour_range,
+			factorisation: configuration.factorisation,
+			palette:       configuration.palette,
+			colour_range:  configuration.colour_range,
 
 			dump_path:    configuration.dump_path,
 			image_format: configuration.image_format,
 
 			video: video,
 
-			interactive: configuration.interactive,
-			do_render:   true,
-			do_dump:     false,
+			interactive:         configuration.interactive,
+			do_render:           true,
+			do_textual_feedback: false,
 
-			row_renderer:      App::get_row_renderer(     configuration.julia),
-			iterator_function: App::get_iterator_function(configuration.fractal),
+			row_renderer:      configuration.rendering.get_row_renderer(),
+			iterator_function: configuration.fractal.get_iterator(),
+
+			factoriser:       configuration.factorisation.get_factoriser(),
+			palette_function: configuration.palette.get_function(),
 		};
 	}
 }

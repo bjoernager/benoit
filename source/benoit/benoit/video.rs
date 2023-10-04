@@ -27,8 +27,11 @@ use sdl2::{Sdl, VideoSubsystem};
 use sdl2::render::WindowCanvas;
 
 pub mod draw;
+pub mod draw_textual_feedback;
+pub mod draw_translation_feedback;
 pub mod initialise;
 pub mod sync;
+pub mod update;
 
 pub struct Video {
 	pub sdl:       Sdl,

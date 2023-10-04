@@ -27,10 +27,15 @@ use rug::Float;
 
 pub mod app;
 pub mod configuration;
+pub mod factorisation;
 pub mod fractal;
-pub mod iteration;
-pub mod task;
+pub mod palette;
+pub mod rendering;
+pub mod render;
 pub mod video;
+pub mod width_height_ratio;
+
+pub use width_height_ratio::*;
 
 pub struct Version<T> {
 	major: T,
@@ -39,12 +44,18 @@ pub struct Version<T> {
 }
 
 pub const VERSION: Version::<u32> = Version::<u32> {
-	major: 0x1,
-	minor: 0x2,
-	patch: 0x1,
+	major: 0x2,
+	minor: 0x0,
+	patch: 0x0,
 };
 
 pub const PRECISION: u32 = 0x80;
+
+// We would like to precalculate the palettes at
+// compile-time, but Rust does not support
+// floating-point arithmetic there.
+#[allow(dead_code)]
+pub const PALETTE_LENGTH: usize = 0x100;
 
 #[derive(Clone, Copy)]
 pub enum ImageFormat {
@@ -56,7 +67,7 @@ pub struct FeedbackInfo<'a> {
 	prev_centre_real: &'a Float,
 	prev_centre_imag: &'a Float,
 	prev_zoom:        &'a Float,
-	next_centre_real:      &'a Float,
-	next_centre_imag:      &'a Float,
-	next_zoom:             &'a Float,
+	next_centre_real: &'a Float,
+	next_centre_imag: &'a Float,
+	next_zoom:        &'a Float,
 }

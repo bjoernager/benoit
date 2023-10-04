@@ -21,19 +21,22 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::VERSION;
 use crate::benoit::video::Video;
 
 extern crate sdl2;
 
-use crate::benoit::VERSION;
+use sdl2::pixels::Color;
 use sdl2::render::BlendMode;
 
 impl Video {
-	pub fn initialise(canvas_width: u32, scale: u32) -> Video {
+	pub fn initialise(canvas_width: u32, canvas_height: u32, scale: u32) -> Video {
 		let sdl       = sdl2::init().expect("unable to initialise sdl2");
 		let sdl_video = sdl.video().expect("unable to initialise video");
 
-		let mut window_builder = sdl_video.window(format!("Beno\u{00EE}t {:X}.{:X}.{:X}", VERSION.major, VERSION.minor, VERSION.patch).as_str(), canvas_width * scale, canvas_width * scale);
+		let window_title = format!("BENO\u{CE}T {:X}.{:X}.{:X}", VERSION.major, VERSION.minor, VERSION.patch);
+
+		let mut window_builder = sdl_video.window(window_title.as_str(), canvas_width * scale, canvas_height * scale);
 		window_builder.borderless();
 		window_builder.position_centered();
 
@@ -45,6 +48,11 @@ impl Video {
 
 		// We only want to scale the render, not the
 		// feedback, so we can't use SDL's scaling feature.
+
+		let clear_colour = Color::RGB(0x00, 0x00, 0x00);
+		canvas.set_draw_color(clear_colour);
+		canvas.clear();
+		canvas.present();
 
 		return Video {
 			sdl:       sdl,

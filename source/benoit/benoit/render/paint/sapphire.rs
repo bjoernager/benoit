@@ -21,16 +21,20 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-extern crate rug;
+pub fn sapphire(factor: f32) -> (f32, f32, f32) {
+	let factor = factor % 1.0;
 
-use rug::Float;
+	let factor = (if factor >= 1.0 / 2.0 {
+		1.0 - factor
+	} else {
+		factor
+	}) * 2.0;
 
-pub mod iterate_burning_ship;
-pub mod iterate_mandelbrot;
-pub mod iterate_tricorn;
+	let (red, green, blue) = if !factor.is_nan() {
+		(factor * factor * factor, factor * factor, factor)
+	} else {
+		(0.0, 0.0, 0.0)
+	};
 
-pub use iterate_burning_ship::iterate_burning_ship;
-pub use iterate_mandelbrot::iterate_mandelbrot;
-pub use iterate_tricorn::iterate_tricorn;
-
-pub type IteratorFunction = fn(&mut Float, &mut Float, &Float, &Float);
+	return (red, green, blue);
+}

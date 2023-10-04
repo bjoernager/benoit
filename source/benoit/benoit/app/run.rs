@@ -29,13 +29,18 @@ extern crate sdl2;
 impl App {
 	pub fn run(&mut self) -> i32 {
 		println!();
-		println!("Benoit {:X}.{:X}.{:X}", VERSION.major, VERSION.minor, VERSION.patch);
-		println!("Copyright 2021, 2023 Gabriel Bjørnager Jensen.");
+		println!("\u{1B}[1mBENO\u{CE}T\u{1B}[0m {:X}.{:X}.{:X}", VERSION.major, VERSION.minor, VERSION.patch);
+		println!("Copyright 2021, 2023 Gabriel Bj\u{F8}rnager Jensen.");
+		println!();
+		println!("COCITAVIT\u{B7}ERCO\u{B7}FVIT");
 		println!();
 
 		return match self.interactive {
-			true  => self.r#loop(),
-			false => self.animate(),
+			true  => self.interactive(),
+			false => match self.frame_count {
+				0x1 => self.still(),
+				_   => self.animate(),
+			},
 		};
 	}
 }
