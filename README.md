@@ -12,6 +12,7 @@ benoit [path]
 
 Benoit makes use of the following external libraries:
 
+* [ctor](https://crates.io/crates/ctor) and [enum-iterator](https://crates.io/crates/enum-iterator) for pre-calculating palettes
 * [PNG](https://crates.io/crates/png) for encoding PNG images
 * [Rayon](https://crates.io/crates/rayon) for threadpooling
 * [Rug](https://crates.io/crates/rug) for multi‐precision

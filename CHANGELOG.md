@@ -1,3 +1,8 @@
+# 2.1.1
+
+* Update readme
+* Add desktop entry
+
 # 2.1.0
 
 * Refactor code structure
