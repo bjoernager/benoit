@@ -27,6 +27,7 @@ use crate::benoit::app::App;
 extern crate sdl2;
 
 impl App {
+	#[must_use]
 	pub fn run(&mut self) -> i32 {
 		println!();
 		println!("\u{1B}[1mBENO\u{CE}T\u{1B}[0m {:X}.{:X}.{:X}", VERSION.major, VERSION.minor, VERSION.patch);

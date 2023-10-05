@@ -21,14 +21,19 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::palette::{Palette, PaletteData};
+
 use std::slice::{from_raw_parts, from_raw_parts_mut};
 
 pub struct ColourData {
-	pub canvas_width: u32,
+	canvas_width:  u32,
+	canvas_height: u32,
 
-	pub exponent:       f32,
-	pub max_iter_count: u32,
-	pub colour_range:   f32,
+	exponent:       f32,
+	max_iter_count: u32,
+	colour_range:   f32,
+
+	palette_data: &'static PaletteData,
 
 	iter_count_buffer:  *const u32,
 	square_dist_buffer: *const f32,
@@ -37,13 +42,17 @@ pub struct ColourData {
 }
 
 impl ColourData {
-	pub fn new(image: &mut [u8], canvas_width: u32, exponent: f32, max_iter_count: u32, colour_range: f32, iter_count_buffer: &[u32], square_dist_buffer: &[f32]) -> ColourData {
+	#[must_use]
+	pub fn new(image: &mut [u8], canvas_width: u32, canvas_height: u32, exponent: f32, max_iter_count: u32, colour_range: f32, palette: Palette, iter_count_buffer: &[u32], square_dist_buffer: &[f32]) -> ColourData {
 		return ColourData {
-			canvas_width: canvas_width,
+			canvas_width:  canvas_width,
+			canvas_height: canvas_height,
 
 			exponent:       exponent,
 			max_iter_count: max_iter_count,
 			colour_range:   colour_range,
+
+			palette_data: palette.get_data(),
 
 			iter_count_buffer:  iter_count_buffer.as_ptr(),
 			square_dist_buffer: square_dist_buffer.as_ptr(),
@@ -52,17 +61,32 @@ impl ColourData {
 		};
 	}
 
-	pub unsafe fn slice(&self, row: u32) -> (&[u32], &[f32], &mut [u8]) {
-		let offset = row as isize * self.canvas_width as isize;
+	#[must_use]
+	pub fn input_buffers(&self, row: u32) -> (&[u32], &[f32]) {
+		assert!(row < self.canvas_height);
 
-		let iter_count = from_raw_parts(self.iter_count_buffer.offset(offset), self.canvas_width as usize);
-		let dist       = from_raw_parts(self.square_dist_buffer.offset(offset), self.canvas_width as usize);
+		let offset = row as usize * self.canvas_width as usize;
 
-		let offset = offset * 0x3;
+		let iter_count = unsafe { from_raw_parts(self.iter_count_buffer.add(offset), self.canvas_width as usize) };
+		let dist       = unsafe { from_raw_parts(self.square_dist_buffer.add(offset), self.canvas_width as usize) };
 
-		let image = from_raw_parts_mut(self.image.offset(offset), self.canvas_width as usize * 0x3);
+		return (iter_count, dist);
+	}
 
-		return (iter_count, dist, image);
+	#[must_use]
+	pub fn output_buffers(&self, row: u32) -> &mut [u8] {
+		assert!(row < self.canvas_height);
+
+		let offset = row as usize * self.canvas_width as usize * 0x3;
+
+		let image = unsafe { from_raw_parts_mut(self.image.add(offset), self.canvas_width as usize * 0x3) };
+
+		return image;
+	}
+
+	#[must_use]
+	pub fn consts(&self) -> (u32, f32, u32, f32, &'static PaletteData) {
+		return (self.canvas_width, self.exponent, self.max_iter_count, self.colour_range, self.palette_data);
 	}
 }
 

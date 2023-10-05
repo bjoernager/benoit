@@ -21,10 +21,7 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-// Original palette function after the Rust-
-// rewrite (version 10).
-
-pub fn greyscale(factor: f32) -> (f32, f32, f32) {
+pub fn sapphire(factor: f32) -> (f32, f32, f32) {
 	let factor = factor % 1.0;
 
 	let factor = (if factor >= 1.0 / 2.0 {
@@ -33,11 +30,5 @@ pub fn greyscale(factor: f32) -> (f32, f32, f32) {
 		factor
 	}) * 2.0;
 
-	let (red, green, blue) = if !factor.is_nan() {
-		(factor, factor, factor)
-	} else {
-		(0.0, 0.0, 0.0)
-	};
-
-	return (red, green, blue);
+	return (factor * factor * factor, factor * factor, factor);
 }

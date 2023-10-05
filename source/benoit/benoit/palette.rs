@@ -21,13 +21,16 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::render::PaletteFunction;
-use crate::benoit::render::paint;
+extern crate ctor;
+extern crate enum_iterator;
 
+use ctor::ctor;
+use enum_iterator::{all, Sequence};
 use std::mem::transmute;
-use std::ops::Add;
 
-#[derive(Clone, Copy)]
+mod paint;
+
+#[derive(Clone, Copy, Sequence)]
 pub enum Palette {
 	Ancient,
 	Fire,
@@ -37,9 +40,45 @@ pub enum Palette {
 	Sapphire,
 }
 
-impl Palette {
-	const MAX: u8 = Palette::Sapphire as u8;
+// We would like to precalculate the palettes at
+// compile-time, but Rust does not support
+// floating-point arithmetic there.
 
+pub const PALETTE_DATA_LENGTH: usize = 0x1000;
+pub type PaletteData = [(f32, f32, f32); PALETTE_DATA_LENGTH];
+
+const fn default_palette_data() -> PaletteData {
+	return [(0.0, 0.0, 0.0); PALETTE_DATA_LENGTH];
+}
+
+static mut DATA_ANCIENT:   PaletteData = default_palette_data();
+static mut DATA_FIRE:      PaletteData = default_palette_data();
+static mut DATA_GREYSCALE: PaletteData = default_palette_data();
+static mut DATA_HSV:       PaletteData = default_palette_data();
+static mut DATA_LCH:       PaletteData = default_palette_data();
+static mut DATA_SAPPHIRE:  PaletteData = default_palette_data();
+
+#[ctor]
+fn calculate_palettes() {
+	for palette in all::<Palette>() {
+		let data     = palette.get_data_mut();
+		let function = palette.get_function();
+
+		for index in 0x0..PALETTE_DATA_LENGTH {
+			let factor = index as f32 / PALETTE_DATA_LENGTH as f32;
+
+			let (red, green, blue) = function(factor);
+
+			data[index as usize] = (red, green, blue);
+		}
+	}
+}
+
+impl Palette {
+	const MIN: Self = Palette::Ancient;
+	const MAX: Self = Palette::Sapphire;
+
+	#[must_use]
 	pub fn get_name(self) -> &'static str {
 		return match self {
 			Palette::Ancient   => "ancient",
@@ -51,7 +90,28 @@ impl Palette {
 		};
 	}
 
-	pub fn get_function(self) -> PaletteFunction {
+	#[must_use]
+	pub fn get_data(self) -> &'static PaletteData {
+		return &*self.get_data_mut();
+	}
+
+	#[must_use]
+	pub fn cycle(&self, direction: i8) -> Self {
+		let raw = *self as i8 + direction;
+
+		let new: Palette = if raw < 0x0 {
+			Palette::MAX
+		} else if raw > Palette::MAX as i8 {
+			Palette::MIN
+		} else {
+			unsafe { transmute(raw) }
+		};
+
+		return new;
+	}
+
+	#[must_use]
+	fn get_function(self) -> fn(f32) -> (f32, f32, f32) {
 		return match self {
 			Palette::Ancient   => paint::ancient,
 			Palette::Fire      => paint::fire,
@@ -61,25 +121,16 @@ impl Palette {
 			Palette::Sapphire  => paint::sapphire,
 		};
 	}
-}
 
-impl Add<i8> for Palette {
-	type Output = Palette;
-
-	fn add(self, direction: i8) -> Self {
-		assert!(direction != 0x0);
-
-		let raw = self as i8 + direction;
-		let raw: u8 = if raw < 0x0 {
-			Palette::MAX
-		} else if raw > Palette::MAX as i8 {
-			0x0
-		} else {
-			raw as u8
-		};
-
-		let new: Self = unsafe { transmute(raw) };
-
-		return new;
+	#[must_use]
+	fn get_data_mut(self) -> &'static mut PaletteData {
+		return unsafe { match self {
+			Palette::Ancient   => &mut DATA_ANCIENT,
+			Palette::Fire      => &mut DATA_FIRE,
+			Palette::Greyscale => &mut DATA_GREYSCALE,
+			Palette::Hsv       => &mut DATA_HSV,
+			Palette::Lch       => &mut DATA_LCH,
+			Palette::Sapphire  => &mut DATA_SAPPHIRE,
+		} };
 	}
 }

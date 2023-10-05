@@ -1,6 +1,6 @@
 [package]
 name        = "benoit"
-version     = "2.0.0"
+version     = "2.1.0"
 authors     = ["Gabriel Bjørnager Jensen"]
 edition     = "2021"
 description = "Mandelbrot renderer."
@@ -16,9 +16,11 @@ codegen-units = 1
 lto           = "fat"
 
 [dependencies]
-png   = "0.17.10"
-rayon = "1.8.0"
-rug   = "1.22.0"
-sdl2  = "0.35.2"
-toml  = "0.8.0"
-webp  = "0.2.6"
+ctor          = "0.2.5"
+enum-iterator = "1.4.1"
+png           = "0.17.10"
+rayon         = "1.8.0"
+rug           = "1.22.0"
+sdl2          = "0.35.2"
+toml          = "0.8.2"
+webp          = "0.2.6"

@@ -27,15 +27,9 @@
 pub fn ancient(factor: f32) -> (f32, f32, f32) {
 	let factor = factor % 1.0;
 
-	let (red, green, blue) = if !factor.is_nan() {
-		let red   = 9.0  * (1.0 - factor) * factor         * factor         * factor;
-		let green = 15.0 * (1.0 - factor) * (1.0 - factor) * factor         * factor;
-		let blue  = 8.5  * (1.0 - factor) * (1.0 - factor) * (1.0 - factor) * factor;
-
-		(red, green, blue)
-	} else {
-		(0.0, 0.0, 0.0)
-	};
+	let red   = 9.0  * (1.0 - factor) * factor         * factor         * factor;
+	let green = 15.0 * (1.0 - factor) * (1.0 - factor) * factor         * factor;
+	let blue  = 8.5  * (1.0 - factor) * (1.0 - factor) * (1.0 - factor) * factor;
 
 	return (red, green, blue);
 }

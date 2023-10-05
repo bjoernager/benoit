@@ -21,31 +21,35 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-// Classic colour palette, fixed (and smoothed)
-// from version ↋.
+use std::hint::unreachable_unchecked;
 
-pub fn fire(factor: f32) -> (f32, f32, f32) {
-	let factor = factor % 1.0;
+pub fn hsv(factor: f32) -> (f32, f32, f32) {
+	return hsv_to_rgb(factor, 7.0 / 8.0, 7.0 / 8.0);
+}
 
-	let (red, green, blue) = if !factor.is_nan() {
-		if factor <= 1.0 / 4.0 {
-			(factor * 4.0, 0.0, 0.0)
-		} else if factor <= 1.0 / 2.0 {
-			let factor = factor - (1.0 / 4.0);
+fn hsv_to_rgb(hue: f32, saturation: f32, value: f32) -> (f32, f32, f32) {
+	return if saturation <= 0.0 {
+		let value = value.min(1.0);
 
-			(1.0, factor * 4.0, 0.0)
-		} else if factor <= 3.0 / 4.0 {
-			let factor = factor - (1.0 / 2.0);
-
-			(1.0, 1.0, factor * 4.0)
-		} else {
-			let factor = 1.0 - factor;
-
-			(factor * 4.0, factor * 4.0, factor * 4.0)
-		}
+		(value, value, value)
 	} else {
-		(0.0, 0.0, 0.0)
-	};
+		let h = hue % 1.0 * 6.0;
+		let s = saturation.min(1.0);
+		let v = value.min(1.0);
 
-	return (red, green, blue);
+		let f = h % 1.0;
+		let p = v * (1.0 - s);
+		let q = v * (1.0 - s * f);
+		let t = v * (1.0 - s * (1.0 - f));
+
+		match h.trunc() as u8 {
+			0x0 => (v, t, p),
+			0x1 => (q, v, p),
+			0x2 => (p, v, t),
+			0x3 => (p, q, v),
+			0x4 => (t, p, v),
+			0x5 => (v, p, q),
+			_   => unsafe { unreachable_unchecked() },
+		}
+	};
 }

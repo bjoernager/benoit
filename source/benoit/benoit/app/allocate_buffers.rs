@@ -24,6 +24,7 @@
 use crate::benoit::app::App;
 
 impl App {
+	#[must_use]
 	pub fn allocate_buffers(canvas_width: u32, canvas_height: u32) -> (Vec::<u32>, Vec::<f32>, Vec::<u8>) {
 		let canvas_size = canvas_height as usize * canvas_width as usize;
 

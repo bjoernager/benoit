@@ -24,23 +24,17 @@
 use std::f32::consts::PI;
 
 pub fn lch(factor: f32) -> (f32, f32, f32) {
-	let (red, green, blue) = if !factor.is_nan() {
-		// Convert turns to radians:
-		// 1 turn = 2pi radians
+	// Convert turns to radians:
+	// 1 turn = 2pi radians
 
-		let angle = factor * PI;
+	let angle = factor * PI * 2.0;
 
-		let (l, a, b) = lch_to_lab( 200.0 / 3.0, 1053.0 / 20.0, angle);
-		let (x, y, z) = lab_to_xyz( l, a, b);
-		let (r, g, b) = xyz_to_rgb( x, y, z);
-		let (r, g, b) = rgb_to_srgb(r, g, b);
+	let (l, a, b) = lch_to_lab( 200.0 / 3.0, 1053.0 / 20.0, angle);
+	let (x, y, z) = lab_to_xyz( l, a, b);
+	let (r, g, b) = xyz_to_rgb( x, y, z);
+	let (r, g, b) = rgb_to_srgb(r, g, b);
 
-		(r, g, b)
-	} else {
-		(0.0, 0.0, 0.0)
-	};
-
-	return (red, green, blue);
+	return (r, g, b);
 }
 
 fn rgb_to_srgb(r: f32, g: f32, b: f32) -> (f32, f32, f32) {

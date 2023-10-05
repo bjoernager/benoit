@@ -1,3 +1,14 @@
+# 2.1.0
+
+* Refactor code structure
+* Pre-calculate palettes
+* Depend on ctor
+* Remove factoriser functions
+* Depend on enum-iterator
+* Bump minor version
+* Bump dependency versions
+* Fix control guide
+
 # 2.0.0
 
 * Bump major version

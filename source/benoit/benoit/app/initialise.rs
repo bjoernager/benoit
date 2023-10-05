@@ -32,6 +32,7 @@ use std::env::args;
 use std::thread::available_parallelism;
 
 impl App {
+	#[must_use]
 	pub fn initialise() -> App {
 		let mut arguments = args();
 
@@ -77,9 +78,8 @@ impl App {
 
 			max_iter_count: configuration.max_iter_count,
 
-			factorisation: configuration.factorisation,
-			palette:       configuration.palette,
-			colour_range:  configuration.colour_range,
+			palette:      configuration.palette,
+			colour_range: configuration.colour_range,
 
 			dump_path:    configuration.dump_path,
 			image_format: configuration.image_format,
@@ -92,9 +92,6 @@ impl App {
 
 			row_renderer:      configuration.rendering.get_row_renderer(),
 			iterator_function: configuration.fractal.get_iterator(),
-
-			factoriser:       configuration.factorisation.get_factoriser(),
-			palette_function: configuration.palette.get_function(),
 		};
 	}
 }

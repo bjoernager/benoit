@@ -25,6 +25,7 @@ use crate::benoit::ImageFormat;
 use crate::benoit::app::App;
 
 impl App {
+	#[must_use]
 	pub fn image_filename(name: &str, image_format: ImageFormat) -> String {
 		let file_extension = match image_format {
 			ImageFormat::Png  => ".png",

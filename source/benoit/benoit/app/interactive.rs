@@ -23,6 +23,7 @@
 
 use crate::benoit::FeedbackInfo;
 use crate::benoit::app::App;
+use crate::benoit::render::{colour, render};
 use crate::benoit::rendering::Rendering;
 use crate::benoit::video::Video;
 
@@ -32,6 +33,7 @@ use rug::{Assign, Float};
 use std::time::Instant;
 
 impl App {
+	#[must_use]
 	pub fn interactive(&mut self) -> i32 {
 		assert_eq!(self.interactive, true);
 		let mut video = self.video.take().unwrap();
@@ -61,7 +63,7 @@ impl App {
 
 				let time_start = Instant::now();
 
-				self.render(&mut iter_count_buffer[..], &mut square_dist_buffer[..], &self.centre_real, &self.centre_imag, &self.zoom, self.max_iter_count);
+				render(&mut iter_count_buffer[..], &mut square_dist_buffer[..], self.canvas_width, self.canvas_height, &self.centre_real, &self.centre_imag, &self.zoom, self.max_iter_count, self.row_renderer, self.iterator_function);
 				let render_time = time_start.elapsed();
 
 				eprintln!(" {:.3}ms", render_time.as_micros() as f32 / 1000.0);
@@ -76,7 +78,7 @@ impl App {
 				self.do_render = false;
 			}
 
-			self.colour(&mut image[..], prev_multibrot_exponent, prev_max_iter_count.min(self.max_iter_count), &mut iter_count_buffer[..], &mut square_dist_buffer[..]);
+			colour(&mut image[..], self.canvas_width, self.canvas_height, prev_multibrot_exponent, prev_max_iter_count.min(self.max_iter_count), self.colour_range, self.palette, &iter_count_buffer[..], &square_dist_buffer[..]);
 
 			video.draw(&image[..], self.canvas_width, self.canvas_height, self.scale);
 			self.draw_feedback(&mut video, &prev_centre_real, &prev_centre_imag, &prev_zoom);
@@ -144,9 +146,9 @@ impl App {
 		println!("- \u{1B}[1mRight\u{1B}[0m        Cycle to next palette");
 		println!();
 		println!("- \u{1B}[1mF1\u{1B}[0m           Toggle textual feedback");
-		println!("- \u{1B}[1mC\u{1B}[0m            Print centre value (c)");
+		println!("- \u{1B}[1mZ\u{1B}[0m            Print centre value (c)");
 		println!();
-		println!("- \u{1B}[1mSpace\u{1B}[0m        Render frame");
+		println!("- \u{1B}[1mC\u{1B}[0m            Render frame");
 		println!();
 	}
 }

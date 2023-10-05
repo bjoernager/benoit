@@ -27,7 +27,6 @@ use rug::Float;
 
 pub mod app;
 pub mod configuration;
-pub mod factorisation;
 pub mod fractal;
 pub mod palette;
 pub mod rendering;
@@ -45,17 +44,11 @@ pub struct Version<T> {
 
 pub const VERSION: Version::<u32> = Version::<u32> {
 	major: 0x2,
-	minor: 0x0,
+	minor: 0x1,
 	patch: 0x0,
 };
 
 pub const PRECISION: u32 = 0x80;
-
-// We would like to precalculate the palettes at
-// compile-time, but Rust does not support
-// floating-point arithmetic there.
-#[allow(dead_code)]
-pub const PALETTE_LENGTH: usize = 0x100;
 
 #[derive(Clone, Copy)]
 pub enum ImageFormat {

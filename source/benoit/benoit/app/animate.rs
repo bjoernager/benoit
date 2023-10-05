@@ -23,6 +23,7 @@
 
 use crate::benoit::PRECISION;
 use crate::benoit::app::App;
+use crate::benoit::render::{colour, render};
 
 extern crate rug;
 extern crate sdl2;
@@ -71,19 +72,19 @@ impl App {
 			factor
 		};
 
-		eprintln!("animating {} frames at {}{:+}i to {:.3} (fac. {:.3})", self.frame_count, self.centre_real.to_f64(), self.centre_imag.to_f64(), zoom_stop.to_f64(), zoom_factor.to_f64());
+		eprintln!("animating {} frames at {}{:+}i to {:.3} (fac. {:.3})", self.frame_count, self.centre_real.to_f32(), self.centre_imag.to_f32(), zoom_stop.to_f32(), zoom_factor.to_f32());
 
 		for frame in 0x0..self.frame_count {
 			eprint!("{frame:010} (2^{:.9}x)...", zoom.to_f64().log2());
 
 			let time_start = Instant::now();
 
-			self.render(&mut iter_count_buffer[..], &mut square_dist_buffer[..], &self.centre_real, &self.centre_imag, &zoom, self.max_iter_count);
+			render(&mut iter_count_buffer[..], &mut square_dist_buffer[..], self.canvas_width, self.canvas_height, &self.centre_real, &self.centre_imag, &zoom, self.max_iter_count, self.row_renderer, self.iterator_function);
 
 			let render_time = time_start.elapsed();
 			eprint!(" {:.3}ms, colouring...", render_time.as_micros() as f32 / 1000.0);
 
-			self.colour(&mut image[..], self.multibrot_exponent, self.max_iter_count, &mut iter_count_buffer[..], &mut square_dist_buffer[..]);
+			colour(&mut image[..], self.canvas_width, self.canvas_height, self.multibrot_exponent, self.max_iter_count, self.colour_range, self.palette, &iter_count_buffer[..], &square_dist_buffer[..]);
 
 			let colour_time = time_start.elapsed() - render_time;
 			eprint!(" {:.3}ms...", colour_time.as_micros() as f32 / 1000.0);

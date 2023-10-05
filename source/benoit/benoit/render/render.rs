@@ -21,7 +21,7 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::app::App;
+use crate::benoit::render::{IteratorFunction, RowRenderer};
 use crate::benoit::render::render_data::RenderData;
 
 extern crate rayon;
@@ -31,15 +31,10 @@ use rayon::prelude::*;
 use rug::Float;
 use std::sync::Arc;
 
-impl App {
-	pub fn render(&self, iter_count_buffer: &mut [u32], square_dist_buffer: &mut [f32], centre_real: &Float, centre_imag: &Float, zoom: &Float, max_iter_count: u32) {
-		let row_renderer = self.row_renderer;
-		let iterator     = self.iterator_function;
+pub fn render(iter_count_buffer: &mut [u32], square_dist_buffer: &mut [f32], canvas_width: u32, canvas_height: u32, centre_real: &Float, centre_imag: &Float, zoom: &Float, max_iter_count: u32, row_renderer: RowRenderer, iterator: IteratorFunction) {
+	let data = Arc::new(RenderData::new(iter_count_buffer, square_dist_buffer, canvas_width, canvas_height, centre_real.clone(), centre_imag.clone(), zoom.clone(), max_iter_count));
 
-		let data = Arc::new(RenderData::new(iter_count_buffer, square_dist_buffer, self.canvas_width, self.canvas_height, centre_real.clone(), centre_imag.clone(), zoom.clone(), max_iter_count));
-
-		(0x0..self.canvas_height).into_par_iter().for_each(|row| {
-			row_renderer(data.clone(), row as u32, iterator);
-		});
-	}
+	(0x0..canvas_height).into_par_iter().for_each(|row| {
+		row_renderer(data.clone(), row as u32, iterator);
+	});
 }

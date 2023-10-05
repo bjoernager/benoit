@@ -22,11 +22,10 @@
 */
 
 use crate::benoit::ImageFormat;
-use crate::benoit::factorisation::Factorisation;
 use crate::benoit::fractal::Fractal;
 use crate::benoit::palette::Palette;
 use crate::benoit::rendering::Rendering;
-use crate::benoit::render::{FactoriserFunction, IteratorFunction, PaletteFunction, RowRenderer};
+use crate::benoit::render::{IteratorFunction, RowRenderer};
 use crate::benoit::video::Video;
 
 extern crate rug;
@@ -35,8 +34,6 @@ use rug::Float;
 
 pub mod allocate_buffers;
 pub mod animate;
-pub mod colour;
-pub mod colour_row;
 pub mod drop;
 pub mod dump;
 pub mod handle_keys;
@@ -44,7 +41,6 @@ pub mod image_filename;
 pub mod initialise;
 pub mod interactive;
 pub mod poll_events;
-pub mod render;
 pub mod run;
 pub mod still;
 
@@ -68,9 +64,8 @@ pub struct App {
 
 	max_iter_count: u32,
 
-	factorisation: Factorisation,
-	palette:       Palette,
-	colour_range:  f32,
+	palette:      Palette,
+	colour_range: f32,
 
 	dump_path:    String,
 	image_format: ImageFormat,
@@ -83,7 +78,4 @@ pub struct App {
 
 	row_renderer:      RowRenderer,
 	iterator_function: IteratorFunction,
-
-	factoriser:       FactoriserFunction,
-	palette_function: PaletteFunction,
 }

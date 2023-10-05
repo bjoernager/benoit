@@ -32,7 +32,7 @@ use rug::float::Special;
 use std::sync::Arc;
 
 pub fn julia(data: Arc<RenderData>, y: u32, iterator: IteratorFunction) {
-	let (iter_count_buffer, square_dist_buffer) = data.output(y);
+	let (iter_count_buffer, square_dist_buffer) = data.output_buffers(y);
 
 	let (canvas_width, centre_real, centre_imag, _zoom, max_iter_count) = data.input();
 

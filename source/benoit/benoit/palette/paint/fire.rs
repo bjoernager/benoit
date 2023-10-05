@@ -21,19 +21,26 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub fn sapphire(factor: f32) -> (f32, f32, f32) {
+// Classic colour palette, fixed (and smoothed)
+// from version ↋.
+
+pub fn fire(factor: f32) -> (f32, f32, f32) {
 	let factor = factor % 1.0;
 
-	let factor = (if factor >= 1.0 / 2.0 {
-		1.0 - factor
-	} else {
-		factor
-	}) * 2.0;
+	let (red, green, blue) = if factor <= 1.0 / 4.0 {
+		(factor * 4.0, 0.0, 0.0)
+	} else if factor <= 1.0 / 2.0 {
+		let factor = factor - (1.0 / 4.0);
 
-	let (red, green, blue) = if !factor.is_nan() {
-		(factor * factor * factor, factor * factor, factor)
+		(1.0, factor * 4.0, 0.0)
+	} else if factor <= 3.0 / 4.0 {
+		let factor = factor - (1.0 / 2.0);
+
+		(1.0, 1.0, factor * 4.0)
 	} else {
-		(0.0, 0.0, 0.0)
+		let factor = 1.0 - factor;
+
+		(factor * 4.0, factor * 4.0, factor * 4.0)
 	};
 
 	return (red, green, blue);

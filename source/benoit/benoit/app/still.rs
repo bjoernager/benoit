@@ -22,8 +22,7 @@
 */
 
 use crate::benoit::app::App;
-
-extern crate rug;
+use crate::benoit::render::{colour, render};
 
 use std::time::Instant;
 
@@ -36,12 +35,12 @@ impl App {
 		eprint!("rendering at {}{:+}i ({}x)...", self.centre_real.to_f32(), self.centre_imag.to_f32(), self.zoom.to_f32());
 		let time_start = Instant::now();
 
-		self.render(&mut iter_count_buffer[..], &mut square_dist_buffer[..], &self.centre_real, &self.centre_imag, &self.zoom, self.max_iter_count);
+		render(&mut iter_count_buffer[..], &mut square_dist_buffer[..], self.canvas_width, self.canvas_height, &self.centre_real, &self.centre_imag, &self.zoom, self.max_iter_count, self.row_renderer, self.iterator_function);
 		let render_time = time_start.elapsed();
 
 		eprint!(" {:.3}ms, colouring...", render_time.as_micros() as f32 / 1000.0);
 
-		self.colour(&mut image[..], self.multibrot_exponent, self.max_iter_count, &iter_count_buffer[..], &square_dist_buffer[..]);
+		colour(&mut image[..], self.canvas_width, self.canvas_height, self.multibrot_exponent, self.max_iter_count, self.colour_range, self.palette, &iter_count_buffer[..], &square_dist_buffer[..]);
 		let colour_time = time_start.elapsed() - render_time;
 
 		eprint!(" {:.3}ms...", colour_time.as_micros() as f32 / 1000.0);

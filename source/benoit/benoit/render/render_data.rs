@@ -49,6 +49,7 @@ pub struct RenderData {
 }
 
 impl RenderData {
+	#[must_use]
 	pub fn new(iter_count_buffer: &mut [u32], square_dist_buffer: &mut [f32], canvas_width: u32, canvas_height: u32, centre_real: Float, centre_imag: Float, zoom: Float, max_iter_count: u32) -> RenderData {
 		let (width_ratio, height_ratio) = width_height_ratio(canvas_width, canvas_height);
 
@@ -73,15 +74,13 @@ impl RenderData {
 		};
 	}
 
+	#[must_use]
 	pub fn input(&self) -> (u32, &Float, &Float, &Float, u32) {
 		return (self.canvas_width, &self.centre_real, &self.centre_imag, &self.zoom, self.max_iter_count);
 	}
 
-	pub fn consts(&self) -> (f32, f32, f32, f32) {
-		return (self.x_offset, self.y_offset, self.x_factor, self.y_factor);
-	}
-
-	pub fn output(&self, row: u32) -> (&mut [u32], &mut [f32]) {
+	#[must_use]
+	pub fn output_buffers(&self, row: u32) -> (&mut [u32], &mut [f32]) {
 		assert!(row < self.canvas_height);
 
 		let offset = row as isize * self.canvas_width as isize;
@@ -90,6 +89,11 @@ impl RenderData {
 		let square_dist = unsafe { from_raw_parts_mut(self.square_dist_buffer.offset(offset), self.canvas_width as usize) };
 
 		return (iter_count, square_dist);
+	}
+
+	#[must_use]
+	pub fn consts(&self) -> (f32, f32, f32, f32) {
+		return (self.x_offset, self.y_offset, self.x_factor, self.y_factor);
 	}
 }
 

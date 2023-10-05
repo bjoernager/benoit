@@ -28,20 +28,16 @@ extern crate rug;
 use rug::Float;
 use std::sync::Arc;
 
+pub mod colour;
 pub mod colour_data;
-pub mod factorise;
 pub mod iterate;
-pub mod paint;
+pub mod render;
 pub mod render_data;
 pub mod render_row;
+
+pub use colour::*;
+pub use render::*;
 
 pub type IteratorFunction = fn(&mut Float, &mut Float, &Float, &Float);
 
 pub type RowRenderer = fn(Arc<RenderData>, u32, IteratorFunction);
-
-// We pass the multibrot exponent to the factoriser
-// as it is important with regard to smoothing, as
-// the distance grows according to this exponent.
-pub type FactoriserFunction = fn(u32, f32, f32, f32) -> f32;
-
-pub type PaletteFunction = fn(f32) -> (f32, f32, f32);

@@ -29,6 +29,7 @@ use sdl2::EventPump;
 use sdl2::event::Event;
 
 impl App {
+	#[must_use]
 	pub fn poll_events(&mut self, event_pump: &mut EventPump) -> bool {
 		for event in event_pump.poll_iter() {
 			let quit = match event {
