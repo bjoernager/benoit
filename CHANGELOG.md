@@ -1,3 +1,9 @@
+# 2.2.0
+
+* Bump minor version
+* Rework row renderers as point renderers
+* Support inverse fractals (toggle with left control)
+
 # 2.1.1
 
 * Update readme

@@ -25,7 +25,7 @@ use crate::benoit::ImageFormat;
 use crate::benoit::fractal::Fractal;
 use crate::benoit::palette::Palette;
 use crate::benoit::rendering::Rendering;
-use crate::benoit::render::{IteratorFunction, RowRenderer};
+use crate::benoit::render::{IteratorFunction, PointRenderer};
 use crate::benoit::video::Video;
 
 extern crate rug;
@@ -60,9 +60,11 @@ pub struct App {
 	centre_imag: Float,
 	zoom:        Float,
 
-	multibrot_exponent: f32,
-
 	max_iter_count: u32,
+
+	inverse: bool,
+
+	multibrot_exponent: f32,
 
 	palette:      Palette,
 	colour_range: f32,
@@ -76,6 +78,6 @@ pub struct App {
 	do_render:           bool,
 	do_textual_feedback: bool,
 
-	row_renderer:      RowRenderer,
+	point_renderer:      PointRenderer,
 	iterator_function: IteratorFunction,
 }

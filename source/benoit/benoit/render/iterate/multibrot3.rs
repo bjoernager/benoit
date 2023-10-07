@@ -39,22 +39,22 @@ pub fn multibrot3(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
 	// <=> z_a = a^3-3ab^2
 	//     z_b = 3(a^2)b-b^3
 
-	let mut tmp0 = Float::with_val(PRECISION, &*zb * &*zb); // b^2
+	let mut temporary0 = Float::with_val(PRECISION, &*zb * &*zb); // b^2
 
-	let tmp1 = Float::with_val(PRECISION, &tmp0 * &*zb); // b^3
+	let temporary1 = Float::with_val(PRECISION, &temporary0 * &*zb); // b^3
 
-	tmp0 *= &*za; // ab^2
-	tmp0 *= 0x3;  // 3ab^2
+	temporary0 *= &*za; // ab^2
+	temporary0 *= 0x3;  // 3ab^2
 
 	za.square_mut(); // a^2
 
 	*zb *= &*za; // (a^2)b
 
 	*za *= &za_temporary; // a^3
-	*za -= &tmp0;         // a^3-3ab^2
+	*za -= &temporary0;   // a^3-3ab^2
 	*za += ca;            // a^3-3ab^2+Re(c)
 
-	*zb *= 3.0;   // 3(a^2)b
-	*zb -= &tmp1; // 3(a^2)b-b^3
-	*zb += cb;    // 3(a^2)b-b^3+Im(c)
+	*zb *= 3.0;         // 3(a^2)b
+	*zb -= &temporary1; // 3(a^2)b-b^3
+	*zb += cb;          // 3(a^2)b-b^3+Im(c)
 }

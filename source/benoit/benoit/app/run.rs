@@ -30,7 +30,7 @@ impl App {
 	#[must_use]
 	pub fn run(&mut self) -> i32 {
 		println!();
-		println!("\u{1B}[1mBENO\u{CE}T\u{1B}[0m {:X}.{:X}.{:X}", VERSION.major, VERSION.minor, VERSION.patch);
+		println!("\u{1B}[1mBENO\u{CE}T\u{1B}[0m {:X}.{:X}.{:X}", VERSION[0x0], VERSION[0x1], VERSION[0x2]);
 		println!("Copyright 2021, 2023 Gabriel Bj\u{F8}rnager Jensen.");
 		println!();
 		println!("COCITAVIT\u{B7}ERCO\u{B7}FVIT");

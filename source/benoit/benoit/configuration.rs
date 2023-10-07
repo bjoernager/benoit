@@ -51,6 +51,8 @@ pub struct Configuration {
 
 	pub max_iter_count: u32,
 
+	pub inverse: bool,
+
 	pub palette:      Palette,
 	pub colour_range: f32,
 
@@ -79,6 +81,8 @@ impl Configuration {
 			zoom:        Float::with_val(PRECISION, 1.0),
 
 			max_iter_count: 0x100,
+
+			inverse: false,
 
 			palette:      Palette::Fire,
 			colour_range: 64.0,

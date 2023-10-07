@@ -34,7 +34,7 @@ impl Video {
 		let sdl       = sdl2::init().expect("unable to initialise sdl2");
 		let sdl_video = sdl.video().expect("unable to initialise video");
 
-		let window_title = format!("BENO\u{CE}T {:X}.{:X}.{:X}", VERSION.major, VERSION.minor, VERSION.patch);
+		let window_title = format!("BENO\u{CE}T {:X}.{:X}.{:X}", VERSION[0x0], VERSION[0x1], VERSION[0x2]);
 
 		let mut window_builder = sdl_video.window(window_title.as_str(), canvas_width * scale, canvas_height * scale);
 		window_builder.borderless();

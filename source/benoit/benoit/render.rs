@@ -26,18 +26,17 @@ use crate::benoit::render::render_data::RenderData;
 extern crate rug;
 
 use rug::Float;
-use std::sync::Arc;
 
 pub mod colour;
 pub mod colour_data;
 pub mod iterate;
 pub mod render;
 pub mod render_data;
-pub mod render_row;
+pub mod render_point;
 
 pub use colour::*;
 pub use render::*;
 
 pub type IteratorFunction = fn(&mut Float, &mut Float, &Float, &Float);
 
-pub type RowRenderer = fn(Arc<RenderData>, u32, IteratorFunction);
+pub type PointRenderer = fn(&RenderData, u32, u32, IteratorFunction) -> (u32, f32);

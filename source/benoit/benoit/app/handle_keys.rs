@@ -25,7 +25,7 @@ use crate::benoit::{PRECISION};
 use crate::benoit::app::App;
 use crate::benoit::fractal::Fractal;
 use crate::benoit::palette::Palette;
-use crate::benoit::render::{IteratorFunction, RowRenderer};
+use crate::benoit::render::{IteratorFunction, PointRenderer};
 use crate::benoit::rendering::Rendering;
 
 extern crate rug;
@@ -44,10 +44,11 @@ impl App {
 			Scancode::Escape => return true,
 			Scancode::F1     => self.do_textual_feedback = !self.do_textual_feedback,
 			Scancode::LAlt   => (self.fractal, self.multibrot_exponent, self.iterator_function) = cycle_fractal(self.fractal, -0x1),
+			Scancode::LCtrl  => self.inverse = toggle_inverse(self.inverse),
 			Scancode::Left   => self.palette = cycle_palette(self.palette, -0x1),
 			Scancode::RAlt   => (self.fractal, self.multibrot_exponent, self.iterator_function) = cycle_fractal(self.fractal, 0x1),
 			Scancode::Right  => self.palette = cycle_palette(self.palette, 0x1),
-			Scancode::Tab    => (self.rendering, self.row_renderer) = toggle_julia(self.rendering),
+			Scancode::Tab    => (self.rendering, self.point_renderer) = toggle_julia(self.rendering),
 			Scancode::Z      => eprintln!("c = {}{:+}i, {}x @ {} iter. (range.: {:.3})", &self.centre_real, &self.centre_imag, &self.zoom, self.max_iter_count, self.colour_range),
 			_                => {},
 		}
@@ -113,17 +114,28 @@ fn cycle_fractal(fractal: Fractal, distance: i8) -> (Fractal, f32, IteratorFunct
 	return (fractal, exponent, iterator_function);
 }
 
-fn toggle_julia(rendering: Rendering) -> (Rendering, RowRenderer) {
+fn toggle_julia(rendering: Rendering) -> (Rendering, PointRenderer) {
 	let rendering = rendering.cycle();
 
-	let row_renderer = rendering.get_row_renderer();
+	let point_renderer = rendering.get_point_renderer();
 
 	match rendering {
 		Rendering::Julia  => eprintln!("enabled the julia set"),
 		Rendering::Normal => eprintln!("disabled the julia set"),
 	};
 
-	return (rendering, row_renderer);
+	return (rendering, point_renderer);
+}
+
+fn toggle_inverse(inverse: bool) -> bool {
+	let inverse = !inverse;
+
+	match inverse {
+		false => eprintln!("reverting fractal"),
+		true  => eprintln!("inverting fractals"),
+	};
+
+	return inverse;
 }
 
 fn cycle_palette(palette: Palette, direction: i8) -> Palette {

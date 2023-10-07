@@ -21,8 +21,8 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::render::RowRenderer;
-use crate::benoit::render::render_row;
+use crate::benoit::render::PointRenderer;
+use crate::benoit::render::render_point;
 
 use std::mem::transmute;
 
@@ -33,10 +33,10 @@ pub enum Rendering {
 }
 
 impl Rendering {
-	pub fn get_row_renderer(self) -> RowRenderer {
+	pub fn get_point_renderer(self) -> PointRenderer {
 		return match self {
-			Rendering::Julia  => render_row::julia,
-			Rendering::Normal => render_row::normal,
+			Rendering::Julia  => render_point::julia,
+			Rendering::Normal => render_point::normal,
 		};
 	}
 

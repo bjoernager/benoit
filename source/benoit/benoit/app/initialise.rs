@@ -74,9 +74,11 @@ impl App {
 			centre_imag: configuration.centre_imag,
 			zoom:        configuration.zoom,
 
-			multibrot_exponent: 2.0,
-
 			max_iter_count: configuration.max_iter_count,
+
+			inverse: configuration.inverse,
+
+			multibrot_exponent: configuration.fractal.get_exponent(),
 
 			palette:      configuration.palette,
 			colour_range: configuration.colour_range,
@@ -90,7 +92,7 @@ impl App {
 			do_render:           true,
 			do_textual_feedback: false,
 
-			row_renderer:      configuration.rendering.get_row_renderer(),
+			point_renderer:    configuration.rendering.get_point_renderer(),
 			iterator_function: configuration.fractal.get_iterator(),
 		};
 	}

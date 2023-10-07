@@ -63,7 +63,7 @@ impl App {
 
 				let time_start = Instant::now();
 
-				render(&mut iter_count_buffer[..], &mut square_dist_buffer[..], self.canvas_width, self.canvas_height, &self.centre_real, &self.centre_imag, &self.zoom, self.max_iter_count, self.row_renderer, self.iterator_function);
+				render(&mut iter_count_buffer[..], &mut square_dist_buffer[..], self.canvas_width, self.canvas_height, &self.centre_real, &self.centre_imag, &self.zoom, self.max_iter_count, self.inverse, self.point_renderer, self.iterator_function);
 				let render_time = time_start.elapsed();
 
 				eprintln!(" {:.3}ms", render_time.as_micros() as f32 / 1000.0);
@@ -94,7 +94,7 @@ impl App {
 	pub fn draw_feedback(&self, video: &mut Video, prev_centre_real: &Float, prev_centre_imag: &Float, prev_zoom: &Float) {
 		let julia = match self.rendering {
 			Rendering::Julia => true,
-			_                => false,
+			_             => false,
 		};
 
 		if {
@@ -135,15 +135,15 @@ impl App {
 		println!("- \u{1B}[1mR\u{1B}[0m            Decrease max. iteration count");
 		println!("- \u{1B}[1mF\u{1B}[0m            Increase max. iteration count");
 		println!();
-		println!("- \u{1B}[1mTab\u{1B}[0m          Toggle Julia");
 		println!("- \u{1B}[1mLeft Alt\u{1B}[0m     Cycle to previous fractal");
 		println!("- \u{1B}[1mRight Alt\u{1B}[0m    Cycle to next fractal");
-		println!();
-		println!("- \u{1B}[1mUp\u{1B}[0m           Increase colour range");
-		println!("- \u{1B}[1mDown\u{1B}[0m         Decrease colour range");
+		println!("- \u{1B}[1mTab\u{1B}[0m          Toggle Julia");
+		println!("- \u{1B}[1mLeft Ctrl\u{1B}[0m    Toggle inverse");
 		println!();
 		println!("- \u{1B}[1mLeft\u{1B}[0m         Cycle to previous palette");
 		println!("- \u{1B}[1mRight\u{1B}[0m        Cycle to next palette");
+		println!("- \u{1B}[1mUp\u{1B}[0m           Increase colour range");
+		println!("- \u{1B}[1mDown\u{1B}[0m         Decrease colour range");
 		println!();
 		println!("- \u{1B}[1mF1\u{1B}[0m           Toggle textual feedback");
 		println!("- \u{1B}[1mZ\u{1B}[0m            Print centre value (c)");

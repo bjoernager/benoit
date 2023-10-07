@@ -79,7 +79,7 @@ impl App {
 
 			let time_start = Instant::now();
 
-			render(&mut iter_count_buffer[..], &mut square_dist_buffer[..], self.canvas_width, self.canvas_height, &self.centre_real, &self.centre_imag, &zoom, self.max_iter_count, self.row_renderer, self.iterator_function);
+			render(&mut iter_count_buffer[..], &mut square_dist_buffer[..], self.canvas_width, self.canvas_height, &self.centre_real, &self.centre_imag, &zoom, self.max_iter_count, self.inverse, self.point_renderer, self.iterator_function);
 
 			let render_time = time_start.elapsed();
 			eprint!(" {:.3}ms, colouring...", render_time.as_micros() as f32 / 1000.0);

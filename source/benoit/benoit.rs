@@ -32,23 +32,16 @@ pub mod palette;
 pub mod rendering;
 pub mod render;
 pub mod video;
-pub mod width_height_ratio;
 
-pub use width_height_ratio::*;
-
-pub struct Version<T> {
-	major: T,
-	minor: T,
-	patch: T,
-}
-
-pub const VERSION: Version::<u32> = Version::<u32> {
-	major: 0x2,
-	minor: 0x1,
-	patch: 0x1,
-};
+pub const VERSION: [u32; 0x3] = [
+	0x2,
+	0x2,
+	0x0,
+];
 
 pub const PRECISION: u32 = 0x80;
+
+pub const BAILOUT: f32 = 256.0;
 
 #[derive(Clone, Copy)]
 pub enum ImageFormat {
@@ -63,4 +56,12 @@ pub struct FeedbackInfo<'a> {
 	next_centre_real: &'a Float,
 	next_centre_imag: &'a Float,
 	next_zoom:        &'a Float,
+}
+
+pub fn width_height_ratio(width: u32, height: u32) -> (f32, f32) {
+	return if width > height {
+		(1.0, height as f32 / width as f32)
+	} else {
+		(width as f32 / height as f32, 1.0)
+	};
 }
