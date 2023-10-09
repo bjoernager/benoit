@@ -22,10 +22,10 @@
 */
 
 use crate::benoit::ImageFormat;
+use crate::benoit::complex::Complex;
 use crate::benoit::fractal::Fractal;
 use crate::benoit::palette::Palette;
-use crate::benoit::rendering::Rendering;
-use crate::benoit::render::{IteratorFunction, PointRenderer};
+use crate::benoit::renderer::Renderer;
 use crate::benoit::video::Video;
 
 extern crate rug;
@@ -37,34 +37,28 @@ pub mod animate;
 pub mod drop;
 pub mod dump;
 pub mod handle_keys;
-pub mod image_filename;
 pub mod initialise;
 pub mod interactive;
 pub mod poll_events;
 pub mod run;
-pub mod still;
 
 pub struct App {
-	#[allow(dead_code)]
 	thread_count: u32,
 
 	fractal:   Fractal,
-	rendering: Rendering,
+	renderer: Renderer,
 
 	canvas_width:  u32,
 	canvas_height: u32,
 	scale:         u32,
-	frame_count:   u32,
+	frame_start:   u32,
+	frame_stop:    u32,
 
-	centre_real: Float,
-	centre_imag: Float,
-	zoom:        Float,
+	centre: Complex,
+	extra:  Complex,
+	zoom:   Float,
 
 	max_iter_count: u32,
-
-	inverse: bool,
-
-	multibrot_exponent: f32,
 
 	palette:      Palette,
 	colour_range: f32,
@@ -72,12 +66,9 @@ pub struct App {
 	dump_path:    String,
 	image_format: ImageFormat,
 
-	video: Option<Video>,
-
 	interactive:         bool,
 	do_render:           bool,
 	do_textual_feedback: bool,
 
-	point_renderer:      PointRenderer,
-	iterator_function: IteratorFunction,
+	video: Option<Video>,
 }

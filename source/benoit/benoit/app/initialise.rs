@@ -22,6 +22,7 @@
 */
 
 use crate::benoit::app::App;
+use crate::benoit::complex::Complex;
 use crate::benoit::configuration::Configuration;
 use crate::benoit::video::Video;
 
@@ -62,23 +63,21 @@ impl App {
 		return App {
 			thread_count: thread_count,
 
-			fractal:   configuration.fractal,
-			rendering: configuration.rendering,
+			fractal:  configuration.fractal,
+			renderer: configuration.renderer,
 
 			canvas_width:  configuration.canvas_width,
 			canvas_height: configuration.canvas_height,
 			scale:         configuration.scale,
-			frame_count:   configuration.frame_count,
+			frame_start:   configuration.frame_start,
+			frame_stop:    configuration.frame_stop,
 
-			centre_real: configuration.centre_real,
-			centre_imag: configuration.centre_imag,
-			zoom:        configuration.zoom,
+			centre: Complex { real: configuration.centre_real, imag: configuration.centre_imag },
+			zoom:   configuration.zoom,
+
+			extra: Complex { real: configuration.extra_real, imag: configuration.extra_imag },
 
 			max_iter_count: configuration.max_iter_count,
-
-			inverse: configuration.inverse,
-
-			multibrot_exponent: configuration.fractal.get_exponent(),
 
 			palette:      configuration.palette,
 			colour_range: configuration.colour_range,
@@ -86,14 +85,11 @@ impl App {
 			dump_path:    configuration.dump_path,
 			image_format: configuration.image_format,
 
-			video: video,
-
 			interactive:         configuration.interactive,
 			do_render:           true,
 			do_textual_feedback: false,
 
-			point_renderer:    configuration.rendering.get_point_renderer(),
-			iterator_function: configuration.fractal.get_iterator(),
+			video: video,
 		};
 	}
 }

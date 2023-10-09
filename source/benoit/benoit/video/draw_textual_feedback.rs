@@ -21,6 +21,7 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::complex::Complex;
 use crate::benoit::video::Video;
 
 extern crate rug;
@@ -32,9 +33,9 @@ use sdl2::rect::Rect;
 use sdl2::render::WindowCanvas;
 
 impl Video {
-	pub fn draw_textual_feedback(&mut self, real: &Float, imag: &Float, zoom: &Float, max_iter_count: u32) {
-		let real_text = format!("REAL: {:.18}",  real.to_f64());
-		let imag_text = format!("IMAG: {:.18}",  imag.to_f64());
+	pub fn draw_textual_feedback(&mut self, centre: &Complex, zoom: &Float, max_iter_count: u32) {
+		let real_text = format!("REAL: {:.18}",  centre.real.to_f64());
+		let imag_text = format!("IMAG: {:.18}",  centre.imag.to_f64());
 		let zoom_text = format!("ZOOM: 2^{:.9}", zoom.to_f64().log2());
 		let iter_text = format!("ITER: {}",      max_iter_count);
 

@@ -21,39 +21,41 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::{PRECISION};
+use crate::benoit::PRECISION;
 use crate::benoit::app::App;
-use crate::benoit::fractal::Fractal;
-use crate::benoit::palette::Palette;
-use crate::benoit::render::{IteratorFunction, PointRenderer};
-use crate::benoit::rendering::Rendering;
+use crate::benoit::configuration::Configuration;
+use crate::benoit::renderer::Renderer;
 
 extern crate rug;
 extern crate sdl2;
 
-use rug::Float;
-use sdl2::keyboard::Scancode;
+use rug::{Assign, Float};
+use sdl2::keyboard::{KeyboardState, Scancode};
 
 pub const MIN_COLOUR_RANGE: f32 = 2.0;
 
 impl App {
 	#[must_use]
-	pub fn handle_keys(&mut self, scan_code: Scancode) -> bool {
+	pub fn handle_keys(&mut self, scan_code: Scancode, state: KeyboardState) -> bool {
+		if scan_code == Scancode::C { self.do_render = true };
+
+		if state.is_scancode_pressed(Scancode::LShift) { return self.handle_shift_keys(scan_code) };
+
 		match scan_code {
-			Scancode::C      => self.do_render = true,
 			Scancode::Escape => return true,
 			Scancode::F1     => self.do_textual_feedback = !self.do_textual_feedback,
-			Scancode::LAlt   => (self.fractal, self.multibrot_exponent, self.iterator_function) = cycle_fractal(self.fractal, -0x1),
-			Scancode::LCtrl  => self.inverse = toggle_inverse(self.inverse),
-			Scancode::Left   => self.palette = cycle_palette(self.palette, -0x1),
-			Scancode::RAlt   => (self.fractal, self.multibrot_exponent, self.iterator_function) = cycle_fractal(self.fractal, 0x1),
-			Scancode::Right  => self.palette = cycle_palette(self.palette, 0x1),
-			Scancode::Tab    => (self.rendering, self.point_renderer) = toggle_julia(self.rendering),
-			Scancode::Z      => eprintln!("c = {}{:+}i, {}x @ {} iter. (range.: {:.3})", &self.centre_real, &self.centre_imag, &self.zoom, self.max_iter_count, self.colour_range),
+			Scancode::LAlt   => self.cycle_fractal(-0x1),
+			Scancode::LCtrl  => self.toggle_inverse(),
+			Scancode::Left   => self.cycle_palette(-0x1),
+			Scancode::RAlt   => self.cycle_fractal(0x1),
+			Scancode::Right  => self.cycle_palette(0x1),
+			Scancode::Tab    => self.cycle_rendering(),
+			Scancode::X      => self.reset_viewport(),
+			Scancode::Z      => self.dump_info(),
 			_                => {},
-		}
+		};
 
-		self.handle_translation(scan_code);
+		self.translate(scan_code);
 
 		self.max_iter_count = match scan_code {
 			Scancode::F => self.max_iter_count * 0x2,
@@ -72,7 +74,26 @@ impl App {
 		return false;
 	}
 
-	fn handle_translation(&mut self, scan_code: Scancode) {
+	#[must_use]
+	fn handle_shift_keys(&mut self, scan_code: Scancode) -> bool {
+		let translate_ammount = Float::with_val(PRECISION, 4.0 / 64.0 / &self.zoom);
+
+		match scan_code {
+			Scancode::A => self.extra.real -= &translate_ammount,
+			Scancode::D => self.extra.real += &translate_ammount,
+			_           => {},
+		};
+
+		match scan_code {
+			Scancode::S => self.extra.imag -= &translate_ammount,
+			Scancode::W => self.extra.imag += &translate_ammount,
+			_           => {},
+		};
+
+		return false;
+	}
+
+	fn translate(&mut self, scan_code: Scancode) {
 		const ZOOM_FACTOR: f32 = 1.0 + 1.0 / 4.0;
 
 		match scan_code {
@@ -81,67 +102,74 @@ impl App {
 			_           => {},
 		};
 
-		let translate_ammount = {
-			let mut ammount = Float::with_val(PRECISION, 4.0);
-			ammount /= 16.0;
-			ammount /= &self.zoom;
-
-			ammount
-		};
+		let translate_ammount = Float::with_val(PRECISION, 4.0 / 16.0 / &self.zoom);
 
 		match scan_code {
-			Scancode::A => self.centre_real -= &translate_ammount,
-			Scancode::D => self.centre_real += &translate_ammount,
+			Scancode::A => self.centre.real -= &translate_ammount,
+			Scancode::D => self.centre.real += &translate_ammount,
 			_           => {},
 		};
 
 		match scan_code {
-			Scancode::S => self.centre_imag -= &translate_ammount,
-			Scancode::W => self.centre_imag += &translate_ammount,
+			Scancode::S => self.centre.imag -= &translate_ammount,
+			Scancode::W => self.centre.imag += &translate_ammount,
 			_           => {},
 		};
 	}
-}
 
-fn cycle_fractal(fractal: Fractal, distance: i8) -> (Fractal, f32, IteratorFunction) {
-	let fractal  = fractal + distance;
-	let exponent = fractal.get_exponent();
+	fn cycle_fractal(&mut self, distance: i8) {
+		self.fractal.cycle(distance);
 
-	let iterator_function = fractal.get_iterator();
+		eprintln!("renderer the {}", self.fractal.kind().name());
+	}
 
-	eprintln!("rendering the {}", fractal.get_name());
+	fn cycle_rendering(&mut self) {
+		let renderer = self.renderer.cycle();
 
-	return (fractal, exponent, iterator_function);
-}
+		match renderer {
+			Renderer::Julia  => eprintln!("enabled the julia set"),
+			Renderer::Normal => eprintln!("disabled the julia set"),
+		};
 
-fn toggle_julia(rendering: Rendering) -> (Rendering, PointRenderer) {
-	let rendering = rendering.cycle();
+		self.renderer = renderer;
+	}
 
-	let point_renderer = rendering.get_point_renderer();
+	fn toggle_inverse(&mut self) {
+		let inverse = !self.fractal.inverse();
 
-	match rendering {
-		Rendering::Julia  => eprintln!("enabled the julia set"),
-		Rendering::Normal => eprintln!("disabled the julia set"),
-	};
+		match inverse {
+			false => eprintln!("reverting fractal"),
+			true  => eprintln!("inverting fractals"),
+		};
 
-	return (rendering, point_renderer);
-}
+		self.fractal.set_inverse(inverse);
+	}
 
-fn toggle_inverse(inverse: bool) -> bool {
-	let inverse = !inverse;
+	fn cycle_palette(&mut self, direction: i8) {
+		let palette = self.palette.cycle(direction);
 
-	match inverse {
-		false => eprintln!("reverting fractal"),
-		true  => eprintln!("inverting fractals"),
-	};
+		eprintln!("using palette \"{}\"", palette.name());
 
-	return inverse;
-}
+		self.palette = palette;
+	}
 
-fn cycle_palette(palette: Palette, direction: i8) -> Palette {
-	let palette = palette.cycle(direction);
+	fn reset_viewport(&mut self) {
+		self.centre.real.assign(Configuration::DEFAULT_CENTRE_REAL);
+		self.centre.imag.assign(Configuration::DEFAULT_CENTRE_IMAG);
+		self.zoom.assign(       Configuration::DEFAULT_ZOOM);
 
-	eprintln!("using palette \"{}\"", palette.get_name());
+		self.extra.real.assign(Configuration::DEFAULT_EXTRA_REAL);
+		self.extra.imag.assign(Configuration::DEFAULT_EXTRA_IMAG);
 
-	return palette;
+		self.max_iter_count = Configuration::DEFAULT_MAX_ITER_COUNT;
+
+		self.colour_range = Configuration::DEFAULT_COLOUR_RANGE;
+	}
+
+	fn dump_info(&self) {
+		eprintln!("info dump:");
+		eprintln!("  c = {}{:+}i ({}x)", &self.centre.real, &self.centre.imag, &self.zoom);
+		eprintln!("  w = {}{:+}i", &self.extra.real, &self.extra.imag);
+		eprintln!("  max. iter.: {}, col. range: {}", self.max_iter_count, self.colour_range);
+	}
 }

@@ -62,7 +62,7 @@ static mut DATA_SAPPHIRE:  PaletteData = default_palette_data();
 fn calculate_palettes() {
 	for palette in all::<Palette>() {
 		let data     = palette.get_data_mut();
-		let function = palette.get_function();
+		let function = palette.function();
 
 		for index in 0x0..PALETTE_DATA_LENGTH {
 			let factor = index as f32 / PALETTE_DATA_LENGTH as f32;
@@ -79,7 +79,7 @@ impl Palette {
 	const MAX: Self = Palette::Sapphire;
 
 	#[must_use]
-	pub fn get_name(self) -> &'static str {
+	pub fn name(self) -> &'static str {
 		return match self {
 			Palette::Ancient   => "ancient",
 			Palette::Fire      => "fire",
@@ -111,7 +111,7 @@ impl Palette {
 	}
 
 	#[must_use]
-	fn get_function(self) -> fn(f32) -> (f32, f32, f32) {
+	fn function(self) -> fn(f32) -> (f32, f32, f32) {
 		return match self {
 			Palette::Ancient   => paint::ancient,
 			Palette::Fire      => paint::fire,

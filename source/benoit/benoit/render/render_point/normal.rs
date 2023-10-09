@@ -22,6 +22,7 @@
 */
 
 use crate::benoit::{BAILOUT, PRECISION};
+use crate::benoit::complex::Complex;
 use crate::benoit::render::IteratorFunction;
 use crate::benoit::render::render_data::RenderData;
 
@@ -31,56 +32,55 @@ use rug::{Assign, Float};
 use rug::float::Special;
 
 pub fn normal(data: &RenderData, x: u32, y: u32, iterator: IteratorFunction) -> (u32, f32) {
-	let (centre_real, centre_imag, zoom, max_iter_count) = data.input();
+	let (centre, extra, zoom, max_iter_count) = data.input();
 
 	let (x_offset, y_offset, x_factor, y_factor) = data.consts();
 
 	let x_temporary = (x as f32 + x_offset) * x_factor;
 	let y_temporary = (y as f32 + y_offset) * y_factor;
 
-	let ca = {
-		let mut ca = Float::with_val(PRECISION, x_temporary / zoom);
-		ca += centre_real;
+	let mut z = {
+		let mut a = Float::with_val(PRECISION, x_temporary / zoom);
+		a += &centre.real;
 
-		ca
+		let mut b = Float::with_val(PRECISION, y_temporary / zoom);
+		b -= &centre.imag;
+
+		Complex {real: a, imag: b}
 	};
 
-	let cb = {
-		let mut cb = Float::with_val(PRECISION, y_temporary / zoom);
-		cb -= centre_imag;
+	let inverse_factor = data.inverse_factor(&z);
 
-		cb
+	z.real *= &inverse_factor;
+	z.imag *= &inverse_factor;
+
+	let c = z.clone();
+
+	let mut z_prev = Complex {
+		real: Float::with_val(PRECISION, Special::Nan),
+		imag: Float::with_val(PRECISION, Special::Nan),
 	};
-
-	let inverse_factor = data.inverse_factor(&ca, &cb);
-
-	let ca = ca * &inverse_factor;
-	let cb = cb * &inverse_factor;
-
-	let mut za = ca.clone();
-	let mut zb = cb.clone();
-
-	let mut za_prev = Float::with_val(PRECISION, Special::Nan);
-	let mut zb_prev = Float::with_val(PRECISION, Special::Nan);
 
 	let mut iter_count:  u32 = 0x1;
-	let mut square_dist       = Float::with_val(PRECISION, Special::Nan);
+	let mut square_dist      = Float::with_val(PRECISION, Special::Nan);
 	while {
-		square_dist.assign(&za * &za + &zb * &zb);
+		square_dist.assign(&z.real * &z.real + &z.imag * &z.imag);
 		// Having a larger escape radius gives better
 		// results with regard to smoothing.
 
 		// Check if the value is periodic, i.e. its
 		// sequence repeats.
-		let periodic = za == za_prev && zb == zb_prev;
+		let periodic = z.real == z_prev.real && z.imag == z_prev.imag;
 		if periodic { iter_count = max_iter_count }
 
 		square_dist <= BAILOUT && iter_count < max_iter_count
 	} {
-		za_prev.assign(&za);
-		zb_prev.assign(&zb);
+		z_prev.assign(&z);
 
-		iterator(&mut za, &mut zb, &ca, &cb);
+		iterator(&mut z, &c);
+
+		z.real += &extra.real;
+		z.imag -= &extra.imag;
 
 		iter_count += 0x1;
 	}

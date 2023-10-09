@@ -30,8 +30,13 @@ use sdl2::event::Event;
 
 impl App {
 	#[must_use]
-	pub fn poll_events(&mut self, event_pump: &mut EventPump) -> bool {
-		for event in event_pump.poll_iter() {
+	pub fn poll_events(&mut self, pump: &mut EventPump) -> bool {
+		loop {
+			let event = match pump.poll_event() {
+				Some(event) => event,
+				None        => break,
+			};
+
 			let quit = match event {
 				Event::KeyDown {
 					timestamp: _,
@@ -40,7 +45,11 @@ impl App {
 					scancode:  scan_code,
 					keymod:    _,
 					repeat:    _,
-				} => self.handle_keys(scan_code.unwrap()),
+				} => {
+					let state = pump.keyboard_state();
+
+					self.handle_keys(scan_code.unwrap(), state)
+				},
 				Event::Quit { .. } => true,
 				_ => false,
 			};

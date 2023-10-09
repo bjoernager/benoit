@@ -26,17 +26,20 @@ use crate::benoit::render::render_point;
 
 use std::mem::transmute;
 
+pub mod colour;
+pub mod render;
+
 #[derive(Clone, Copy)]
-pub enum Rendering {
+pub enum Renderer {
 	Julia,
 	Normal,
 }
 
-impl Rendering {
-	pub fn get_point_renderer(self) -> PointRenderer {
+impl Renderer {
+	pub fn point_renderer(self) -> PointRenderer {
 		return match self {
-			Rendering::Julia  => render_point::julia,
-			Rendering::Normal => render_point::normal,
+			Renderer::Julia  => render_point::julia,
+			Renderer::Normal => render_point::normal,
 		};
 	}
 

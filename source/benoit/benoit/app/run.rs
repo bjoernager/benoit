@@ -38,10 +38,7 @@ impl App {
 
 		return match self.interactive {
 			true  => self.interactive(),
-			false => match self.frame_count {
-				0x1 => self.still(),
-				_   => self.animate(),
-			},
+			false => self.animate(),
 		};
 	}
 }

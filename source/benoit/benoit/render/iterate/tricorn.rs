@@ -21,30 +21,28 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-extern crate rug;
+use crate::benoit::complex::Complex;
 
-use rug::Float;
-
-pub fn tricorn(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
+pub fn tricorn(z: &mut Complex, c: &Complex) {
 	// The Tricorn is only different from the
 	// Mandelbrot Set in that the conjugate of (z) is
 	// used instead of just (z):
 	//
 	// z(n+1) = (Re(z(n))-Im(z(n))i)^2+c.
 
-	let za_temporary = za.clone(); // a
+	let za_temporary = z.real.clone(); // a
 
-	za.square_mut();    // a^2
-	*za -= &*zb * &*zb; // a^2-b^2
-	*za += ca;          // a^2
+	z.real.square_mut();         // a^2
+	z.real -= &z.imag * &z.imag; // a^2-b^2
+	z.real += &c.real;           // a^2
 
-	*zb *= za_temporary;
+	z.imag *= &za_temporary;
 	// We can negate the value by multiplying with
 	// (-1). A multiplication can be saved, as
 	//
 	// a*2*(-1) = a*(-2).
 	//
 	// Thus, we may combine these two multiplications.
-	*zb *= -2.0;
-	*zb += cb;
+	z.imag *= -2.0;
+	z.imag += &c.imag;
 }

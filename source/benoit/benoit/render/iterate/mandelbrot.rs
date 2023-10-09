@@ -21,11 +21,9 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-extern crate rug;
+use crate::benoit::complex::Complex;
 
-use rug::Float;
-
-pub fn mandelbrot(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
+pub fn mandelbrot(z: &mut Complex, c: &Complex) {
 	// The Mandelbrot Set (M) is defined as the set of
 	// values in the complex plane where the iterating
 	// function
@@ -36,7 +34,7 @@ pub fn mandelbrot(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
 	//
 	// abs(z) = sqrt(Re(z)^2+Im(z)^2) <= 2^2 = 4.
 
-	let za_temporary = za.clone(); // a
+	let za_temporary = z.real.clone(); // a
 
 	// We can calculate the square of a complex number
 	// as:
@@ -46,11 +44,11 @@ pub fn mandelbrot(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
 	// = a^2+abi+abi-b^2
 	// = a^2-b^2+2abi.
 
-	za.square_mut();    // a^2
-	*za -= &*zb * &*zb; // a^2-b^2
-	*za += ca;          // a^2-b^2+Re(c)
+	z.real.square_mut();         // a^2
+	z.real -= &z.imag * &z.imag; // a^2-b^2
+	z.real += &c.real;           // a^2-b^2+Re(c)
 
-	*zb *= za_temporary; // ab
-	*zb *= 2.0;          // 2ab
-	*zb += cb;           // 2ab+Im(c)
+	z.imag *= &za_temporary; // ab
+	z.imag *= 2.0;           // 2ab
+	z.imag += &c.imag;       // 2ab+Im(c)
 }

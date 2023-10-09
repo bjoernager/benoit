@@ -21,17 +21,25 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::ImageFormat;
-use crate::benoit::app::App;
+extern crate rug;
 
-impl App {
-	#[must_use]
-	pub fn image_filename(name: &str, image_format: ImageFormat) -> String {
-		let file_extension = match image_format {
-			ImageFormat::Png  => ".png",
-			ImageFormat::Webp => ".webp",
+use rug::{Assign, Float};
+
+pub struct Complex {
+	pub real: Float,
+	pub imag: Float,
+}
+
+impl Complex {
+	pub fn clone(&self) -> Self {
+		return Complex {
+			real: self.real.clone(),
+			imag: self.imag.clone(),
 		};
+	}
 
-		return name.to_owned() + file_extension;
+	pub fn assign(&mut self, other: &Self) {
+		self.real.assign(&other.real);
+		self.imag.assign(&other.imag);
 	}
 }

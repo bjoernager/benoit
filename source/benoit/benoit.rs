@@ -21,22 +21,19 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-extern crate rug;
-
-use rug::Float;
-
 pub mod app;
+pub mod complex;
 pub mod configuration;
 pub mod fractal;
 pub mod palette;
-pub mod rendering;
+pub mod renderer;
 pub mod render;
 pub mod video;
 
 pub const VERSION: [u32; 0x3] = [
-	0x2,
-	0x2,
-	0x0,
+	0x2, // Major
+	0x3, // Minor
+	0x0, // Patch
 ];
 
 pub const PRECISION: u32 = 0x80;
@@ -47,15 +44,6 @@ pub const BAILOUT: f32 = 256.0;
 pub enum ImageFormat {
 	Png,
 	Webp,
-}
-
-pub struct FeedbackInfo<'a> {
-	prev_centre_real: &'a Float,
-	prev_centre_imag: &'a Float,
-	prev_zoom:        &'a Float,
-	next_centre_real: &'a Float,
-	next_centre_imag: &'a Float,
-	next_zoom:        &'a Float,
 }
 
 pub fn width_height_ratio(width: u32, height: u32) -> (f32, f32) {

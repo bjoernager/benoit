@@ -21,27 +21,25 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-extern crate rug;
+use crate::benoit::complex::Complex;
 
-use rug::Float;
-
-pub fn burning_ship(za: &mut Float, zb: &mut Float, ca: &Float, cb: &Float) {
+pub fn burning_ship(z: &mut Complex, c: &Complex) {
 	// The Burning Ship is different in that - during
 	// iteration - the real and imaginary parts of (z)
 	// are made absolute:
 	//
 	// z(n+1) = (abs(Re(z(n)))+i*abs(Im(z(n))))^2+c.
 
-	za.abs_mut();
-	zb.abs_mut();
+	z.real.abs_mut(); // abs(a)
+	z.imag.abs_mut(); // abs(b)
 
-	let za_temporary = za.clone();
+	let za_temporary = z.real.clone(); // abs(a)
 
-	za.square_mut();
-	*za -= &*zb * &*zb;
-	*za += ca;
+	z.real.square_mut();         // abs(a)^2
+	z.real -= &z.imag * &z.imag; // abs(a)^2-abs(b)^2
+	z.real += &c.real;           // abs(a)^2-abs(b)^2+Re(c)
 
-	*zb *= za_temporary;
-	*zb *= 2.0;
-	*zb += cb;
+	z.imag *= &za_temporary; // abs(a)
+	z.imag *= 2.0;           // 2*abs(a)
+	z.imag += &c.imag;       // 2*abs(a)+Im(c)
 }

@@ -1,3 +1,20 @@
+# 2.3.0
+
+* Bump minor version
+* Re-enable window border
+* Support translation when rendering Julias
+* Rework key handling
+* Update naming convention
+* Update controls guide
+* Add key for resetting viewport
+* Support perturbation
+* Refactor and modulise code structure
+* Rework animations
+* Update configuration
+* Rework row colourisers as point colourisers
+* Fix image file extensions
+* Use our own complex type
+
 # 2.2.0
 
 * Bump minor version

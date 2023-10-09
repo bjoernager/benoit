@@ -22,6 +22,7 @@
 */
 
 use crate::benoit::{PRECISION, width_height_ratio};
+use crate::benoit::complex::Complex;
 
 extern crate rug;
 
@@ -34,9 +35,9 @@ pub struct RenderData {
 
 	canvas_size: usize,
 
-	centre_real: Float,
-	centre_imag: Float,
-	zoom:        Float,
+	centre: Complex,
+	extra:  Complex,
+	zoom:   Float,
 
 	max_iter_count: u32,
 
@@ -54,7 +55,17 @@ pub struct RenderData {
 
 impl RenderData {
 	#[must_use]
-	pub fn new(iter_count_buffer: &mut [u32], square_dist_buffer: &mut [f32], canvas_width: u32, canvas_height: u32, centre_real: Float, centre_imag: Float, zoom: Float, max_iter_count: u32, inverse: bool) -> RenderData {
+	pub fn new(
+		iter_count_buffer: &mut [u32],
+		square_dist_buffer: &mut [f32],
+		canvas_width:   u32,
+		canvas_height:  u32,
+		centre:         Complex,
+		extra:          Complex,
+		zoom:           Float,
+		max_iter_count: u32,
+		inverse:        bool,
+	) -> RenderData {
 		let (width_ratio, height_ratio) = width_height_ratio(canvas_width, canvas_height);
 
 		return RenderData {
@@ -63,9 +74,9 @@ impl RenderData {
 
 			canvas_size: canvas_height as usize * canvas_width as usize,
 
-			centre_real: centre_real,
-			centre_imag: centre_imag,
-			zoom:        zoom,
+			centre: centre,
+			extra:  extra,
+			zoom:   zoom,
 
 			max_iter_count: max_iter_count,
 
@@ -83,10 +94,10 @@ impl RenderData {
 	}
 
 	#[must_use]
-	pub fn inverse_factor(&self, a: &Float, b: &Float) -> Float {
+	pub fn inverse_factor(&self, val: &Complex) -> Float {
 		return if self.inverse {
-			let mut inverse_factor = Float::with_val(PRECISION, a * a);
-			inverse_factor += b * b;
+			let mut inverse_factor = Float::with_val(PRECISION, &val.real * &val.real);
+			inverse_factor += &val.imag * &val.imag;
 			inverse_factor.recip_mut();
 
 			inverse_factor
@@ -101,8 +112,8 @@ impl RenderData {
 	}
 
 	#[must_use]
-	pub fn input(&self) -> (&Float, &Float, &Float, u32) {
-		return (&self.centre_real, &self.centre_imag, &self.zoom, self.max_iter_count);
+	pub fn input(&self) -> (&Complex, &Complex, &Float, u32) {
+		return (&self.centre, &self.extra, &self.zoom, self.max_iter_count);
 	}
 
 	#[must_use]

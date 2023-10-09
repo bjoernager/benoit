@@ -25,10 +25,15 @@ use crate::benoit::render::IteratorFunction;
 use crate::benoit::render::iterate;
 
 use std::mem::transmute;
-use std::ops::Add;
+
+pub struct Fractal {
+	kind:    Kind,
+	inverse: bool,
+}
 
 #[derive(Clone, Copy)]
-pub enum Fractal {
+#[repr(u8)]
+pub enum Kind {
 	BurningShip,
 	Mandelbrot,
 	Multibrot3,
@@ -36,54 +41,80 @@ pub enum Fractal {
 }
 
 impl Fractal {
-	const MAX: u8 = Fractal::Tricorn as u8;
+	pub const fn new(kind: Kind, inverse: bool) -> Self {
+		let fractal = Fractal {
+			kind:    kind,
+			inverse: inverse,
+		};
 
-	pub fn get_name(self) -> &'static str {
-		return match self {
-			Fractal::BurningShip => "burning ship",
-			Fractal::Mandelbrot  => "mandelbrot set",
-			Fractal::Multibrot3  => "multibrot (d=3)",
-			Fractal::Tricorn     => "tricorn",
+		return fractal;
+	}
+
+	#[must_use]
+	pub fn kind(&self) -> Kind {
+		return self.kind;
+	}
+
+	#[must_use]
+	pub fn inverse(&self) -> bool {
+		return self.inverse;
+	}
+
+	#[must_use]
+	pub fn exponent(&self) -> f32 {
+		return match self.kind {
+			Kind::BurningShip => 2.0,
+			Kind::Mandelbrot  => 2.0,
+			Kind::Multibrot3  => 3.0,
+			Kind::Tricorn     => 2.0,
 		};
 	}
 
-	pub fn get_exponent(self) -> f32 {
-		return match self {
-			Fractal::BurningShip => 2.0,
-			Fractal::Mandelbrot  => 2.0,
-			Fractal::Multibrot3  => 3.0,
-			Fractal::Tricorn     => 2.0,
+	pub fn iterator(&self) -> IteratorFunction {
+		return match self.kind {
+			Kind::BurningShip => iterate::burning_ship,
+			Kind::Mandelbrot  => iterate::mandelbrot,
+			Kind::Multibrot3  => iterate::multibrot3,
+			Kind::Tricorn     => iterate::tricorn,
 		};
 	}
 
-	pub fn get_iterator(self) -> IteratorFunction {
-		return match self {
-			Fractal::BurningShip => iterate::burning_ship,
-			Fractal::Mandelbrot  => iterate::mandelbrot,
-			Fractal::Multibrot3  => iterate::multibrot3,
-			Fractal::Tricorn     => iterate::tricorn,
-		};
+	pub fn set_kind(&mut self, kind: Kind) {
+		self.kind = kind;
 	}
 
-}
+	pub fn set_inverse(&mut self, inverse: bool) {
+		self.inverse = inverse;
+	}
 
-impl Add<i8> for Fractal {
-	type Output = Fractal;
+	pub fn cycle(&mut self, direction: i8) {
+		// Not important.
+		debug_assert!(direction != 0x0);
 
-	fn add(self, direction: i8) -> Self {
-		assert!(direction != 0x0);
-
-		let raw = self as i8 + direction;
+		let raw = self.kind as i8 + direction;
 		let raw: u8 = if raw < 0x0 {
-			Fractal::MAX
-		} else if raw > Fractal::MAX as i8 {
+			Kind::MAX
+		} else if raw > Kind::MAX as i8 {
 			0x0
 		} else {
 			raw as u8
 		};
 
-		let new: Self = unsafe { transmute(raw) };
+		let new: Kind = unsafe { transmute(raw) };
 
-		return new;
+		self.kind = new;
+	}
+}
+
+impl Kind {
+	const MAX: u8 = Kind::Tricorn as u8;
+
+	pub fn name(self) -> &'static str {
+		return match self {
+			Kind::BurningShip => "burning ship",
+			Kind::Mandelbrot  => "mandelbrot set",
+			Kind::Multibrot3  => "multibrot (d=3) set",
+			Kind::Tricorn     => "tricorn",
+		};
 	}
 }

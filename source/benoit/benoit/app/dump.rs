@@ -31,8 +31,8 @@ use std::fs::{File, write};
 use std::io::BufWriter;
 
 impl App {
-	pub fn dump(&self, path: &str, image: &[u8], canvas_width: u32, canvas_height: u32) {
-		match self.image_format {
+	pub fn dump(path: &str, image: &[u8], canvas_width: u32, canvas_height: u32, image_format: ImageFormat) {
+		match image_format {
 			ImageFormat::Png  => dump_png( path, image, canvas_width, canvas_height),
 			ImageFormat::Webp => dump_webp(path, image, canvas_width, canvas_height),
 		}
@@ -40,6 +40,8 @@ impl App {
 }
 
 fn dump_png(path: &str, image: &[u8], canvas_width: u32, canvas_height: u32) {
+	let path = path.to_owned() + ".png";
+
 	let file        = File::create(path).expect("unable to create file");
 	let file_buffer = BufWriter::new(file);
 
@@ -54,6 +56,8 @@ fn dump_png(path: &str, image: &[u8], canvas_width: u32, canvas_height: u32) {
 }
 
 fn dump_webp(path: &str, image: &[u8], canvas_width: u32, canvas_height: u32) {
+	let path = path.to_owned() + ".webp";
+
 	let encoder = webp::Encoder::from_rgb(&image[..], canvas_width, canvas_height);
 
 	let data = encoder.encode_lossless();

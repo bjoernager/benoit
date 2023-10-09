@@ -37,7 +37,6 @@ impl Video {
 		let window_title = format!("BENO\u{CE}T {:X}.{:X}.{:X}", VERSION[0x0], VERSION[0x1], VERSION[0x2]);
 
 		let mut window_builder = sdl_video.window(window_title.as_str(), canvas_width * scale, canvas_height * scale);
-		window_builder.borderless();
 		window_builder.position_centered();
 
 		let window = window_builder.build().expect("unable to open window");

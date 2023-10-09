@@ -21,7 +21,8 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::{FeedbackInfo, PRECISION, width_height_ratio};
+use crate::benoit::{PRECISION, width_height_ratio};
+use crate::benoit::complex::Complex;
 use crate::benoit::video::Video;
 
 extern crate rug;
@@ -32,7 +33,7 @@ use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 
 impl Video {
-	pub fn draw_translation_feedback(&mut self, canvas_width: u32, canvas_height: u32, scale: u32, feedback_info: &FeedbackInfo) {
+	pub fn draw_translation_feedback(&mut self, canvas_width: u32, canvas_height: u32, scale: u32, prev_centre: &Complex, prev_zoom: &Float, next_centre: &Complex, next_zoom: &Float) {
 		let (width_ratio, height_ratio) = width_height_ratio(canvas_width, canvas_height);
 
 		let canvas_width  = Float::with_val(PRECISION, canvas_width  * scale);
@@ -40,7 +41,7 @@ impl Video {
 
 		let viewport = {
 			let (offset_x, offset_y, width, height) = {
-				let zoom_ratio = Float::with_val(PRECISION, feedback_info.next_zoom / feedback_info.prev_zoom);
+				let zoom_ratio = Float::with_val(PRECISION, next_zoom / prev_zoom);
 
 				let mut width  = Float::with_val(PRECISION, 1.0 / &zoom_ratio);
 				let mut height = Float::with_val(PRECISION, 1.0 / &zoom_ratio);
@@ -49,17 +50,17 @@ impl Video {
 				// inverted vertical axis compared to those of
 				// SDL's coordinate system.
 
-				let mut offset_x = feedback_info.next_centre_real.clone();
-				let mut offset_y = Float::with_val(PRECISION, -feedback_info.next_centre_imag);
+				let mut offset_x = next_centre.real.clone();
+				let mut offset_y = Float::with_val(PRECISION, -&next_centre.imag);
 
-				offset_x -= feedback_info.prev_centre_real;
-				offset_y += feedback_info.prev_centre_imag;
+				offset_x -= &prev_centre.real;
+				offset_y += &prev_centre.imag;
 
 				offset_x /= 4.0;
 				offset_y /= 4.0;
 
-				offset_x *= feedback_info.prev_zoom;
-				offset_y *= feedback_info.prev_zoom;
+				offset_x *= prev_zoom;
+				offset_y *= prev_zoom;
 
 				offset_x /= width_ratio;
 				offset_y /= height_ratio;
