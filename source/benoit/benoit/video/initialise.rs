@@ -30,6 +30,7 @@ use sdl2::pixels::Color;
 use sdl2::render::BlendMode;
 
 impl Video {
+	#[must_use]
 	pub fn initialise(canvas_width: u32, canvas_height: u32, scale: u32) -> Video {
 		let sdl       = sdl2::init().expect("unable to initialise sdl2");
 		let sdl_video = sdl.video().expect("unable to initialise video");

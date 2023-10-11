@@ -21,35 +21,28 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::fractal::IteratorFunction;
-use crate::benoit::render_data::RenderData;
+use crate::benoit::complex::Complex;
 
-use std::mem::transmute;
+pub fn tricorn(z: &mut Complex, c: &Complex) {
+	// The Tricorn is only different from the
+	// Mandelbrot Set in that the conjugate of (z) is
+	// used instead of just (z):
+	//
+	// z(n+1) = (Re(z(n))-Im(z(n))i)^2+c.
 
-mod render_point;
+	let za_temporary = z.real.clone(); // a
 
-#[derive(Clone, Copy)]
-#[repr(u8)]
-pub enum Renderer {
-	Julia,
-	Normal,
-}
+	z.real.square_mut();         // a^2
+	z.real -= &z.imag * &z.imag; // a^2-b^2
+	z.real += &c.real;           // a^2
 
-pub type PointRenderer = fn(&RenderData, u32, u32, IteratorFunction) -> (u32, f32);
-
-impl Renderer {
-	#[must_use]
-	pub fn point_renderer(self) -> PointRenderer {
-		return match self {
-			Renderer::Julia  => render_point::julia,
-			Renderer::Normal => render_point::normal,
-		};
-	}
-
-	pub fn toggle(&mut self) {
-		let raw = !(*self as u8) & 0b00000001;
-		let new: Self = unsafe { transmute(raw) };
-
-		*self = new;
-	}
+	z.imag *= &za_temporary; // ab
+	// We can negate the value by multiplying with
+	// (-1). A multiplication can be saved, as
+	//
+	// a*2*(-1) = a*(-2).
+	//
+	// Thus, we may combine these two multiplications.
+	z.imag *= -2.0;          // -2ab
+	z.imag += &c.imag;       // -2ab+Im(c)
 }

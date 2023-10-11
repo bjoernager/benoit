@@ -25,16 +25,18 @@ extern crate rug;
 
 use rug::{Assign, Float};
 
+#[derive(Clone)]
 pub struct Complex {
 	pub real: Float,
 	pub imag: Float,
 }
 
 impl Complex {
-	pub fn clone(&self) -> Self {
+	#[must_use]
+	pub fn new(real: Float, imag: Float) -> Complex {
 		return Complex {
-			real: self.real.clone(),
-			imag: self.imag.clone(),
+			real: real,
+			imag: imag,
 		};
 	}
 

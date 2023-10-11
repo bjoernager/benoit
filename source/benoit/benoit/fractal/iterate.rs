@@ -21,28 +21,14 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::complex::Complex;
+pub mod burning_ship;
+pub mod mandelbrot;
+pub mod multibrot3;
+pub mod multibrot4;
+pub mod tricorn;
 
-pub fn tricorn(z: &mut Complex, c: &Complex) {
-	// The Tricorn is only different from the
-	// Mandelbrot Set in that the conjugate of (z) is
-	// used instead of just (z):
-	//
-	// z(n+1) = (Re(z(n))-Im(z(n))i)^2+c.
-
-	let za_temporary = z.real.clone(); // a
-
-	z.real.square_mut();         // a^2
-	z.real -= &z.imag * &z.imag; // a^2-b^2
-	z.real += &c.real;           // a^2
-
-	z.imag *= &za_temporary;
-	// We can negate the value by multiplying with
-	// (-1). A multiplication can be saved, as
-	//
-	// a*2*(-1) = a*(-2).
-	//
-	// Thus, we may combine these two multiplications.
-	z.imag *= -2.0;
-	z.imag += &c.imag;
-}
+pub use burning_ship::*;
+pub use mandelbrot::*;
+pub use multibrot3::*;
+pub use multibrot4::*;
+pub use tricorn::*;

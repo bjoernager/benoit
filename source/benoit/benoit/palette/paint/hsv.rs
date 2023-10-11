@@ -21,8 +21,6 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use std::hint::unreachable_unchecked;
-
 pub fn hsv(factor: f32) -> (f32, f32, f32) {
 	return hsv_to_rgb(factor, 7.0 / 8.0, 7.0 / 8.0);
 }
@@ -49,7 +47,7 @@ fn hsv_to_rgb(hue: f32, saturation: f32, value: f32) -> (f32, f32, f32) {
 			0x3 => (p, q, v),
 			0x4 => (t, p, v),
 			0x5 => (v, p, q),
-			_   => unsafe { unreachable_unchecked() },
+			_   => unreachable!(),
 		}
 	};
 }

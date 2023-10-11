@@ -21,7 +21,8 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::palette::{Palette, PaletteData};
+use crate::benoit::image::Image;
+use crate::benoit::palette::PaletteData;
 
 use std::slice::{from_raw_parts, from_raw_parts_mut};
 
@@ -37,12 +38,22 @@ pub struct ColourData {
 	iter_count_buffer:  *const u32,
 	square_dist_buffer: *const f32,
 
-	image: *mut u8,
+	image: *mut (u8, u8, u8),
 }
 
 impl ColourData {
 	#[must_use]
-	pub fn new(image: &mut [u8], canvas_width: u32, canvas_height: u32, exponent: f32, max_iter_count: u32, colour_range: f32, palette: Palette, iter_count_buffer: &[u32], square_dist_buffer: &[f32]) -> ColourData {
+	pub fn new(
+		image:              &mut Image,
+		canvas_width:       u32,
+		canvas_height:      u32,
+		exponent:           f32,
+		max_iter_count:     u32,
+		colour_range:       f32,
+		palette_data:       &'static PaletteData,
+		iter_count_buffer:  &[u32],
+		square_dist_buffer: &[f32],
+	) -> ColourData {
 		return ColourData {
 			canvas_size: canvas_height as usize * canvas_width as usize,
 
@@ -50,12 +61,12 @@ impl ColourData {
 			max_iter_count: max_iter_count,
 			colour_range:   colour_range,
 
-			palette_data: palette.get_data(),
+			palette_data: palette_data,
 
 			iter_count_buffer:  iter_count_buffer.as_ptr(),
 			square_dist_buffer: square_dist_buffer.as_ptr(),
 
-			image: image.as_mut_ptr(),
+			image: image.mut_data().as_mut_ptr(),
 		};
 	}
 
@@ -68,10 +79,8 @@ impl ColourData {
 	}
 
 	#[must_use]
-	pub fn output_buffers(&self) -> &mut [u8] {
-		let image = unsafe { from_raw_parts_mut(self.image, self.canvas_size * 0x3) };
-
-		return image;
+	pub unsafe fn image<'a>(&'a self) -> &'a mut [(u8, u8, u8)] {
+		return from_raw_parts_mut(self.image, self.canvas_size);
 	}
 
 	#[must_use]

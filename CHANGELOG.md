@@ -1,3 +1,11 @@
+# 2.4.0
+
+* Clean up and restructure code
+* Add multibrot d=4 fractal
+* Update messages
+* Improve safety
+* Add image and render types
+
 # 2.3.0
 
 * Bump minor version

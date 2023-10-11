@@ -21,12 +21,41 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod burning_ship;
-pub mod mandelbrot;
-pub mod multibrot3;
-pub mod tricorn;
+use crate::benoit::complex::Complex;
+use crate::benoit::fractal::Fractal;
+use crate::benoit::image::ImageFormat;
+use crate::benoit::palette::Palette;
+use crate::benoit::renderer::Renderer;
 
-pub use burning_ship::*;
-pub use mandelbrot::*;
-pub use multibrot3::*;
-pub use tricorn::*;
+extern crate rug;
+
+use rug::Float;
+
+pub mod animate;
+pub mod configure;
+pub mod dump;
+pub mod run;
+pub mod still;
+
+pub struct Script {
+	// Configuration:
+	fractal:  Fractal,
+	renderer: Renderer,
+
+	canvas_width:  u32,
+	canvas_height: u32,
+	frame_start:   u32,
+	frame_stop:    u32,
+
+	centre: Complex,
+	extra:  Complex,
+	zoom:   Float,
+
+	max_iter_count: u32,
+
+	palette:      Palette,
+	colour_range: f32,
+
+	dump_path:    String,
+	image_format: ImageFormat,
+}

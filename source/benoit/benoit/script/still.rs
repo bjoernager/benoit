@@ -21,35 +21,34 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::fractal::IteratorFunction;
-use crate::benoit::render_data::RenderData;
+use crate::benoit::image::Image;
+use crate::benoit::render::Render;
+use crate::benoit::script::Script;
 
-use std::mem::transmute;
-
-mod render_point;
-
-#[derive(Clone, Copy)]
-#[repr(u8)]
-pub enum Renderer {
-	Julia,
-	Normal,
-}
-
-pub type PointRenderer = fn(&RenderData, u32, u32, IteratorFunction) -> (u32, f32);
-
-impl Renderer {
+impl Script {
 	#[must_use]
-	pub fn point_renderer(self) -> PointRenderer {
-		return match self {
-			Renderer::Julia  => render_point::julia,
-			Renderer::Normal => render_point::normal,
-		};
-	}
+	pub(super) fn still(&self) -> i32 {
+		let mut image  = Image::allocate( self.canvas_width, self.canvas_height);
+		let mut render = Render::allocate(self.canvas_width, self.canvas_height);
 
-	pub fn toggle(&mut self) {
-		let raw = !(*self as u8) & 0b00000001;
-		let new: Self = unsafe { transmute(raw) };
+		const FRAME_NAME: &str = "render";
 
-		*self = new;
+		Script::dump(
+			self.dump_path.as_str(),
+			FRAME_NAME,
+			&mut image,
+			&mut render,
+			self.renderer,
+			self.fractal,
+			self.palette,
+			&self.centre,
+			&self.extra,
+			&self.zoom,
+			self.max_iter_count,
+			self.colour_range,
+			self.image_format,
+		);
+
+		return 0x0;
 	}
 }

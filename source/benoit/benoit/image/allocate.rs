@@ -21,35 +21,21 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::fractal::IteratorFunction;
-use crate::benoit::render_data::RenderData;
+use crate::benoit::image::Image;
 
-use std::mem::transmute;
-
-mod render_point;
-
-#[derive(Clone, Copy)]
-#[repr(u8)]
-pub enum Renderer {
-	Julia,
-	Normal,
-}
-
-pub type PointRenderer = fn(&RenderData, u32, u32, IteratorFunction) -> (u32, f32);
-
-impl Renderer {
+impl Image {
 	#[must_use]
-	pub fn point_renderer(self) -> PointRenderer {
-		return match self {
-			Renderer::Julia  => render_point::julia,
-			Renderer::Normal => render_point::normal,
+	pub fn allocate(width: u32, height: u32) -> Image {
+		let (canvas_size, overflow) = (height as usize).overflowing_mul(width as usize);
+		if overflow { panic!("overflow when calculating canvas size") };
+
+		let data: Vec::<(u8, u8, u8)> = vec![(0x0, 0x0, 0x0); canvas_size];
+
+		return Image {
+			width:  width,
+			height: height,
+
+			data: data,
 		};
-	}
-
-	pub fn toggle(&mut self) {
-		let raw = !(*self as u8) & 0b00000001;
-		let new: Self = unsafe { transmute(raw) };
-
-		*self = new;
 	}
 }

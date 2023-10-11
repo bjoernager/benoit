@@ -21,6 +21,7 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::image::Image;
 use crate::benoit::video::Video;
 
 extern crate sdl2;
@@ -29,21 +30,16 @@ use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 
 impl Video {
-	pub fn draw(&mut self, image: &[u8], canvas_width: u32, canvas_height: u32, scale: u32) {
-		self.draw_image(image, canvas_width, canvas_height, scale);
-	}
-
-	fn draw_image(&mut self, image: &[u8], canvas_width: u32, canvas_height: u32, scale: u32) {
-		let canvas_size = canvas_height * canvas_width;
+	pub fn draw(&mut self, image: &Image, scale: u32) {
+		let (canvas_width, canvas_height) = image.size();
+		let canvas_size = canvas_height as usize * canvas_width as usize;
 
 		for pixel in 0x0..canvas_size {
+			let x = pixel as u32 % canvas_width;
 			let y = pixel as u32 / canvas_width;
-			let x = pixel as u32 - y * canvas_width;
 
 			let colour = {
-				let red   = image[pixel as usize * 0x3];
-				let green = image[pixel as usize * 0x3 + 0x1];
-				let blue  = image[pixel as usize * 0x3 + 0x2];
+				let (red, green, blue) = image[pixel as usize];
 
 				Color::RGB(red, green, blue)
 			};

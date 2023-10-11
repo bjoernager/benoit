@@ -21,18 +21,16 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::app::App;
+use crate::benoit::script::Script;
 
-impl App {
+impl Script {
 	#[must_use]
-	pub fn allocate_buffers(canvas_width: u32, canvas_height: u32) -> (Vec::<u32>, Vec::<f32>, Vec::<u8>) {
-		let canvas_size = canvas_height as usize * canvas_width as usize;
+	pub fn run(self) -> i32 {
+		let code = match self.frame_stop == 0x0 && self.frame_start == 0x0 {
+			false => self.animate(),
+			true  => self.still(),
+		};
 
-		let iter_count_buffer:  Vec::<u32> = vec![0x0; canvas_size];
-		let square_dist_buffer: Vec::<f32> = vec![0.0; canvas_size];
-
-		let image: Vec::<u8>  = vec![0x0; canvas_size * 0x3];
-
-		return (iter_count_buffer, square_dist_buffer, image);
+		return code;
 	}
 }

@@ -94,19 +94,6 @@ impl RenderData {
 	}
 
 	#[must_use]
-	pub fn inverse_factor(&self, val: &Complex) -> Float {
-		return if self.inverse {
-			let mut inverse_factor = Float::with_val(PRECISION, &val.real * &val.real);
-			inverse_factor += &val.imag * &val.imag;
-			inverse_factor.recip_mut();
-
-			inverse_factor
-		} else {
-			Float::with_val(PRECISION, 0x1)
-		};
-	}
-
-	#[must_use]
 	pub fn canvas_size(&self) -> (u32, u32) {
 		return (self.canvas_width, self.canvas_height);
 	}
@@ -117,9 +104,13 @@ impl RenderData {
 	}
 
 	#[must_use]
-	pub fn output_buffers(&self) -> (&mut [u32], &mut [f32]) {
-		let iter_count  = unsafe { from_raw_parts_mut(self.iter_count_buffer,  self.canvas_size as usize) };
-		let square_dist = unsafe { from_raw_parts_mut(self.square_dist_buffer, self.canvas_size as usize) };
+	pub unsafe fn output_buffers<'a>(&'a self) -> (&'a mut [u32], &'a mut [f32]) {
+		// All reads and writes to these buffer are unsafe
+		// AND UB if the same indices are used from
+		// multiple threads.
+
+		let iter_count  = from_raw_parts_mut(self.iter_count_buffer,  self.canvas_size as usize);
+		let square_dist = from_raw_parts_mut(self.square_dist_buffer, self.canvas_size as usize);
 
 		return (iter_count, square_dist);
 	}
@@ -127,6 +118,19 @@ impl RenderData {
 	#[must_use]
 	pub fn consts(&self) -> (f32, f32, f32, f32) {
 		return (self.x_offset, self.y_offset, self.x_factor, self.y_factor);
+	}
+
+	#[must_use]
+	pub fn inverse_factor(&self, val: &Complex) -> Float {
+		return if self.inverse {
+			let mut inverse_factor = Float::with_val(PRECISION, &val.real * &val.real);
+			inverse_factor += &val.imag * &val.imag;
+			inverse_factor.recip_mut();
+
+			inverse_factor
+		} else {
+			Float::with_val(PRECISION, 0x1)
+		};
 	}
 }
 

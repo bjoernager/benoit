@@ -31,6 +31,7 @@ use std::mem::transmute;
 mod paint;
 
 #[derive(Clone, Copy, Sequence)]
+#[repr(u8)]
 pub enum Palette {
 	Ancient,
 	Fire,
@@ -38,40 +39,6 @@ pub enum Palette {
 	Hsv,
 	Lch,
 	Sapphire,
-}
-
-// We would like to precalculate the palettes at
-// compile-time, but Rust does not support
-// floating-point arithmetic there.
-
-pub const PALETTE_DATA_LENGTH: usize = 0x1000;
-pub type PaletteData = [(f32, f32, f32); PALETTE_DATA_LENGTH];
-
-const fn default_palette_data() -> PaletteData {
-	return [(0.0, 0.0, 0.0); PALETTE_DATA_LENGTH];
-}
-
-static mut DATA_ANCIENT:   PaletteData = default_palette_data();
-static mut DATA_FIRE:      PaletteData = default_palette_data();
-static mut DATA_GREYSCALE: PaletteData = default_palette_data();
-static mut DATA_HSV:       PaletteData = default_palette_data();
-static mut DATA_LCH:       PaletteData = default_palette_data();
-static mut DATA_SAPPHIRE:  PaletteData = default_palette_data();
-
-#[ctor]
-fn calculate_palettes() {
-	for palette in all::<Palette>() {
-		let data     = palette.get_data_mut();
-		let function = palette.function();
-
-		for index in 0x0..PALETTE_DATA_LENGTH {
-			let factor = index as f32 / PALETTE_DATA_LENGTH as f32;
-
-			let (red, green, blue) = function(factor);
-
-			data[index as usize] = (red, green, blue);
-		}
-	}
 }
 
 impl Palette {
@@ -91,8 +58,8 @@ impl Palette {
 	}
 
 	#[must_use]
-	pub fn get_data(self) -> &'static PaletteData {
-		return &*self.get_data_mut();
+	pub fn data(self) -> &'static PaletteData {
+		return &*self.mut_data();
 	}
 
 	#[must_use]
@@ -123,7 +90,7 @@ impl Palette {
 	}
 
 	#[must_use]
-	fn get_data_mut(self) -> &'static mut PaletteData {
+	fn mut_data(self) -> &'static mut PaletteData {
 		return unsafe { match self {
 			Palette::Ancient   => &mut DATA_ANCIENT,
 			Palette::Fire      => &mut DATA_FIRE,
@@ -132,5 +99,39 @@ impl Palette {
 			Palette::Lch       => &mut DATA_LCH,
 			Palette::Sapphire  => &mut DATA_SAPPHIRE,
 		} };
+	}
+}
+
+// We would like to precalculate the palettes at
+// compile-time, but Rust does not support
+// floating-point arithmetic there.
+
+pub const PALETTE_DATA_LENGTH: usize = 0x1000;
+pub type PaletteData = [(f32, f32, f32); PALETTE_DATA_LENGTH];
+
+const fn default_palette_data() -> PaletteData {
+	return [(0.0, 0.0, 0.0); PALETTE_DATA_LENGTH];
+}
+
+static mut DATA_ANCIENT:   PaletteData = default_palette_data();
+static mut DATA_FIRE:      PaletteData = default_palette_data();
+static mut DATA_GREYSCALE: PaletteData = default_palette_data();
+static mut DATA_HSV:       PaletteData = default_palette_data();
+static mut DATA_LCH:       PaletteData = default_palette_data();
+static mut DATA_SAPPHIRE:  PaletteData = default_palette_data();
+
+#[ctor]
+fn calculate_palettes() {
+	for palette in all::<Palette>() {
+		let data     = palette.mut_data();
+		let function = palette.function();
+
+		for index in 0x0..PALETTE_DATA_LENGTH {
+			let factor = index as f32 / PALETTE_DATA_LENGTH as f32;
+
+			let (red, green, blue) = function(factor);
+
+			data[index as usize] = (red, green, blue);
+		}
 	}
 }

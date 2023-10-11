@@ -21,35 +21,28 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::fractal::IteratorFunction;
-use crate::benoit::render_data::RenderData;
+use crate::benoit::render::Render;
 
-use std::mem::transmute;
+impl Render {
+	pub fn allocate(canvas_width: u32, canvas_height: u32) -> Render {
+		let canvas_size = {
+			let (canvas_size, overflow) = canvas_height.overflowing_mul(canvas_width);
+			if overflow { panic!("overflow when calculating canvas size") };
 
-mod render_point;
-
-#[derive(Clone, Copy)]
-#[repr(u8)]
-pub enum Renderer {
-	Julia,
-	Normal,
-}
-
-pub type PointRenderer = fn(&RenderData, u32, u32, IteratorFunction) -> (u32, f32);
-
-impl Renderer {
-	#[must_use]
-	pub fn point_renderer(self) -> PointRenderer {
-		return match self {
-			Renderer::Julia  => render_point::julia,
-			Renderer::Normal => render_point::normal,
+			canvas_size as usize
 		};
-	}
 
-	pub fn toggle(&mut self) {
-		let raw = !(*self as u8) & 0b00000001;
-		let new: Self = unsafe { transmute(raw) };
+		let iter_count_buffer:  Vec::<u32> = vec![0x0; canvas_size];
+		let square_dist_buffer: Vec::<f32> = vec![0.0; canvas_size];
 
-		*self = new;
+		return Render {
+			canvas_width:  canvas_width,
+			canvas_height: canvas_height,
+
+			info: None,
+
+			iter_count_buffer:  iter_count_buffer,
+			square_dist_buffer: square_dist_buffer,
+		};
 	}
 }

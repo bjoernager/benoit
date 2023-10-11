@@ -38,8 +38,8 @@ pub fn multibrot3(z: &mut Complex, c: &Complex) {
 	// = a^3+(a^2)bi-ab^2-(b^3)i+2(a^2)bi-2ab^2
 	// = a^3+3(a^2)bi-3ab^2-(b^3)i
 	//
-	// <=> z_a = a^3-3ab^2
-	//     z_b = 3(a^2)b-b^3
+	// <=> a = a^3-3ab^2
+	//     b = 3(a^2)b-b^3
 
 	let mut temporary0 = Float::with_val(PRECISION, &z.imag * &z.imag); // b^2
 
@@ -59,4 +59,5 @@ pub fn multibrot3(z: &mut Complex, c: &Complex) {
 	z.imag *= 3.0;         // 3(a^2)b
 	z.imag -= &temporary1; // 3(a^2)b-b^3
 	z.imag += &c.imag;     // 3(a^2)b-b^3+Im(c)
+
 }

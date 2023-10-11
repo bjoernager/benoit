@@ -21,8 +21,9 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::{fractal, ImageFormat, PRECISION};
-use crate::benoit::fractal::Fractal;
+use crate::benoit::{PRECISION};
+use crate::benoit::fractal::{Fractal, FractalKind};
+use crate::benoit::image::ImageFormat;
 use crate::benoit::palette::Palette;
 use crate::benoit::renderer::Renderer;
 
@@ -58,17 +59,14 @@ pub struct Configuration {
 
 	pub dump_path:    String,
 	pub image_format: ImageFormat,
-
-	pub interactive: bool,
 }
 
 impl Configuration {
 	pub const DEFAULT_CENTRE_REAL: f64 = 0.0;
 	pub const DEFAULT_CENTRE_IMAG: f64 = 0.0;
-	pub const DEFAULT_ZOOM:        f64 = 1.0;
-
 	pub const DEFAULT_EXTRA_REAL: f64 = 0.0;
 	pub const DEFAULT_EXTRA_IMAG: f64 = 0.0;
+	pub const DEFAULT_ZOOM:        f64 = 1.0;
 
 	pub const DEFAULT_MAX_ITER_COUNT: u32 = 0x100;
 	pub const DEFAULT_COLOUR_RANGE:   f32 = 64.0;
@@ -78,7 +76,7 @@ impl Configuration {
 		return Configuration {
 			thread_count: 0x0,
 
-			fractal:  Fractal::new(fractal::Kind::Mandelbrot, false),
+			fractal:  Fractal::new(FractalKind::Multibrot3, false),
 			renderer: Renderer::Normal,
 
 			canvas_width:  0x100,
@@ -101,8 +99,6 @@ impl Configuration {
 
 			dump_path:    "./render".to_string(),
 			image_format: ImageFormat::Png,
-
-			interactive: true,
 		};
 	}
 }

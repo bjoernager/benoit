@@ -21,8 +21,10 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::{fractal, ImageFormat, PRECISION};
+use crate::benoit::PRECISION;
 use crate::benoit::configuration::Configuration;
+use crate::benoit::fractal::FractalKind;
+use crate::benoit::image::ImageFormat;
 use crate::benoit::palette::Palette;
 use crate::benoit::renderer::Renderer;
 
@@ -40,8 +42,6 @@ impl Configuration {
 		eprintln!("loading configuration at \"{path}\"");
 
 		let mut configuration = Configuration::default();
-
-		configuration.interactive = false;
 
 		let configuration_text = match read(path) {
 			Ok(content) => String::from_utf8_lossy(&content).to_string(),
@@ -62,10 +62,11 @@ impl Configuration {
 
 		if let Some(name) = get_string(&configuration_table, "fractal") {
 			configuration.fractal.set_kind(match name.as_str() {
-				"burningship" => fractal::Kind::BurningShip,
-				"mandelbrot"  => fractal::Kind::Mandelbrot,
-				"multibrot3"  => fractal::Kind::Multibrot3,
-				"tricorn"     => fractal::Kind::Tricorn,
+				"burningship" => FractalKind::BurningShip,
+				"mandelbrot"  => FractalKind::Mandelbrot,
+				"multibrot3"  => FractalKind::Multibrot3,
+				"multibrot4"  => FractalKind::Multibrot4,
+				"tricorn"     => FractalKind::Tricorn,
 				name          => panic!("invalid fractal kind \"{name}\""),
 			});
 		}

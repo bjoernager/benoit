@@ -21,38 +21,29 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::ImageFormat;
 use crate::benoit::complex::Complex;
 use crate::benoit::fractal::Fractal;
 use crate::benoit::palette::Palette;
 use crate::benoit::renderer::Renderer;
-use crate::benoit::video::Video;
 
 extern crate rug;
 
 use rug::Float;
 
-pub mod allocate_buffers;
-pub mod animate;
+pub mod configure;
 pub mod drop;
-pub mod dump;
 pub mod handle_keys;
-pub mod initialise;
-pub mod interactive;
 pub mod poll_events;
 pub mod run;
 
 pub struct App {
-	thread_count: u32,
-
-	fractal:   Fractal,
+	// Configuration:
+	fractal:  Fractal,
 	renderer: Renderer,
 
 	canvas_width:  u32,
 	canvas_height: u32,
 	scale:         u32,
-	frame_start:   u32,
-	frame_stop:    u32,
 
 	centre: Complex,
 	extra:  Complex,
@@ -63,12 +54,7 @@ pub struct App {
 	palette:      Palette,
 	colour_range: f32,
 
-	dump_path:    String,
-	image_format: ImageFormat,
-
-	interactive:         bool,
+	// Flags:
 	do_render:           bool,
 	do_textual_feedback: bool,
-
-	video: Option<Video>,
 }

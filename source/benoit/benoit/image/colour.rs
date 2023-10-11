@@ -21,31 +21,36 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::colour_data::ColourData;
+use crate::benoit::image::Image;
 use crate::benoit::palette::{Palette, PALETTE_DATA_LENGTH};
-use crate::benoit::render::colour_data::ColourData;
-use crate::benoit::renderer::Renderer;
+use crate::benoit::render::Render;
 
 extern crate rayon;
 
 use rayon::prelude::*;
 
-impl Renderer {
-	pub fn colour(
-		self,
-		buffer:             &mut [u8],
-		palette:            Palette,
-		canvas_width:       u32,
-		canvas_height:      u32,
-		multibrot_exponent: f32,
-		max_iter_count:     u32,
-		colour_range:       f32,
-		iter_count_buffer:  &[u32],
-		square_dist_buffer: &[f32],
-	) {
-		let data = ColourData::new(buffer, canvas_width, canvas_height, multibrot_exponent, max_iter_count, colour_range, palette, iter_count_buffer, square_dist_buffer);
+impl Image {
+	pub fn colour(&mut self, render: &Render, palette: Palette, new_max_iter_count: u32, colour_range: f32) {
+		if render.canvas_size() != self.size() { panic!("canvas size mismatch") };
 
-		let (canvas_size, overflow) = canvas_height.overflowing_mul(canvas_width);
-		if overflow { panic!("overflow when calculating canvas size") };
+		let (fractal, max_iter_count) = render.info().expect("cannot colour before render");
+
+		let (iter_count_buffer, square_dist_buffer) = render.data();
+
+		let data = ColourData::new(
+			self,
+			self.width,
+			self.height,
+			fractal.exponent(),
+			max_iter_count.min(new_max_iter_count),
+			colour_range,
+			palette.data(),
+			&iter_count_buffer,
+			&square_dist_buffer,
+		);
+
+		let canvas_size = self.height as usize * self.width as usize;
 
 		(0x0..canvas_size).into_par_iter().for_each(|index| {
 			colour_point(&data, index as usize);
@@ -56,18 +61,18 @@ impl Renderer {
 fn colour_point(data: &ColourData, index: usize) {
 	let (iter_count_buffer, square_dist_buffer) = data.input_buffers();
 
-	let image = data.output_buffers();
+	let image = unsafe { data.image() };
 
 	let (exponent, max_iter_count, colour_range, palette_data) = data.consts();
 
-	let iter_count = unsafe { *iter_count_buffer.get_unchecked( index) };
-	let distance   = unsafe { *square_dist_buffer.get_unchecked(index) }.sqrt();
+	let iter_count = iter_count_buffer[ index];
+	let distance   = square_dist_buffer[index].sqrt();
 
 	let (red, green, blue) = if iter_count < max_iter_count {
-		let factor = (iter_count as f32 + 1.0 - distance.log(exponent).log(exponent)) / colour_range % 1.0;
+		let factor = (iter_count as f32 + 1.0 - distance.ln().log(exponent)) / colour_range;
 
-		let index = (factor * PALETTE_DATA_LENGTH as f32).round() as usize;
-		unsafe { *palette_data.get_unchecked(index) }
+		let index = (factor * PALETTE_DATA_LENGTH as f32).round() as usize % PALETTE_DATA_LENGTH;
+		palette_data[index]
 	} else {
 		(0.0, 0.0, 0.0)
 	};
@@ -76,11 +81,5 @@ fn colour_point(data: &ColourData, index: usize) {
 	let green = (green * 255.0).round() as u8;
 	let blue  = (blue  * 255.0).round() as u8;
 
-	unsafe {
-		let index = index * 0x3;
-
-		*image.get_unchecked_mut(index)       = red;
-		*image.get_unchecked_mut(index + 0x1) = green;
-		*image.get_unchecked_mut(index + 0x2) = blue;
-	}
+	image[index] = (red, green, blue);
 }

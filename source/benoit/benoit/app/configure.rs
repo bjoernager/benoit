@@ -22,41 +22,32 @@
 */
 
 use crate::benoit::app::App;
-
-extern crate sdl2;
-
-use sdl2::EventPump;
-use sdl2::event::Event;
+use crate::benoit::complex::Complex;
+use crate::benoit::configuration::Configuration;
 
 impl App {
 	#[must_use]
-	pub(super) fn poll_events(&mut self, pump: &mut EventPump) -> bool {
-		loop {
-			let event = match pump.poll_event() {
-				Some(event) => event,
-				None        => break,
-			};
+	pub fn configure(configuration: Configuration) -> App {
+		return App {
+			fractal:  configuration.fractal,
+			renderer: configuration.renderer,
 
-			let quit = match event {
-				Event::KeyDown {
-					timestamp: _,
-					window_id: _,
-					keycode:   _,
-					scancode:  scan_code,
-					keymod:    _,
-					repeat:    _,
-				} => {
-					let state = pump.keyboard_state();
+			canvas_width:  configuration.canvas_width,
+			canvas_height: configuration.canvas_height,
+			scale:         configuration.scale,
 
-					self.handle_keys(scan_code.unwrap(), state)
-				},
-				Event::Quit { .. } => true,
-				_ => false,
-			};
+			centre: Complex::new(configuration.centre_real, configuration.centre_imag),
+			zoom:   configuration.zoom,
 
-			if quit { return true };
-		}
+			extra: Complex::new(configuration.extra_real, configuration.extra_imag),
 
-		return false;
+			max_iter_count: configuration.max_iter_count,
+
+			palette:      configuration.palette,
+			colour_range: configuration.colour_range,
+
+			do_render:           true,
+			do_textual_feedback: false,
+		};
 	}
 }

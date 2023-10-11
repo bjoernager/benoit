@@ -21,14 +21,34 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::complex::Complex;
-use crate::benoit::render::render_data::RenderData;
+use crate::benoit::fractal::Fractal;
 
-pub mod colour_data;
-pub mod iterate;
-pub mod render_data;
-pub mod render_point;
+pub mod allocate;
+pub mod render;
 
-pub type IteratorFunction = fn(&mut Complex, &Complex);
+pub struct Render {
+	canvas_width:  u32,
+	canvas_height: u32,
 
-pub type PointRenderer = fn(&RenderData, u32, u32, IteratorFunction) -> (u32, f32);
+	info: Option<(Fractal, u32)>,
+
+	iter_count_buffer:  Vec::<u32>,
+	square_dist_buffer: Vec::<f32>,
+}
+
+impl Render {
+	#[must_use]
+	pub fn canvas_size(&self) -> (u32, u32) {
+		return (self.canvas_width, self.canvas_height);
+	}
+
+	#[must_use]
+	pub fn info(&self) -> Option<(Fractal, u32)> {
+		return self.info.clone();
+	}
+
+	#[must_use]
+	pub fn data<'a>(&'a self) -> (&'a Vec::<u32>, &'a Vec::<f32>) {
+		return (&self.iter_count_buffer, &self.square_dist_buffer);
+	}
+}

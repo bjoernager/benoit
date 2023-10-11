@@ -22,29 +22,27 @@
 */
 
 pub mod app;
+pub mod colour_data;
 pub mod complex;
 pub mod configuration;
+pub mod image;
 pub mod fractal;
 pub mod palette;
-pub mod renderer;
 pub mod render;
+pub mod render_data;
+pub mod renderer;
+pub mod script;
 pub mod video;
 
 pub const VERSION: [u32; 0x3] = [
 	0x2, // Major
-	0x3, // Minor
+	0x4, // Minor
 	0x0, // Patch
 ];
 
 pub const PRECISION: u32 = 0x80;
 
 pub const BAILOUT: f32 = 256.0;
-
-#[derive(Clone, Copy)]
-pub enum ImageFormat {
-	Png,
-	Webp,
-}
 
 pub fn width_height_ratio(width: u32, height: u32) -> (f32, f32) {
 	return if width > height {

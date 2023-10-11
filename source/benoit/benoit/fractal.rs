@@ -21,27 +21,33 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::render::IteratorFunction;
-use crate::benoit::render::iterate;
+use crate::benoit::complex::Complex;
 
 use std::mem::transmute;
 
+mod iterate;
+
+#[derive(Clone, Copy)]
 pub struct Fractal {
-	kind:    Kind,
+	kind:    FractalKind,
 	inverse: bool,
 }
 
 #[derive(Clone, Copy)]
 #[repr(u8)]
-pub enum Kind {
+pub enum FractalKind {
 	BurningShip,
 	Mandelbrot,
 	Multibrot3,
+	Multibrot4,
 	Tricorn,
 }
 
+pub type IteratorFunction = fn(&mut Complex, &Complex);
+
 impl Fractal {
-	pub const fn new(kind: Kind, inverse: bool) -> Self {
+	#[must_use]
+	pub const fn new(kind: FractalKind, inverse: bool) -> Self {
 		let fractal = Fractal {
 			kind:    kind,
 			inverse: inverse,
@@ -51,7 +57,7 @@ impl Fractal {
 	}
 
 	#[must_use]
-	pub fn kind(&self) -> Kind {
+	pub fn kind(&self) -> FractalKind {
 		return self.kind;
 	}
 
@@ -63,23 +69,26 @@ impl Fractal {
 	#[must_use]
 	pub fn exponent(&self) -> f32 {
 		return match self.kind {
-			Kind::BurningShip => 2.0,
-			Kind::Mandelbrot  => 2.0,
-			Kind::Multibrot3  => 3.0,
-			Kind::Tricorn     => 2.0,
+			FractalKind::BurningShip => 2.0,
+			FractalKind::Mandelbrot  => 2.0,
+			FractalKind::Multibrot3  => 3.0,
+			FractalKind::Multibrot4  => 4.0,
+			FractalKind::Tricorn     => 2.0,
 		};
 	}
 
+	#[must_use]
 	pub fn iterator(&self) -> IteratorFunction {
 		return match self.kind {
-			Kind::BurningShip => iterate::burning_ship,
-			Kind::Mandelbrot  => iterate::mandelbrot,
-			Kind::Multibrot3  => iterate::multibrot3,
-			Kind::Tricorn     => iterate::tricorn,
+			FractalKind::BurningShip => iterate::burning_ship,
+			FractalKind::Mandelbrot  => iterate::mandelbrot,
+			FractalKind::Multibrot3  => iterate::multibrot3,
+			FractalKind::Multibrot4  => iterate::multibrot4,
+			FractalKind::Tricorn     => iterate::tricorn,
 		};
 	}
 
-	pub fn set_kind(&mut self, kind: Kind) {
+	pub fn set_kind(&mut self, kind: FractalKind) {
 		self.kind = kind;
 	}
 
@@ -93,28 +102,29 @@ impl Fractal {
 
 		let raw = self.kind as i8 + direction;
 		let raw: u8 = if raw < 0x0 {
-			Kind::MAX
-		} else if raw > Kind::MAX as i8 {
+			FractalKind::MAX
+		} else if raw > FractalKind::MAX as i8 {
 			0x0
 		} else {
 			raw as u8
 		};
 
-		let new: Kind = unsafe { transmute(raw) };
+		let new: FractalKind = unsafe { transmute(raw) };
 
 		self.kind = new;
 	}
 }
 
-impl Kind {
-	const MAX: u8 = Kind::Tricorn as u8;
+impl FractalKind {
+	const MAX: u8 = FractalKind::Tricorn as u8;
 
 	pub fn name(self) -> &'static str {
 		return match self {
-			Kind::BurningShip => "burning ship",
-			Kind::Mandelbrot  => "mandelbrot set",
-			Kind::Multibrot3  => "multibrot (d=3) set",
-			Kind::Tricorn     => "tricorn",
+			FractalKind::BurningShip => "burning ship",
+			FractalKind::Mandelbrot  => "mandelbrot set",
+			FractalKind::Multibrot3  => "multibrot (d=3) set",
+			FractalKind::Multibrot4  => "multibrot (d=4) set",
+			FractalKind::Tricorn     => "tricorn",
 		};
 	}
 }

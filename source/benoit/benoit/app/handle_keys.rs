@@ -36,7 +36,7 @@ pub const MIN_COLOUR_RANGE: f32 = 2.0;
 
 impl App {
 	#[must_use]
-	pub fn handle_keys(&mut self, scan_code: Scancode, state: KeyboardState) -> bool {
+	pub(super) fn handle_keys(&mut self, scan_code: Scancode, state: KeyboardState) -> bool {
 		if scan_code == Scancode::C { self.do_render = true };
 
 		if state.is_scancode_pressed(Scancode::LShift) { return self.handle_shift_keys(scan_code) };
@@ -49,7 +49,7 @@ impl App {
 			Scancode::Left   => self.cycle_palette(-0x1),
 			Scancode::RAlt   => self.cycle_fractal(0x1),
 			Scancode::Right  => self.cycle_palette(0x1),
-			Scancode::Tab    => self.cycle_rendering(),
+			Scancode::Tab    => self.toggle_julia(),
 			Scancode::X      => self.reset_viewport(),
 			Scancode::Z      => self.dump_info(),
 			_                => {},
@@ -123,15 +123,13 @@ impl App {
 		eprintln!("renderer the {}", self.fractal.kind().name());
 	}
 
-	fn cycle_rendering(&mut self) {
-		let renderer = self.renderer.cycle();
+	fn toggle_julia(&mut self) {
+		self.renderer.toggle();
 
-		match renderer {
+		match self.renderer {
 			Renderer::Julia  => eprintln!("enabled the julia set"),
 			Renderer::Normal => eprintln!("disabled the julia set"),
 		};
-
-		self.renderer = renderer;
 	}
 
 	fn toggle_inverse(&mut self) {
@@ -167,7 +165,7 @@ impl App {
 	}
 
 	fn dump_info(&self) {
-		eprintln!("info dump:");
+		eprintln!("info dump: the {}", self.fractal.kind().name());
 		eprintln!("  c = {}{:+}i ({}x)", &self.centre.real, &self.centre.imag, &self.zoom);
 		eprintln!("  w = {}{:+}i", &self.extra.real, &self.extra.imag);
 		eprintln!("  max. iter.: {}, col. range: {}", self.max_iter_count, self.colour_range);
