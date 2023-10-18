@@ -26,14 +26,15 @@ use crate::benoit::fractal::Fractal;
 pub mod allocate;
 pub mod render;
 
+use std::ops::{Index, IndexMut};
+
 pub struct Render {
 	canvas_width:  u32,
 	canvas_height: u32,
 
 	info: Option<(Fractal, u32)>,
 
-	iter_count_buffer:  Vec::<u32>,
-	square_dist_buffer: Vec::<f32>,
+	data: Vec::<(u32, f32)>,
 }
 
 impl Render {
@@ -46,9 +47,18 @@ impl Render {
 	pub fn info(&self) -> Option<(Fractal, u32)> {
 		return self.info.clone();
 	}
+}
 
-	#[must_use]
-	pub fn data<'a>(&'a self) -> (&'a Vec::<u32>, &'a Vec::<f32>) {
-		return (&self.iter_count_buffer, &self.square_dist_buffer);
+impl Index<usize> for Render {
+	type Output = (u32, f32);
+
+	fn index<'a>(&'a self, index: usize) -> &'a Self::Output {
+		return &self.data[index];
+	}
+}
+
+impl IndexMut<usize> for Render {
+	fn index_mut<'a>(&'a mut self, index: usize) -> &'a mut Self::Output {
+		return &mut self.data[index];
 	}
 }

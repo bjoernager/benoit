@@ -26,7 +26,6 @@ use crate::benoit::fractal::Fractal;
 use crate::benoit::image::{Image, ImageFormat};
 use crate::benoit::palette::Palette;
 use crate::benoit::render::Render;
-use crate::benoit::renderer::Renderer;
 use crate::benoit::script::Script;
 
 extern crate rug;
@@ -40,7 +39,6 @@ impl Script {
 		name:           &str,
 		image:          &mut Image,
 		render:         &mut Render,
-		renderer:       Renderer,
 		fractal:        Fractal,
 		palette:        Palette,
 		centre:         &Complex,
@@ -56,7 +54,6 @@ impl Script {
 
 		render.render(
 			fractal,
-			renderer,
 			centre,
 			zoom,
 			extra,

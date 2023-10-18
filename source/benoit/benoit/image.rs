@@ -48,8 +48,8 @@ impl Image {
 	}
 
 	#[must_use]
-	pub fn mut_data<'a>(&'a mut self) -> &'a mut [(u8, u8, u8)] {
-		return &mut self.data[..];
+	pub fn data<'a>(&'a self) -> &'a [(u8, u8, u8)] {
+		return &self.data[..];
 	}
 
 	#[must_use]

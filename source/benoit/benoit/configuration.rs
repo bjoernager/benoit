@@ -21,23 +21,21 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::{PRECISION};
 use crate::benoit::fractal::{Fractal, FractalKind};
 use crate::benoit::image::ImageFormat;
 use crate::benoit::palette::Palette;
-use crate::benoit::renderer::Renderer;
 
 extern crate rug;
 
 use rug::Float;
 
+pub mod default;
 pub mod load;
 
 pub struct Configuration {
 	pub thread_count: u32,
 
-	pub fractal:  Fractal,
-	pub renderer: Renderer,
+	pub fractal: Fractal,
 
 	pub canvas_width:  u32,
 	pub canvas_height: u32,
@@ -62,43 +60,14 @@ pub struct Configuration {
 }
 
 impl Configuration {
-	pub const DEFAULT_CENTRE_REAL: f64 = 0.0;
-	pub const DEFAULT_CENTRE_IMAG: f64 = 0.0;
-	pub const DEFAULT_EXTRA_REAL: f64 = 0.0;
-	pub const DEFAULT_EXTRA_IMAG: f64 = 0.0;
-	pub const DEFAULT_ZOOM:        f64 = 1.0;
+	pub const DEFAULT_FRACTAL: Fractal = Fractal::new(FractalKind::Mandelbrot, false, false);
+
+	pub const DEFAULT_CENTRE: (f64, f64) = (0.0, 0.0);
+	pub const DEFAULT_EXTRA:  (f64, f64) = (0.0, 0.0);
+	pub const DEFAULT_ZOOM:   f64        = 1.0;
 
 	pub const DEFAULT_MAX_ITER_COUNT: u32 = 0x100;
-	pub const DEFAULT_COLOUR_RANGE:   f32 = 64.0;
 
-	#[must_use]
-	pub fn default() -> Configuration {
-		return Configuration {
-			thread_count: 0x0,
-
-			fractal:  Fractal::new(FractalKind::Multibrot3, false),
-			renderer: Renderer::Normal,
-
-			canvas_width:  0x100,
-			canvas_height: 0xC0,
-			scale:         0x2,
-			frame_start:   0x10,
-			frame_stop:    0x10,
-
-			centre_real: Float::with_val(PRECISION, Self::DEFAULT_CENTRE_REAL),
-			centre_imag: Float::with_val(PRECISION, Self::DEFAULT_CENTRE_IMAG),
-			zoom:        Float::with_val(PRECISION, Self::DEFAULT_ZOOM),
-
-			extra_real: Float::with_val(PRECISION, Self::DEFAULT_EXTRA_REAL),
-			extra_imag: Float::with_val(PRECISION, Self::DEFAULT_EXTRA_IMAG),
-
-			max_iter_count: Self::DEFAULT_MAX_ITER_COUNT,
-
-			palette:      Palette::Fire,
-			colour_range: Self::DEFAULT_COLOUR_RANGE,
-
-			dump_path:    "./render".to_string(),
-			image_format: ImageFormat::Png,
-		};
-	}
+	pub const DEFAULT_PALETTE:      Palette = Palette::Fire;
+	pub const DEFAULT_COLOUR_RANGE: f32     = 64.0;
 }

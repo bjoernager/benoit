@@ -65,7 +65,6 @@ impl Script {
 				frame_name.as_str(),
 				&mut image,
 				&mut render,
-				self.renderer,
 				self.fractal,
 				self.palette,
 				&self.centre,

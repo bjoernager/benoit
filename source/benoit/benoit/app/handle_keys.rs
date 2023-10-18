@@ -24,7 +24,6 @@
 use crate::benoit::PRECISION;
 use crate::benoit::app::App;
 use crate::benoit::configuration::Configuration;
-use crate::benoit::renderer::Renderer;
 
 extern crate rug;
 extern crate sdl2;
@@ -123,15 +122,6 @@ impl App {
 		eprintln!("renderer the {}", self.fractal.kind().name());
 	}
 
-	fn toggle_julia(&mut self) {
-		self.renderer.toggle();
-
-		match self.renderer {
-			Renderer::Julia  => eprintln!("enabled the julia set"),
-			Renderer::Normal => eprintln!("disabled the julia set"),
-		};
-	}
-
 	fn toggle_inverse(&mut self) {
 		let inverse = !self.fractal.inverse();
 
@@ -143,6 +133,17 @@ impl App {
 		self.fractal.set_inverse(inverse);
 	}
 
+	fn toggle_julia(&mut self) {
+		let julia = !self.fractal.julia();
+
+		match julia {
+			false => eprintln!("disabled the julia set"),
+			true  => eprintln!("enabled the julia set"),
+		};
+
+		self.fractal.set_julia(julia);
+	}
+
 	fn cycle_palette(&mut self, direction: i8) {
 		let palette = self.palette.cycle(direction);
 
@@ -152,12 +153,12 @@ impl App {
 	}
 
 	fn reset_viewport(&mut self) {
-		self.centre.real.assign(Configuration::DEFAULT_CENTRE_REAL);
-		self.centre.imag.assign(Configuration::DEFAULT_CENTRE_IMAG);
+		self.centre.real.assign(Configuration::DEFAULT_CENTRE.0);
+		self.centre.imag.assign(Configuration::DEFAULT_CENTRE.1);
 		self.zoom.assign(       Configuration::DEFAULT_ZOOM);
 
-		self.extra.real.assign(Configuration::DEFAULT_EXTRA_REAL);
-		self.extra.imag.assign(Configuration::DEFAULT_EXTRA_IMAG);
+		self.extra.real.assign(Configuration::DEFAULT_EXTRA.0);
+		self.extra.imag.assign(Configuration::DEFAULT_EXTRA.1);
 
 		self.max_iter_count = Configuration::DEFAULT_MAX_ITER_COUNT;
 
@@ -165,7 +166,7 @@ impl App {
 	}
 
 	fn dump_info(&self) {
-		eprintln!("info dump: the {}", self.fractal.kind().name());
+		eprintln!("info dump: the {}", self.fractal.name());
 		eprintln!("  c = {}{:+}i ({}x)", &self.centre.real, &self.centre.imag, &self.zoom);
 		eprintln!("  w = {}{:+}i", &self.extra.real, &self.extra.imag);
 		eprintln!("  max. iter.: {}, col. range: {}", self.max_iter_count, self.colour_range);

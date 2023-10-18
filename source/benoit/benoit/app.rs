@@ -24,22 +24,23 @@
 use crate::benoit::complex::Complex;
 use crate::benoit::fractal::Fractal;
 use crate::benoit::palette::Palette;
-use crate::benoit::renderer::Renderer;
 
 extern crate rug;
 
 use rug::Float;
 
 pub mod configure;
+pub mod draw_feedback;
 pub mod drop;
 pub mod handle_keys;
 pub mod poll_events;
+pub mod print_controls;
+pub mod render;
 pub mod run;
 
 pub struct App {
 	// Configuration:
 	fractal:  Fractal,
-	renderer: Renderer,
 
 	canvas_width:  u32,
 	canvas_height: u32,

@@ -21,29 +21,34 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-extern crate ctor;
 extern crate enum_iterator;
 
-use ctor::ctor;
-use enum_iterator::{all, Sequence};
+use enum_iterator::Sequence;
 use std::mem::transmute;
 
+mod data;
 mod paint;
+
+pub use data::fill_palettes;
+
+pub const PALETTE_DATA_LENGTH: usize = 0x1000;
+pub type PaletteData = [(f32, f32, f32); PALETTE_DATA_LENGTH];
 
 #[derive(Clone, Copy, Sequence)]
 #[repr(u8)]
 pub enum Palette {
+	// Sorted according to date of addition.
 	Ancient,
 	Fire,
 	Greyscale,
+	Sapphire,
 	Hsv,
 	Lch,
-	Sapphire,
 }
 
 impl Palette {
 	const MIN: Self = Palette::Ancient;
-	const MAX: Self = Palette::Sapphire;
+	const MAX: Self = Palette::Lch;
 
 	#[must_use]
 	pub fn name(self) -> &'static str {
@@ -59,7 +64,8 @@ impl Palette {
 
 	#[must_use]
 	pub fn data(self) -> &'static PaletteData {
-		return &*self.mut_data();
+		// This is safe as we return it as immutable.
+		return unsafe { &*self.mut_data() };
 	}
 
 	#[must_use]
@@ -87,51 +93,5 @@ impl Palette {
 			Palette::Lch       => paint::lch,
 			Palette::Sapphire  => paint::sapphire,
 		};
-	}
-
-	#[must_use]
-	fn mut_data(self) -> &'static mut PaletteData {
-		return unsafe { match self {
-			Palette::Ancient   => &mut DATA_ANCIENT,
-			Palette::Fire      => &mut DATA_FIRE,
-			Palette::Greyscale => &mut DATA_GREYSCALE,
-			Palette::Hsv       => &mut DATA_HSV,
-			Palette::Lch       => &mut DATA_LCH,
-			Palette::Sapphire  => &mut DATA_SAPPHIRE,
-		} };
-	}
-}
-
-// We would like to precalculate the palettes at
-// compile-time, but Rust does not support
-// floating-point arithmetic there.
-
-pub const PALETTE_DATA_LENGTH: usize = 0x1000;
-pub type PaletteData = [(f32, f32, f32); PALETTE_DATA_LENGTH];
-
-const fn default_palette_data() -> PaletteData {
-	return [(0.0, 0.0, 0.0); PALETTE_DATA_LENGTH];
-}
-
-static mut DATA_ANCIENT:   PaletteData = default_palette_data();
-static mut DATA_FIRE:      PaletteData = default_palette_data();
-static mut DATA_GREYSCALE: PaletteData = default_palette_data();
-static mut DATA_HSV:       PaletteData = default_palette_data();
-static mut DATA_LCH:       PaletteData = default_palette_data();
-static mut DATA_SAPPHIRE:  PaletteData = default_palette_data();
-
-#[ctor]
-fn calculate_palettes() {
-	for palette in all::<Palette>() {
-		let data     = palette.mut_data();
-		let function = palette.function();
-
-		for index in 0x0..PALETTE_DATA_LENGTH {
-			let factor = index as f32 / PALETTE_DATA_LENGTH as f32;
-
-			let (red, green, blue) = function(factor);
-
-			data[index as usize] = (red, green, blue);
-		}
 	}
 }

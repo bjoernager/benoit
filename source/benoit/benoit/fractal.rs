@@ -31,29 +31,49 @@ mod iterate;
 pub struct Fractal {
 	kind:    FractalKind,
 	inverse: bool,
+	julia:   bool,
 }
 
 #[derive(Clone, Copy)]
 #[repr(u8)]
 pub enum FractalKind {
-	BurningShip,
+	// Sorted according to exponent.
 	Mandelbrot,
+	BurningShip,
+	Tricorn,
 	Multibrot3,
 	Multibrot4,
-	Tricorn,
 }
 
 pub type IteratorFunction = fn(&mut Complex, &Complex);
 
 impl Fractal {
 	#[must_use]
-	pub const fn new(kind: FractalKind, inverse: bool) -> Self {
+	pub const fn new(kind: FractalKind, inverse: bool, julia: bool) -> Self {
 		let fractal = Fractal {
 			kind:    kind,
 			inverse: inverse,
+			julia:   julia,
 		};
 
 		return fractal;
+	}
+
+	pub fn name(&self) -> String {
+		let kind = self.kind.name();
+
+		let extra = if self.inverse && !self.julia {
+			"inverse"
+		} else if !self.inverse && self.julia {
+			"julia"
+		} else if self.inverse && self.julia {
+			"inverse julia"
+		} else {
+			"normal"
+		};
+
+		let name = format!("{kind} ({extra})");
+		return name;
 	}
 
 	#[must_use]
@@ -64,6 +84,11 @@ impl Fractal {
 	#[must_use]
 	pub fn inverse(&self) -> bool {
 		return self.inverse;
+	}
+
+	#[must_use]
+	pub fn julia(&self) -> bool {
+		return self.julia;
 	}
 
 	#[must_use]
@@ -96,34 +121,40 @@ impl Fractal {
 		self.inverse = inverse;
 	}
 
+	pub fn set_julia(&mut self, julia: bool) {
+		self.julia = julia;
+	}
+
 	pub fn cycle(&mut self, direction: i8) {
 		// Not important.
 		debug_assert!(direction != 0x0);
 
 		let raw = self.kind as i8 + direction;
-		let raw: u8 = if raw < 0x0 {
+
+		let new: FractalKind = if raw < 0x0 {
 			FractalKind::MAX
 		} else if raw > FractalKind::MAX as i8 {
-			0x0
+			FractalKind::MIN
 		} else {
-			raw as u8
+			unsafe { transmute(raw) }
 		};
 
-		let new: FractalKind = unsafe { transmute(raw) };
+		let new: FractalKind = unsafe { transmute(new) };
 
 		self.kind = new;
 	}
 }
 
 impl FractalKind {
-	const MAX: u8 = FractalKind::Tricorn as u8;
+	const MIN: FractalKind = FractalKind::Mandelbrot;
+	const MAX: FractalKind = FractalKind::Multibrot4;
 
 	pub fn name(self) -> &'static str {
 		return match self {
 			FractalKind::BurningShip => "burning ship",
 			FractalKind::Mandelbrot  => "mandelbrot set",
-			FractalKind::Multibrot3  => "multibrot (d=3) set",
-			FractalKind::Multibrot4  => "multibrot (d=4) set",
+			FractalKind::Multibrot3  => "multibrot3 set",
+			FractalKind::Multibrot4  => "multibrot4 set",
 			FractalKind::Tricorn     => "tricorn",
 		};
 	}

@@ -30,19 +30,18 @@ pub mod fractal;
 pub mod palette;
 pub mod render;
 pub mod render_data;
-pub mod renderer;
 pub mod script;
 pub mod video;
 
-pub const VERSION: [u32; 0x3] = [
+pub const VERSION: (u32, u32, u32) = (
 	0x2, // Major
 	0x4, // Minor
-	0x0, // Patch
-];
+	0x1, // Patch
+);
 
 pub const PRECISION: u32 = 0x80;
 
-pub const BAILOUT: f32 = 256.0;
+pub const BAILOUT_DISTANCE: f32 = 256.0;
 
 pub fn width_height_ratio(width: u32, height: u32) -> (f32, f32) {
 	return if width > height {

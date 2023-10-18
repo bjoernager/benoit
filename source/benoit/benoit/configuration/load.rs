@@ -26,7 +26,6 @@ use crate::benoit::configuration::Configuration;
 use crate::benoit::fractal::FractalKind;
 use crate::benoit::image::ImageFormat;
 use crate::benoit::palette::Palette;
-use crate::benoit::renderer::Renderer;
 
 extern crate rug;
 extern crate toml;
@@ -51,14 +50,6 @@ impl Configuration {
 		let configuration_table = Table::from_str(configuration_text.as_str()).expect("unable to parse configuration");
 
 		get_integer(&mut configuration.thread_count, &configuration_table, "thread_count");
-
-		if let Some(name) = get_string(&configuration_table, "renderer") {
-			configuration.renderer = match name.as_str() {
-				"julia"  => Renderer::Julia,
-				"normal" => Renderer::Normal,
-				name     => panic!("invalid renderer method \"{name}\""),
-			};
-		}
 
 		if let Some(name) = get_string(&configuration_table, "fractal") {
 			configuration.fractal.set_kind(match name.as_str() {

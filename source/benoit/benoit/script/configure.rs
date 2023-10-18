@@ -29,8 +29,7 @@ impl Script {
 	#[must_use]
 	pub fn configure(configuration: Configuration) -> Script {
 		return Script {
-			fractal:  configuration.fractal,
-			renderer: configuration.renderer,
+			fractal: configuration.fractal,
 
 			canvas_width:  configuration.canvas_width,
 			canvas_height: configuration.canvas_height,

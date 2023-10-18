@@ -38,7 +38,6 @@ impl Script {
 			FRAME_NAME,
 			&mut image,
 			&mut render,
-			self.renderer,
 			self.fractal,
 			self.palette,
 			&self.centre,

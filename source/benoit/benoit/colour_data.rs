@@ -24,63 +24,46 @@
 use crate::benoit::image::Image;
 use crate::benoit::palette::PaletteData;
 
-use std::slice::{from_raw_parts, from_raw_parts_mut};
+use std::mem::size_of;
+use std::num::NonZeroUsize;
+use std::ptr::addr_of;
 
 pub struct ColourData {
-	canvas_size: usize,
-
 	exponent:       f32,
 	max_iter_count: u32,
 	colour_range:   f32,
 
 	palette_data: &'static PaletteData,
 
-	iter_count_buffer:  *const u32,
-	square_dist_buffer: *const f32,
-
-	image: *mut (u8, u8, u8),
+	image:  NonZeroUsize,
 }
 
 impl ColourData {
 	#[must_use]
 	pub fn new(
-		image:              &mut Image,
-		canvas_width:       u32,
-		canvas_height:      u32,
-		exponent:           f32,
-		max_iter_count:     u32,
-		colour_range:       f32,
-		palette_data:       &'static PaletteData,
-		iter_count_buffer:  &[u32],
-		square_dist_buffer: &[f32],
+		image:          &Image,
+		exponent:       f32,
+		max_iter_count: u32,
+		colour_range:   f32,
+		palette_data:   &'static PaletteData,
 	) -> ColourData {
 		return ColourData {
-			canvas_size: canvas_height as usize * canvas_width as usize,
-
 			exponent:       exponent,
 			max_iter_count: max_iter_count,
 			colour_range:   colour_range,
 
 			palette_data: palette_data,
 
-			iter_count_buffer:  iter_count_buffer.as_ptr(),
-			square_dist_buffer: square_dist_buffer.as_ptr(),
-
-			image: image.mut_data().as_mut_ptr(),
+			image: NonZeroUsize::new(image.data().as_ptr() as usize).unwrap(),
 		};
 	}
 
 	#[must_use]
-	pub fn input_buffers(&self) -> (&[u32], &[f32]) {
-		let iter_count = unsafe { from_raw_parts(self.iter_count_buffer,  self.canvas_size) };
-		let dist       = unsafe { from_raw_parts(self.square_dist_buffer, self.canvas_size) };
+	pub fn index(&self, element: &(u8, u8, u8)) -> usize {
+		let element_addr = addr_of!(*element) as usize;
 
-		return (iter_count, dist);
-	}
-
-	#[must_use]
-	pub unsafe fn image<'a>(&'a self) -> &'a mut [(u8, u8, u8)] {
-		return from_raw_parts_mut(self.image, self.canvas_size);
+		let index = (element_addr - self.image.get()) / size_of::<(u8, u8, u8)>();
+		return index;
 	}
 
 	#[must_use]

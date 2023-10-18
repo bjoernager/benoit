@@ -26,6 +26,7 @@ mod benoit;
 use crate::benoit::VERSION;
 use crate::benoit::app::App;
 use crate::benoit::configuration::Configuration;
+use crate::benoit::palette::fill_palettes;
 use crate::benoit::script::Script;
 
 extern crate rayon;
@@ -37,11 +38,13 @@ use std::thread::available_parallelism;
 
 fn main() {
 	println!();
-	println!("\u{1B}[1mBENO\u{CE}T\u{1B}[0m {:X}.{:X}.{:X}", VERSION[0x0], VERSION[0x1], VERSION[0x2]);
+	println!("\u{1B}[1mBENO\u{CE}T\u{1B}[0m {:X}.{:X}.{:X}", VERSION.0, VERSION.1, VERSION.2);
 	println!("Copyright 2021, 2023 Gabriel Bj\u{F8}rnager Jensen.");
 	println!();
 	println!("Le p\u{E8}re cogita et c'est pourquoi il fut.");
 	println!();
+
+	unsafe { fill_palettes() };
 
 	let mut arguments = args();
 
@@ -63,12 +66,12 @@ fn main() {
 	ThreadPoolBuilder::new().num_threads(configuration.thread_count as usize).build_global().unwrap();
 
 	let code = if interative {
-		eprintln!("running iteractive mode");
+		eprintln!("running in iteractive mode");
 
 		let app = App::configure(configuration);
 		app.run()
 	} else {
-		eprintln!("running script mode");
+		eprintln!("running in script mode");
 
 		let script = Script::configure(configuration);
 		script.run()

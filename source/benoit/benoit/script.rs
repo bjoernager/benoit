@@ -25,7 +25,6 @@ use crate::benoit::complex::Complex;
 use crate::benoit::fractal::Fractal;
 use crate::benoit::image::ImageFormat;
 use crate::benoit::palette::Palette;
-use crate::benoit::renderer::Renderer;
 
 extern crate rug;
 
@@ -40,7 +39,6 @@ pub mod still;
 pub struct Script {
 	// Configuration:
 	fractal:  Fractal,
-	renderer: Renderer,
 
 	canvas_width:  u32,
 	canvas_height: u32,

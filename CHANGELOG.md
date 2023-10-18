@@ -1,3 +1,12 @@
+# 2.4.1
+
+* Remove renderers in favour of the fractal type
+* Fix default configuration
+* Update rendering
+* Greatly improve safety
+* Remove ctor as dependency
+* Modulise and clean up code
+
 # 2.4.0
 
 * Clean up and restructure code

@@ -21,33 +21,32 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::{BAILOUT_DISTANCE, PRECISION};
 use crate::benoit::complex::Complex;
 use crate::benoit::fractal::{Fractal, IteratorFunction};
 use crate::benoit::render::Render;
 use crate::benoit::render_data::RenderData;
-use crate::benoit::renderer::{PointRenderer, Renderer};
 
 extern crate rayon;
 extern crate rug;
 
 use rayon::prelude::*;
-use rug::Float;
+use rug::{Assign, Float};
+use rug::float::Special;
 
 impl Render {
 	pub fn render(
 		&mut self,
-		fractal:            Fractal,
-		renderer:           Renderer,
-		centre:             &Complex,
-		zoom:               &Float,
-		extra:              &Complex,
-		max_iter_count:     u32,
+		fractal:        Fractal,
+		centre:         &Complex,
+		zoom:           &Float,
+		extra:          &Complex,
+		max_iter_count: u32,
 	) {
 		assert!(max_iter_count > 0x0);
 
 		let data = RenderData::new(
-			&mut self.iter_count_buffer[..],
-			&mut self.square_dist_buffer[..],
+			&mut self.data[..],
 			self.canvas_width,
 			self.canvas_height,
 			centre.clone(),
@@ -55,31 +54,68 @@ impl Render {
 			zoom.clone(),
 			max_iter_count,
 			fractal.inverse(),
+			fractal.julia(),
 		);
 
-		let canvas_size = self.canvas_height as usize * self.canvas_width as usize;
+		let iterator = fractal.iterator();
 
-		let point_renderer = renderer.point_renderer();
-		let iterator       = fractal.iterator();
-
-		(0x0..canvas_size).into_par_iter().for_each(|index| {
-			render_point(&data, index as usize, point_renderer, iterator);
+		self.data.par_iter_mut().for_each(|point| {
+			let (x, y) = data.coordinate(point);
+			*point = render_point(&data, x, y, iterator);
 		});
 
 		self.info = Some((fractal, max_iter_count));
 	}
 }
 
-fn render_point(data: &RenderData, index: usize, point_renderer: PointRenderer, iterator: IteratorFunction) {
-	let (iter_count_buffer, square_dist_buffer) = unsafe { data.output_buffers() };
+fn render_point(data: &RenderData, x: u32, y: u32, iterator: IteratorFunction) -> (u32, f32) {
+	let (centre, zoom, max_iter_count) = data.input();
 
-	let (canvas_width, _) = data.canvas_size();
+	let (x_offset, y_offset, x_factor, y_factor) = data.consts();
 
-	let x = (index % canvas_width as usize) as u32;
-	let y = (index / canvas_width as usize) as u32;
+	let x_temporary = (x as f32 + x_offset) * x_factor;
+	let y_temporary = (y as f32 + y_offset) * y_factor;
 
-	let (iter_count, square_dist) = point_renderer(&data, x, y, iterator);
+	let mut z = {
+		let mut a = Float::with_val(PRECISION, x_temporary / zoom);
+		a += &centre.real;
 
-	iter_count_buffer[ index as usize] = iter_count;
-	square_dist_buffer[index as usize] = square_dist;
+		let mut b = Float::with_val(PRECISION, y_temporary / zoom);
+		b -= &centre.imag;
+
+		Complex {real: a, imag: b}
+	};
+
+	z = data.factor_inverse(z);
+	let (mut z, c) = data.setup_julia(z);
+
+	let mut z_prev = Complex {
+		real: Float::with_val(PRECISION, Special::Nan),
+		imag: Float::with_val(PRECISION, Special::Nan),
+	};
+
+	let mut iter_count:  u32 = 0x1;
+	let mut square_dist      = Float::with_val(PRECISION, Special::Nan);
+	while {
+		square_dist.assign(&z.real * &z.real + &z.imag * &z.imag);
+		// Having a larger escape radius gives better
+		// results with regard to smoothing.
+
+		// Check if the value is periodic, i.e. its
+		// sequence repeats.
+		let periodic = z.real == z_prev.real && z.imag == z_prev.imag;
+		if periodic { iter_count = max_iter_count }
+
+		square_dist <= BAILOUT_DISTANCE && iter_count < max_iter_count
+	} {
+		z_prev.assign(&z);
+
+		iterator(&mut z, &c);
+
+		z = data.perturbate(z);
+
+		iter_count += 0x1;
+	}
+
+	return (iter_count, square_dist.to_f32());
 }

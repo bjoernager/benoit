@@ -32,8 +32,7 @@ impl Render {
 			canvas_size as usize
 		};
 
-		let iter_count_buffer:  Vec::<u32> = vec![0x0; canvas_size];
-		let square_dist_buffer: Vec::<f32> = vec![0.0; canvas_size];
+		let data: Vec<(u32, f32)> = vec![(0x0, 0.0); canvas_size];
 
 		return Render {
 			canvas_width:  canvas_width,
@@ -41,8 +40,7 @@ impl Render {
 
 			info: None,
 
-			iter_count_buffer:  iter_count_buffer,
-			square_dist_buffer: square_dist_buffer,
+			data: data,
 		};
 	}
 }

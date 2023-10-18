@@ -23,30 +23,26 @@
 
 use crate::benoit::app::App;
 use crate::benoit::complex::Complex;
-use crate::benoit::configuration::Configuration;
+use crate::benoit::video::Video;
+
+extern crate rug;
+
+use rug::Float;
 
 impl App {
-	#[must_use]
-	pub fn configure(configuration: Configuration) -> App {
-		return App {
-			fractal: configuration.fractal,
+	pub(super) fn draw_feedback(&self, video: &mut Video, prev_centre: &Complex, prev_zoom: &Float) {
+		if {
+			// Don't draw translation feedback if rendering a
+			// Julia set or if we haven't done any viewport
+			// translations.
 
-			canvas_width:  configuration.canvas_width,
-			canvas_height: configuration.canvas_height,
-			scale:         configuration.scale,
+			   &self.centre.real != &prev_centre.real
+			|| &self.centre.imag != &prev_centre.imag
+			|| &self.zoom        != prev_zoom
+		}{
+			video.draw_translation_feedback(self.canvas_width, self.canvas_height, self.scale, prev_centre, prev_zoom, &self.centre, &self.zoom);
+		}
 
-			centre: Complex::new(configuration.centre_real, configuration.centre_imag),
-			zoom:   configuration.zoom,
-
-			extra: Complex::new(configuration.extra_real, configuration.extra_imag),
-
-			max_iter_count: configuration.max_iter_count,
-
-			palette:      configuration.palette,
-			colour_range: configuration.colour_range,
-
-			do_render:           true,
-			do_textual_feedback: false,
-		};
+		if self.do_textual_feedback { video.draw_textual_feedback(&self.centre, &self.zoom, self.max_iter_count) };
 	}
 }

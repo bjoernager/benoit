@@ -36,40 +36,27 @@ impl Image {
 
 		let (fractal, max_iter_count) = render.info().expect("cannot colour before render");
 
-		let (iter_count_buffer, square_dist_buffer) = render.data();
-
 		let data = ColourData::new(
 			self,
-			self.width,
-			self.height,
 			fractal.exponent(),
 			max_iter_count.min(new_max_iter_count),
 			colour_range,
 			palette.data(),
-			&iter_count_buffer,
-			&square_dist_buffer,
 		);
 
-		let canvas_size = self.height as usize * self.width as usize;
-
-		(0x0..canvas_size).into_par_iter().for_each(|index| {
-			colour_point(&data, index as usize);
+		self.data.par_iter_mut().for_each(|point| {
+			let index = data.index(point);
+			let (iter_count, dist) = render[index];
+			*point = colour_point(&data, iter_count, dist);
 		});
 	}
 }
 
-fn colour_point(data: &ColourData, index: usize) {
-	let (iter_count_buffer, square_dist_buffer) = data.input_buffers();
-
-	let image = unsafe { data.image() };
-
+fn colour_point(data: &ColourData, iter_count: u32, dist: f32) -> (u8, u8, u8) {
 	let (exponent, max_iter_count, colour_range, palette_data) = data.consts();
 
-	let iter_count = iter_count_buffer[ index];
-	let distance   = square_dist_buffer[index].sqrt();
-
 	let (red, green, blue) = if iter_count < max_iter_count {
-		let factor = (iter_count as f32 + 1.0 - distance.ln().log(exponent)) / colour_range;
+		let factor = (iter_count as f32 + 1.0 - dist.ln().log(exponent)) / colour_range;
 
 		let index = (factor * PALETTE_DATA_LENGTH as f32).round() as usize % PALETTE_DATA_LENGTH;
 		palette_data[index]
@@ -81,5 +68,5 @@ fn colour_point(data: &ColourData, index: usize) {
 	let green = (green * 255.0).round() as u8;
 	let blue  = (blue  * 255.0).round() as u8;
 
-	image[index] = (red, green, blue);
+	return (red, green, blue);
 }

@@ -21,35 +21,26 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::fractal::IteratorFunction;
-use crate::benoit::render_data::RenderData;
+use crate::benoit::app::App;
+use crate::benoit::render::Render;
+use std::time::Instant;
 
-use std::mem::transmute;
+impl App {
+	pub(super) fn render(&self, render: &mut Render) {
+		eprint!("rendering...");
 
-mod render_point;
+		let time_start = Instant::now();
 
-#[derive(Clone, Copy)]
-#[repr(u8)]
-pub enum Renderer {
-	Julia,
-	Normal,
-}
+		render.render(
+			self.fractal,
+			&self.centre,
+			&self.zoom,
+			&self.extra,
+			self.max_iter_count,
+		);
 
-pub type PointRenderer = fn(&RenderData, u32, u32, IteratorFunction) -> (u32, f32);
+		let render_time = time_start.elapsed();
 
-impl Renderer {
-	#[must_use]
-	pub fn point_renderer(self) -> PointRenderer {
-		return match self {
-			Renderer::Julia  => render_point::julia,
-			Renderer::Normal => render_point::normal,
-		};
-	}
-
-	pub fn toggle(&mut self) {
-		let raw = !(*self as u8) & 0b00000001;
-		let new: Self = unsafe { transmute(raw) };
-
-		*self = new;
+		eprintln!(" {:.3}ms", render_time.as_micros() as f32 / 1000.0);
 	}
 }
