@@ -23,35 +23,49 @@
 
 use crate::benoit::palette::{Palette, PALETTE_DATA_LENGTH, PaletteData};
 
+extern crate enum_iterator;
+
 use enum_iterator::all;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::time::Instant;
 
 impl Palette {
 	#[must_use]
 	pub(super) unsafe fn mut_data(self) -> &'static mut PaletteData {
-		return unsafe { match self {
-			Palette::Ancient   => &mut DATA_ANCIENT,
+		return match self {
+			Palette::Emerald   => &mut DATA_EMERALD,
 			Palette::Fire      => &mut DATA_FIRE,
 			Palette::Greyscale => &mut DATA_GREYSCALE,
 			Palette::Hsv       => &mut DATA_HSV,
 			Palette::Lch       => &mut DATA_LCH,
+			Palette::Ruby      => &mut DATA_RUBY,
 			Palette::Sapphire  => &mut DATA_SAPPHIRE,
-		} };
+			Palette::Twilight  => &mut DATA_TWILIGHT,
+		};
 	}
 }
 
+#[must_use]
 const fn default_palette_data() -> PaletteData {
 	return [(0.0, 0.0, 0.0); PALETTE_DATA_LENGTH];
 }
 
-static mut DATA_ANCIENT:   PaletteData = default_palette_data();
+static mut DATA_EMERALD:   PaletteData = default_palette_data();
 static mut DATA_FIRE:      PaletteData = default_palette_data();
 static mut DATA_GREYSCALE: PaletteData = default_palette_data();
 static mut DATA_HSV:       PaletteData = default_palette_data();
 static mut DATA_LCH:       PaletteData = default_palette_data();
+static mut DATA_RUBY:      PaletteData = default_palette_data();
 static mut DATA_SAPPHIRE:  PaletteData = default_palette_data();
+static mut DATA_TWILIGHT:  PaletteData = default_palette_data();
 
-pub unsafe fn fill_palettes() {
-	use std::time::Instant;
+static PALETTES_FILLED: AtomicBool = AtomicBool::new(false);
+
+pub fn fill_palettes() {
+	match PALETTES_FILLED.compare_exchange(false, true, Ordering::Relaxed, Ordering::Relaxed) {
+		Err(_) => panic!("palettes already filled"),
+		_      => {},
+	};
 
 	// We would like to precalculate the palettes at
 	// compile-time, but Rust does not allow
@@ -61,7 +75,7 @@ pub unsafe fn fill_palettes() {
 	let time = Instant::now();
 
 	for palette in all::<Palette>() {
-		let data     = palette.mut_data();
+		let data     = unsafe { palette.mut_data() };
 		let function = palette.function();
 
 		for index in 0x0..PALETTE_DATA_LENGTH {

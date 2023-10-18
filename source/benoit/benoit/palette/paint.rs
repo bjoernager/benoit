@@ -21,16 +21,20 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod ancient;
+pub mod emerald;
 pub mod fire;
 pub mod greyscale;
 pub mod hsv;
 pub mod lch;
+pub mod ruby;
 pub mod sapphire;
+pub mod twilight;
 
-pub use ancient::*;
+pub use emerald::*;
 pub use fire::*;
 pub use greyscale::*;
 pub use hsv::*;
 pub use lch::*;
+pub use ruby::*;
 pub use sapphire::*;
+pub use twilight::*;

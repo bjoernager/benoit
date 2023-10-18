@@ -144,6 +144,3 @@ impl RenderData {
 		return z;
 	}
 }
-
-unsafe impl Send for RenderData {}
-unsafe impl Sync for RenderData {}

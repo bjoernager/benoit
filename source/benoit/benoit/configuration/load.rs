@@ -83,12 +83,14 @@ impl Configuration {
 
 		if let Some(name) = get_string(&configuration_table, "palette") {
 			configuration.palette = match name.as_str() {
-				"ancient"   => Palette::Ancient,
+				"emerald"   => Palette::Emerald,
 				"fire"      => Palette::Fire,
 				"greyscale" => Palette::Greyscale,
 				"hsv"       => Palette::Hsv,
 				"lch"       => Palette::Lch,
+				"ruby"      => Palette::Ruby,
 				"sapphire"  => Palette::Sapphire,
+				"twilight"  => Palette::Twilight,
 				name        => panic!("invalid palette \"{name}\""),
 			};
 		}

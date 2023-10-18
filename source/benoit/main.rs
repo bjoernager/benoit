@@ -44,7 +44,7 @@ fn main() {
 	println!("Le p\u{E8}re cogita et c'est pourquoi il fut.");
 	println!();
 
-	unsafe { fill_palettes() };
+	fill_palettes();
 
 	let mut arguments = args();
 

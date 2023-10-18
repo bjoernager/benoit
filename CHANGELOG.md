@@ -1,3 +1,11 @@
+# 2.5.0
+
+* Make fill_palettes safe
+* Rename 'ancient' palette to 'twilight'
+* Update package description
+* Add new palettes 'emerald' and 'ruby'
+* Bump minor version
+
 # 2.4.1
 
 * Remove renderers in favour of the fractal type

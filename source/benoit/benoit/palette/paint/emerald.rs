@@ -21,15 +21,14 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-// Palette function from mandelbrotsdl, my first
-// Mandelbrot renderer.
-
-pub fn ancient(factor: f32) -> (f32, f32, f32) {
+pub fn emerald(factor: f32) -> (f32, f32, f32) {
 	let factor = factor % 1.0;
 
-	let red   = 9.0  * (1.0 - factor) * factor         * factor         * factor;
-	let green = 15.0 * (1.0 - factor) * (1.0 - factor) * factor         * factor;
-	let blue  = 8.5  * (1.0 - factor) * (1.0 - factor) * (1.0 - factor) * factor;
+	let factor = (if factor >= 1.0 / 2.0 {
+		1.0 - factor
+	} else {
+		factor
+	}) * 2.0;
 
-	return (red, green, blue);
+	return (factor * factor, factor, factor * factor * factor);
 }

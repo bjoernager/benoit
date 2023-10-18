@@ -71,6 +71,3 @@ impl ColourData {
 		return (self.exponent, self.max_iter_count, self.colour_range, self.palette_data);
 	}
 }
-
-unsafe impl Send for ColourData {}
-unsafe impl Sync for ColourData {}

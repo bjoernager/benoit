@@ -21,32 +21,15 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod app;
-pub mod colour_data;
-pub mod complex;
-pub mod configuration;
-pub mod image;
-pub mod fractal;
-pub mod palette;
-pub mod render;
-pub mod render_data;
-pub mod script;
-pub mod video;
+// Palette function from mandelbrotsdl, my first
+// Mandelbrot renderer.
 
-pub const VERSION: (u32, u32, u32) = (
-	0x2, // Major
-	0x5, // Minor
-	0x0, // Patch
-);
+pub fn twilight(factor: f32) -> (f32, f32, f32) {
+	let factor = factor % 1.0;
 
-pub const PRECISION: u32 = 0x80;
+	let red   = 9.0  * (1.0 - factor) * factor         * factor         * factor;
+	let green = 15.0 * (1.0 - factor) * (1.0 - factor) * factor         * factor;
+	let blue  = 8.5  * (1.0 - factor) * (1.0 - factor) * (1.0 - factor) * factor;
 
-pub const BAILOUT_DISTANCE: f32 = 256.0;
-
-pub fn width_height_ratio(width: u32, height: u32) -> (f32, f32) {
-	return if width > height {
-		(1.0, height as f32 / width as f32)
-	} else {
-		(width as f32 / height as f32, 1.0)
-	};
+	return (red, green, blue);
 }

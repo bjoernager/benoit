@@ -38,27 +38,31 @@ pub type PaletteData = [(f32, f32, f32); PALETTE_DATA_LENGTH];
 #[repr(u8)]
 pub enum Palette {
 	// Sorted according to date of addition.
-	Ancient,
+	Twilight,
 	Fire,
 	Greyscale,
+	Ruby,
+	Emerald,
 	Sapphire,
 	Hsv,
 	Lch,
 }
 
 impl Palette {
-	const MIN: Self = Palette::Ancient;
+	const MIN: Self = Palette::Twilight;
 	const MAX: Self = Palette::Lch;
 
 	#[must_use]
 	pub fn name(self) -> &'static str {
 		return match self {
-			Palette::Ancient   => "ancient",
+			Palette::Emerald   => "emerald",
 			Palette::Fire      => "fire",
 			Palette::Greyscale => "greyscale",
 			Palette::Hsv       => "hsv",
 			Palette::Lch       => "lch",
+			Palette::Ruby      => "ruby",
 			Palette::Sapphire  => "sapphire",
+			Palette::Twilight  => "twilight",
 		};
 	}
 
@@ -86,12 +90,14 @@ impl Palette {
 	#[must_use]
 	fn function(self) -> fn(f32) -> (f32, f32, f32) {
 		return match self {
-			Palette::Ancient   => paint::ancient,
+			Palette::Emerald   => paint::emerald,
 			Palette::Fire      => paint::fire,
 			Palette::Greyscale => paint::greyscale,
 			Palette::Hsv       => paint::hsv,
 			Palette::Lch       => paint::lch,
+			Palette::Ruby      => paint::ruby,
 			Palette::Sapphire  => paint::sapphire,
+			Palette::Twilight  => paint::twilight,
 		};
 	}
 }
