@@ -1,3 +1,7 @@
+# 2.5.1
+
+* Fix readme
+
 # 2.5.0
 
 * Make fill_palettes safe
