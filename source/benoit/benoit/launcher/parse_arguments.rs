@@ -21,39 +21,28 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::complex::Complex;
-use crate::benoit::fractal::Fractal;
-use crate::benoit::image::ImageFormat;
-use crate::benoit::palette::Palette;
+use crate::benoit::configuration::Configuration;
+use crate::benoit::launcher::Launcher;
 
-extern crate rug;
+use std::env::args;
 
-use rug::Float;
+impl Launcher {
+	#[must_use]
+	pub(super) fn parse_arguments(&self) -> (Configuration, bool) {
+		let mut arguments = args();
 
-pub mod animate;
-pub mod configure;
-pub mod dump_frame;
-pub mod run;
-pub mod still;
+		return match arguments.nth(0x1) {
+			Some(argument) => {
+				if argument == "--help" { Launcher::print_help() };
 
-pub struct Script {
-	// Configuration:
-	fractal:  Fractal,
+				let configuration = match Configuration::load(argument.as_str()) {
+					Ok( configuration) => configuration,
+					Err(message)       => panic!("error parsing configuration: {message}"),
+				};
 
-	canvas_width:  u32,
-	canvas_height: u32,
-	frame_start:   u32,
-	frame_stop:    u32,
-
-	centre: Complex,
-	extra:  Complex,
-	zoom:   Float,
-
-	max_iter_count: u32,
-
-	palette:      Palette,
-	colour_range: f32,
-
-	dump_path:    String,
-	image_format: ImageFormat,
+				(configuration, false)
+			},
+			_ => (Configuration::default(), true),
+		};
+	}
 }

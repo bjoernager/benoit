@@ -3,7 +3,7 @@
 [*Benoit*](https://mandelbrot.dk/benoit) is a free and open‐source Mandelbrot renderer written in Rust. Its goal is to render arbitrary positions as performant and accurate as possiple. Usage:
 
 ```
-benoit [path]
+benoit [--help] [path]
 ```
 
 &hellip; where *path* denotes the configuration file to read (optional). If no path is provided, the program is run in *interactive* mode, wherein the fractal is rendered in real‐time. Otherwise, *script* mode is run using the provided configuration.

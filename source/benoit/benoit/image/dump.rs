@@ -31,9 +31,11 @@ use std::io::BufWriter;
 
 impl Image {
 	pub fn dump(&self, path: &str, format: ImageFormat) {
+		use ImageFormat::*;
+
 		match format {
-			ImageFormat::Png  => self.dump_png( path),
-			ImageFormat::Webp => self.dump_webp(path),
+			Png  => self.dump_png( path),
+			Webp => self.dump_webp(path),
 		}
 	}
 

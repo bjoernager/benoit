@@ -24,6 +24,7 @@
 use crate::benoit::complex::Complex;
 use crate::benoit::fractal::Fractal;
 use crate::benoit::image::{Image, ImageFormat};
+use crate::benoit::launcher::Launcher;
 use crate::benoit::palette::Palette;
 use crate::benoit::render::Render;
 use crate::benoit::script::Script;
@@ -49,7 +50,7 @@ impl Script {
 		image_format:   ImageFormat,
 	) {
 		eprint!("\"{name}\" (2^{:.9}x): rendering...", zoom.to_f64().log2());
-		Script::set_title("Rendering...");
+		Launcher::set_title("Rendering...");
 
 		let time_start = Instant::now();
 
@@ -63,19 +64,19 @@ impl Script {
 
 		let render_time = time_start.elapsed();
 		eprint!(" {:.3}ms, colouring...", render_time.as_micros() as f32 / 1000.0);
-		Script::set_title("Colouring...");
+		Launcher::set_title("Colouring...");
 
 		image.colour(&render, palette, max_iter_count, colour_range);
 
 		let colour_time = time_start.elapsed() - render_time;
 		eprint!(" {:.3}ms, dumping...", colour_time.as_micros() as f32 / 1000.0);
-		Script::set_title("Dumping...");
+		Launcher::set_title("Dumping...");
 
 		let path = format!("{dump_path}/{name}");
 		image.dump(path.as_str(), image_format);
 
 		let dump_time = time_start.elapsed() - colour_time - render_time;
 		eprintln!(" {:.3}ms - \u{1B}[1m\u{1B}[92mdone\u{1B}[0m", dump_time.as_micros() as f32 / 1000.0);
-		Script::set_title("Done");
+		Launcher::set_title("Done");
 	}
 }

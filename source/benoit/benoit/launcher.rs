@@ -21,20 +21,18 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::script::Script;
+pub mod parse_arguments;
+pub mod print_help;
+pub mod print_message;
+pub mod run;
+pub mod set_title;
+pub mod setup;
 
-#[cfg(windows)]
-extern crate windows;
+pub struct Launcher {}
 
-#[cfg(windows)]
-use windows::Win32::System::Console::SetConsoleTitleA;
-
-impl Script {
-	pub(super) fn set_title(title: &str) {
-		#[cfg(unix)]
-		{ eprint!("\u{1B}]0;{title}\u{07}") };
-
-		#[cfg(windows)]
-		unsafe { SetConsoleTitleA(title) };
+impl Launcher {
+	#[must_use]
+	pub fn new() -> Launcher {
+		return Launcher {};
 	}
 }

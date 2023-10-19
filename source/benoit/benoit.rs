@@ -27,6 +27,7 @@ pub mod complex;
 pub mod configuration;
 pub mod image;
 pub mod fractal;
+pub mod launcher;
 pub mod palette;
 pub mod render;
 pub mod render_data;
@@ -36,7 +37,7 @@ pub mod video;
 pub const VERSION: (u32, u32, u32) = (
 	0x2, // Major
 	0x6, // Minor
-	0x2, // Patch
+	0x3, // Patch
 );
 
 pub const PRECISION: u32 = 0x80;

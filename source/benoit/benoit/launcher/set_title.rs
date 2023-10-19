@@ -21,39 +21,20 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::complex::Complex;
-use crate::benoit::fractal::Fractal;
-use crate::benoit::image::ImageFormat;
-use crate::benoit::palette::Palette;
+use crate::benoit::launcher::Launcher;
 
-extern crate rug;
+#[cfg(windows)]
+extern crate windows;
 
-use rug::Float;
+#[cfg(windows)]
+use windows::Win32::System::Console::SetConsoleTitleA;
 
-pub mod animate;
-pub mod configure;
-pub mod dump_frame;
-pub mod run;
-pub mod still;
+impl Launcher {
+	pub fn set_title(title: &str) {
+		#[cfg(unix)]
+		{ eprint!("\u{1B}]0;{title}\u{07}") };
 
-pub struct Script {
-	// Configuration:
-	fractal:  Fractal,
-
-	canvas_width:  u32,
-	canvas_height: u32,
-	frame_start:   u32,
-	frame_stop:    u32,
-
-	centre: Complex,
-	extra:  Complex,
-	zoom:   Float,
-
-	max_iter_count: u32,
-
-	palette:      Palette,
-	colour_range: f32,
-
-	dump_path:    String,
-	image_format: ImageFormat,
+		#[cfg(windows)]
+		unsafe { SetConsoleTitleA(title) };
+	}
 }

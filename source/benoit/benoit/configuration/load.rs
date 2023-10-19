@@ -37,7 +37,7 @@ use toml::{Table, Value};
 
 impl Configuration {
 	#[must_use]
-	pub fn load(path: &str) -> Configuration {
+	pub fn load(path: &str) -> Result<Configuration, String> {
 		eprintln!("loading configuration at \"{path}\"");
 
 		let mut configuration = Configuration::default();
@@ -51,18 +51,8 @@ impl Configuration {
 
 		get_integer(&mut configuration.thread_count, &configuration_table, "thread_count");
 
-		if let Some(name) = get_string(&configuration_table, "fractal") {
-			configuration.fractal.kind = match FractalKind::from_str(name.as_str()) {
-				Ok(kind)     => kind,
-				Err(message) => panic!("{message}"),
-			};
-		}
-
-		{
-			let mut inverse = false;
-			get_boolean(&mut inverse, &configuration_table, "inverse");
-			configuration.fractal.inverse = inverse;
-		}
+		get_boolean(&mut configuration.fractal.inverse, &configuration_table, "inverse");
+		get_boolean(&mut configuration.fractal.julia,   &configuration_table, "julia");
 
 		get_integer(&mut configuration.canvas_width,  &configuration_table, "canvas_width");
 		get_integer(&mut configuration.canvas_height, &configuration_table, "canvas_height");
@@ -77,41 +67,37 @@ impl Configuration {
 
 		get_integer(&mut configuration.max_iter_count, &configuration_table, "maximum_iteration_count");
 
-		if let Some(name) = get_string(&configuration_table, "palette") {
-			configuration.palette = match Palette::from_str(name.as_str()) {
-				Ok(palette)  => palette,
-				Err(message) => panic!("{message}"),
-			};
+		get_float(&mut configuration.colour_range, &configuration_table, "colour_range");
+
+		// Enumerations:
+		if let Some(name) = get_string(&configuration_table, "fractal") {
+			configuration.fractal.kind = FractalKind::from_str(name.as_str())?;
 		}
 
-		get_float(&mut configuration.colour_range, &configuration_table, "colour_range");
+		if let Some(name) = get_string(&configuration_table, "palette") {
+			configuration.palette = Palette::from_str(name.as_str())?;
+		}
 
 		if let Some(path) = get_string(&configuration_table, "dump_path") {
 			configuration.dump_path = path.clone();
 		}
 
 		if let Some(name) = get_string(&configuration_table, "image_format") {
-			configuration.image_format = match ImageFormat::from_str(name.as_str()) {
-				Ok(format)   => format,
-				Err(message) => panic!("{message}"),
-			};
+			configuration.image_format = ImageFormat::from_str(name.as_str())?;
 		}
 
-		match check_configuration(&configuration) {
-			Err(message) => panic!("invalid configuration: {message}"),
-			_            => {},
-		}
+		validate_configuration(&configuration)?;
 
-		return configuration;
+		return Ok(configuration);
 	}
 }
 
-fn check_configuration(configuration: &Configuration) -> Result<(), &str> {
+fn validate_configuration(configuration: &Configuration) -> Result<(), &str> {
 	// We allow thread counts of zero as those signal
 	// automatic thread count detection.
 
-	if configuration.canvas_width == 0x0 {
-		return Err("only non-zero values for canvas_width are allowed");
+	if configuration.canvas_width == 0x0 || configuration.canvas_height == 0x0 {
+		return Err("only non-zero values for canvas_width and canvas_height are allowed");
 	}
 
 	if configuration.scale == 0x0 {
@@ -124,6 +110,10 @@ fn check_configuration(configuration: &Configuration) -> Result<(), &str> {
 
 	if configuration.max_iter_count == 0x0 {
 		return Err("only non-zero values for maximum_iteration_count are allowed");
+	}
+
+	if configuration.colour_range < 2.0 {
+		return Err("only values greater than two are allowed for colour_range");
 	}
 
 	return Ok(());

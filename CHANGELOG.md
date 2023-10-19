@@ -1,3 +1,13 @@
+# 2.6.3
+
+* Add help
+* Update readme
+* Fix configuration validation
+* Fix 'julia' not being respected in configurations
+* Improve error handling
+* Add launcher structure
+* Always set terminal title
+
 # 2.6.2
 
 * Reorder fractal kinds

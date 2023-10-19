@@ -21,39 +21,21 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::complex::Complex;
-use crate::benoit::fractal::Fractal;
-use crate::benoit::image::ImageFormat;
-use crate::benoit::palette::Palette;
+use crate::benoit::VERSION;
+use crate::benoit::launcher::Launcher;
+use crate::benoit::palette::fill_palettes;
 
-extern crate rug;
+extern crate rayon;
 
-use rug::Float;
+use rayon::ThreadPoolBuilder;
 
-pub mod animate;
-pub mod configure;
-pub mod dump_frame;
-pub mod run;
-pub mod still;
+impl Launcher {
+	pub(super) fn setup(&self, thread_count: u32) {
+		Launcher::set_title(format!("BENO\u{CE}T {:X}.{:X}.{:X}", VERSION.0, VERSION.1, VERSION.2).as_str());
 
-pub struct Script {
-	// Configuration:
-	fractal:  Fractal,
+		fill_palettes();
 
-	canvas_width:  u32,
-	canvas_height: u32,
-	frame_start:   u32,
-	frame_stop:    u32,
-
-	centre: Complex,
-	extra:  Complex,
-	zoom:   Float,
-
-	max_iter_count: u32,
-
-	palette:      Palette,
-	colour_range: f32,
-
-	dump_path:    String,
-	image_format: ImageFormat,
+		eprintln!("using {} threads", thread_count);
+		ThreadPoolBuilder::new().num_threads(thread_count as usize).build_global().unwrap();
+	}
 }
