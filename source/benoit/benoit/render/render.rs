@@ -69,7 +69,7 @@ impl Render {
 }
 
 fn render_point(data: &RenderData, x: u32, y: u32, iterator: IteratorFunction) -> (u32, f32) {
-	let (centre, zoom, max_iter_count) = data.input();
+	let (centre, extra, zoom, max_iter_count, inverse, julia) = data.input();
 
 	let (x_offset, y_offset, x_factor, y_factor) = data.consts();
 
@@ -86,8 +86,21 @@ fn render_point(data: &RenderData, x: u32, y: u32, iterator: IteratorFunction) -
 		Complex {real: a, imag: b}
 	};
 
-	z = data.factor_inverse(z);
-	let (mut z, c) = data.setup_julia(z);
+	if inverse {
+		let mut factor_inverse = Float::with_val(PRECISION, &z.real * &z.real);
+		factor_inverse += &z.imag * &z.imag;
+		factor_inverse.recip_mut();
+
+		z.real *= &factor_inverse;
+		z.imag *= factor_inverse;
+	}
+
+	// We can optimise pertubation by adding w (extra)
+	// to c.
+	let c = match julia {
+		false => Complex { real: Float::with_val(PRECISION, &z.real + &extra.real), imag: Float::with_val(PRECISION, &z.imag + &extra.imag) },
+		true  => extra.clone(),
+	};
 
 	let mut z_prev = Complex {
 		real: Float::with_val(PRECISION, Special::Nan),
@@ -111,8 +124,6 @@ fn render_point(data: &RenderData, x: u32, y: u32, iterator: IteratorFunction) -
 		z_prev.assign(&z);
 
 		iterator(&mut z, &c);
-
-		z = data.perturbate(z);
 
 		iter_count += 0x1;
 	}

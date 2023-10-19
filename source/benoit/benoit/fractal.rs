@@ -34,17 +34,14 @@ pub type IteratorFunction = fn(&mut Complex, &Complex);
 #[derive(Clone, Copy)]
 #[repr(u8)]
 pub enum FractalKind {
-	// Sorted according to exponent.
 	Mandelbrot,
-	BurningShip,
-	Tricorn,
 	Multibrot3,
 	Multibrot4,
+	BurningShip,
+	Tricorn,
 }
 
 impl FractalKind {
-	const NUM: usize = Self::Multibrot4 as usize + 0x1;
-
 	pub fn name(self) -> &'static str {
 		return match self {
 			FractalKind::BurningShip => "burning ship",
@@ -58,9 +55,9 @@ impl FractalKind {
 	pub fn cycle(&mut self, direction: i8) {
 		let raw = *self as i16 + direction as i16;
 
-		const NUM: isize = FractalKind::NUM as isize;
+		const NUM: isize = FractalKind::Tricorn as isize + 0x1;
 		let new: u8 = match raw as isize {
-			-0x1 => (FractalKind::NUM - 0x1) as u8,
+			-0x1 => (NUM - 0x1) as u8,
 			NUM  => 0x0,
 			_    => raw as u8,
 		};

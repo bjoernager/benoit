@@ -21,7 +21,7 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::{PRECISION, width_height_ratio};
+use crate::benoit::width_height_ratio;
 use crate::benoit::complex::Complex;
 
 extern crate rug;
@@ -90,8 +90,8 @@ impl RenderData {
 	}
 
 	#[must_use]
-	pub fn input(&self) -> (&Complex, &Float, u32) {
-		return (&self.centre, &self.zoom, self.max_iter_count);
+	pub fn input(&self) -> (&Complex, &Complex, &Float, u32, bool, bool) {
+		return (&self.centre, &self.extra, &self.zoom, self.max_iter_count, self.inverse, self.julia);
 	}
 
 	#[must_use]
@@ -108,39 +108,5 @@ impl RenderData {
 		let x = (index % self.canvas_width as usize) as u32;
 		let y = (index / self.canvas_width as usize) as u32;
 		return (x, y);
-	}
-
-	#[must_use]
-	pub fn factor_inverse(&self, mut z: Complex) -> Complex {
-		if self.inverse {
-			let mut factor_inverse = Float::with_val(PRECISION, &z.real * &z.real);
-			factor_inverse += &z.imag * &z.imag;
-			factor_inverse.recip_mut();
-
-			z.real *= &factor_inverse;
-			z.imag *= factor_inverse;
-		}
-
-		return z;
-	}
-
-	#[must_use]
-	pub fn setup_julia(&self, z: Complex) -> (Complex, Complex) {
-		let c = match self.julia {
-			false => z.clone(),
-			true  => self.extra.clone(),
-		};
-
-		return (z, c);
-	}
-
-	#[must_use]
-	pub fn perturbate(&self, mut z: Complex) -> Complex {
-		if !self.julia {
-			z.real += &self.extra.real;
-			z.imag += &self.extra.imag;
-		}
-
-		return z;
 	}
 }

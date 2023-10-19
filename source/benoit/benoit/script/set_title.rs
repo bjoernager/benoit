@@ -30,13 +30,11 @@ extern crate windows;
 use windows::Win32::System::Console::SetConsoleTitleA;
 
 impl Script {
-	#[cfg(unix)]
 	pub(super) fn set_title(title: &str) {
-		eprint!("\u{1B}]0;{title}\u{07}");
-	}
+		#[cfg(unix)]
+		{ eprint!("\u{1B}]0;{title}\u{07}") };
 
-	#[cfg(windows)]
-	pub(super) fn set_title(title: &str) {
+		#[cfg(windows)]
 		unsafe { SetConsoleTitleA(title) };
 	}
 }

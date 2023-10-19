@@ -1,3 +1,9 @@
+# 2.6.2
+
+* Reorder fractal kinds
+* Optimise renderer
+* Refactor code
+
 # 2.6.1
 
 * Update readme
