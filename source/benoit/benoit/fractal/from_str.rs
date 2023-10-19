@@ -21,22 +21,28 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod emerald;
-pub mod fire;
-pub mod greyscale;
-pub mod hsv;
-pub mod lch;
-pub mod ruby;
-pub mod sapphire;
-pub mod simple;
-pub mod twilight;
+use crate::benoit::fractal::FractalKind;
 
-pub use emerald::*;
-pub use fire::*;
-pub use greyscale::*;
-pub use hsv::*;
-pub use lch::*;
-pub use ruby::*;
-pub use sapphire::*;
-pub use simple::*;
-pub use twilight::*;
+use std::str::FromStr;
+
+impl FromStr for FractalKind {
+	type Err = String;
+
+	fn from_str(string: &str) -> Result<Self, Self::Err> {
+		use FractalKind::*;
+
+		let kind = match string {
+			"burningship" => Some(BurningShip),
+			"mandelbrot"  => Some(Mandelbrot),
+			"multibrot3"  => Some(Multibrot3),
+			"multibrot4"  => Some(Multibrot4),
+			"tricorn"     => Some(Tricorn),
+			_             => None,
+		};
+
+		return match kind {
+			Some(kind) => Ok(kind),
+			_          => Err(format!("invalid fractal kind \"{string}\"")),
+		};
+	}
+}

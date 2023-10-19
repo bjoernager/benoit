@@ -32,36 +32,15 @@ use std::time::Instant;
 impl Palette {
 	#[must_use]
 	pub(super) unsafe fn mut_data(self) -> &'static mut PaletteData {
-		return match self {
-			Palette::Emerald   => &mut DATA_EMERALD,
-			Palette::Fire      => &mut DATA_FIRE,
-			Palette::Greyscale => &mut DATA_GREYSCALE,
-			Palette::Hsv       => &mut DATA_HSV,
-			Palette::Lch       => &mut DATA_LCH,
-			Palette::Ruby      => &mut DATA_RUBY,
-			Palette::Sapphire  => &mut DATA_SAPPHIRE,
-			Palette::Twilight  => &mut DATA_TWILIGHT,
-		};
+		return &mut PALETTE_DATA[self as usize];
 	}
 }
 
-#[must_use]
-const fn default_palette_data() -> PaletteData {
-	return [(0.0, 0.0, 0.0); PALETTE_DATA_LENGTH];
-}
-
-static mut DATA_EMERALD:   PaletteData = default_palette_data();
-static mut DATA_FIRE:      PaletteData = default_palette_data();
-static mut DATA_GREYSCALE: PaletteData = default_palette_data();
-static mut DATA_HSV:       PaletteData = default_palette_data();
-static mut DATA_LCH:       PaletteData = default_palette_data();
-static mut DATA_RUBY:      PaletteData = default_palette_data();
-static mut DATA_SAPPHIRE:  PaletteData = default_palette_data();
-static mut DATA_TWILIGHT:  PaletteData = default_palette_data();
-
-static PALETTES_FILLED: AtomicBool = AtomicBool::new(false);
+static mut PALETTE_DATA: [PaletteData; Palette::NUM] = [[(0.0, 0.0, 0.0); PALETTE_DATA_LENGTH]; Palette::NUM];
 
 pub fn fill_palettes() {
+	static PALETTES_FILLED: AtomicBool = AtomicBool::new(false);
+
 	match PALETTES_FILLED.compare_exchange(false, true, Ordering::Relaxed, Ordering::Relaxed) {
 		Err(_) => panic!("palettes already filled"),
 		_      => {},

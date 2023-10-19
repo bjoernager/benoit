@@ -26,7 +26,7 @@ extern crate sdl2;
 use sdl2::{Sdl, VideoSubsystem};
 use sdl2::render::WindowCanvas;
 
-pub mod draw;
+pub mod draw_image;
 pub mod draw_textual_feedback;
 pub mod draw_translation_feedback;
 pub mod initialise;

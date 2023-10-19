@@ -24,7 +24,7 @@
 use crate::benoit::app::App;
 
 impl App {
-	pub(super) fn print_controls(&self) {
+	pub(super) fn print_controls() {
 		println!("Controls:");
 		println!("- \u{1B}[1mW\u{1B}[0m            Translate +Im");
 		println!("- \u{1B}[1mA\u{1B}[0m            Translate -Re");

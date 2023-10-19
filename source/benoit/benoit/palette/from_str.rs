@@ -21,22 +21,32 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod emerald;
-pub mod fire;
-pub mod greyscale;
-pub mod hsv;
-pub mod lch;
-pub mod ruby;
-pub mod sapphire;
-pub mod simple;
-pub mod twilight;
+use crate::benoit::palette::Palette;
 
-pub use emerald::*;
-pub use fire::*;
-pub use greyscale::*;
-pub use hsv::*;
-pub use lch::*;
-pub use ruby::*;
-pub use sapphire::*;
-pub use simple::*;
-pub use twilight::*;
+use std::str::FromStr;
+
+impl FromStr for Palette {
+	type Err = String;
+
+	fn from_str(string: &str) -> Result<Self, Self::Err> {
+		use Palette::*;
+
+		let kind = match string {
+			"emerald"   => Some(Emerald),
+			"fire"      => Some(Fire),
+			"greyscale" => Some(Greyscale),
+			"hsv"       => Some(Hsv),
+			"lch"       => Some(Lch),
+			"ruby"      => Some(Ruby),
+			"sapphire"  => Some(Sapphire),
+			"simple"    => Some(Simple),
+			"twilight"  => Some(Twilight),
+			_           => None,
+		};
+
+		return match kind {
+			Some(kind) => Ok(kind),
+			_          => Err(format!("invalid palette \"{string}\"")),
+		};
+	}
+}

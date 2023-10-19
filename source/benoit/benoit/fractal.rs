@@ -25,14 +25,11 @@ use crate::benoit::complex::Complex;
 
 use std::mem::transmute;
 
+pub mod from_str;
+
 mod iterate;
 
-#[derive(Clone, Copy)]
-pub struct Fractal {
-	kind:    FractalKind,
-	inverse: bool,
-	julia:   bool,
-}
+pub type IteratorFunction = fn(&mut Complex, &Complex);
 
 #[derive(Clone, Copy)]
 #[repr(u8)]
@@ -45,20 +42,41 @@ pub enum FractalKind {
 	Multibrot4,
 }
 
-pub type IteratorFunction = fn(&mut Complex, &Complex);
+impl FractalKind {
+	const NUM: usize = Self::Multibrot4 as usize + 0x1;
 
-impl Fractal {
-	#[must_use]
-	pub const fn new(kind: FractalKind, inverse: bool, julia: bool) -> Self {
-		let fractal = Fractal {
-			kind:    kind,
-			inverse: inverse,
-			julia:   julia,
+	pub fn name(self) -> &'static str {
+		return match self {
+			FractalKind::BurningShip => "burning ship",
+			FractalKind::Mandelbrot  => "mandelbrot set",
+			FractalKind::Multibrot3  => "multibrot3 set",
+			FractalKind::Multibrot4  => "multibrot4 set",
+			FractalKind::Tricorn     => "tricorn",
 		};
-
-		return fractal;
 	}
 
+	pub fn cycle(&mut self, direction: i8) {
+		let raw = *self as i16 + direction as i16;
+
+		const NUM: isize = FractalKind::NUM as isize;
+		let new: u8 = match raw as isize {
+			-0x1 => (FractalKind::NUM - 0x1) as u8,
+			NUM  => 0x0,
+			_    => raw as u8,
+		};
+
+		*self = unsafe { transmute(new) };
+	}
+}
+
+#[derive(Clone, Copy)]
+pub struct Fractal {
+	pub kind:    FractalKind,
+	pub inverse: bool,
+	pub julia:   bool,
+}
+
+impl Fractal {
 	pub fn name(&self) -> String {
 		let kind = self.kind.name();
 
@@ -74,21 +92,6 @@ impl Fractal {
 
 		let name = format!("{kind} ({extra})");
 		return name;
-	}
-
-	#[must_use]
-	pub fn kind(&self) -> FractalKind {
-		return self.kind;
-	}
-
-	#[must_use]
-	pub fn inverse(&self) -> bool {
-		return self.inverse;
-	}
-
-	#[must_use]
-	pub fn julia(&self) -> bool {
-		return self.julia;
 	}
 
 	#[must_use]
@@ -110,52 +113,6 @@ impl Fractal {
 			FractalKind::Multibrot3  => iterate::multibrot3,
 			FractalKind::Multibrot4  => iterate::multibrot4,
 			FractalKind::Tricorn     => iterate::tricorn,
-		};
-	}
-
-	pub fn set_kind(&mut self, kind: FractalKind) {
-		self.kind = kind;
-	}
-
-	pub fn set_inverse(&mut self, inverse: bool) {
-		self.inverse = inverse;
-	}
-
-	pub fn set_julia(&mut self, julia: bool) {
-		self.julia = julia;
-	}
-
-	pub fn cycle(&mut self, direction: i8) {
-		// Not important.
-		debug_assert!(direction != 0x0);
-
-		let raw = self.kind as i8 + direction;
-
-		let new: FractalKind = if raw < 0x0 {
-			FractalKind::MAX
-		} else if raw > FractalKind::MAX as i8 {
-			FractalKind::MIN
-		} else {
-			unsafe { transmute(raw) }
-		};
-
-		let new: FractalKind = unsafe { transmute(new) };
-
-		self.kind = new;
-	}
-}
-
-impl FractalKind {
-	const MIN: FractalKind = FractalKind::Mandelbrot;
-	const MAX: FractalKind = FractalKind::Multibrot4;
-
-	pub fn name(self) -> &'static str {
-		return match self {
-			FractalKind::BurningShip => "burning ship",
-			FractalKind::Mandelbrot  => "mandelbrot set",
-			FractalKind::Multibrot3  => "multibrot3 set",
-			FractalKind::Multibrot4  => "multibrot4 set",
-			FractalKind::Tricorn     => "tricorn",
 		};
 	}
 }

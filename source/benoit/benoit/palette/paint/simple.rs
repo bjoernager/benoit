@@ -21,22 +21,12 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod emerald;
-pub mod fire;
-pub mod greyscale;
-pub mod hsv;
-pub mod lch;
-pub mod ruby;
-pub mod sapphire;
-pub mod simple;
-pub mod twilight;
+// Original colour palette from MandelbrotSDL.
 
-pub use emerald::*;
-pub use fire::*;
-pub use greyscale::*;
-pub use hsv::*;
-pub use lch::*;
-pub use ruby::*;
-pub use sapphire::*;
-pub use simple::*;
-pub use twilight::*;
+pub fn simple(factor: f32) -> (f32, f32, f32) {
+	let red   = factor * 3.0 % 1.0;
+	let green = factor * 5.0 % 1.0;
+	let blue  = factor * 7.0 % 1.0;
+
+	return (red, green, blue);
+}

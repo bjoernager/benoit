@@ -117,39 +117,33 @@ impl App {
 	}
 
 	fn cycle_fractal(&mut self, distance: i8) {
-		self.fractal.cycle(distance);
+		self.fractal.kind.cycle(distance);
 
-		eprintln!("renderer the {}", self.fractal.kind().name());
+		eprintln!("renderer the {}", self.fractal.kind.name());
 	}
 
 	fn toggle_inverse(&mut self) {
-		let inverse = !self.fractal.inverse();
+		self.fractal.inverse = !self.fractal.inverse;
 
-		match inverse {
+		match self.fractal.inverse {
 			false => eprintln!("reverting fractal"),
 			true  => eprintln!("inverting fractals"),
 		};
-
-		self.fractal.set_inverse(inverse);
 	}
 
 	fn toggle_julia(&mut self) {
-		let julia = !self.fractal.julia();
+		self.fractal.julia = !self.fractal.julia;
 
-		match julia {
+		match self.fractal.julia {
 			false => eprintln!("disabled the julia set"),
 			true  => eprintln!("enabled the julia set"),
 		};
-
-		self.fractal.set_julia(julia);
 	}
 
 	fn cycle_palette(&mut self, direction: i8) {
-		let palette = self.palette.cycle(direction);
+		self.palette.cycle(direction);
 
-		eprintln!("using palette \"{}\"", palette.name());
-
-		self.palette = palette;
+		eprintln!("using palette \"{}\"", self.palette.name());
 	}
 
 	fn reset_viewport(&mut self) {

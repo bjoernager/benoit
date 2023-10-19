@@ -28,12 +28,12 @@ use crate::benoit::script::Script;
 impl Script {
 	#[must_use]
 	pub(super) fn still(&self) -> i32 {
-		let mut image  = Image::allocate( self.canvas_width, self.canvas_height);
 		let mut render = Render::allocate(self.canvas_width, self.canvas_height);
+		let mut image  = Image::allocate( self.canvas_width, self.canvas_height);
 
 		const FRAME_NAME: &str = "render";
 
-		Script::dump(
+		Script::dump_frame(
 			self.dump_path.as_str(),
 			FRAME_NAME,
 			&mut image,

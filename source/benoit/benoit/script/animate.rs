@@ -36,8 +36,8 @@ impl Script {
 	pub(super) fn animate(&self) -> i32 {
 		let frame_count = self.frame_stop - self.frame_start + 0x1;
 
-		let mut image  = Image::allocate( self.canvas_width, self.canvas_height);
 		let mut render = Render::allocate(self.canvas_width, self.canvas_height);
+		let mut image  = Image::allocate( self.canvas_width, self.canvas_height);
 
 		// zoom_start:
 		let mut zoom = Float::with_val(PRECISION, 1.0 / 4.0);
@@ -60,7 +60,7 @@ impl Script {
 		for frame in 0x0..=frame_count {
 			let frame_name = format!("frame{frame:010}");
 
-			Script::dump(
+			Script::dump_frame(
 				self.dump_path.as_str(),
 				frame_name.as_str(),
 				&mut image,

@@ -60,7 +60,7 @@ pub struct Configuration {
 }
 
 impl Configuration {
-	pub const DEFAULT_FRACTAL: Fractal = Fractal::new(FractalKind::Mandelbrot, false, false);
+	pub const DEFAULT_FRACTAL: Fractal = Fractal { kind: FractalKind::Mandelbrot, inverse: false, julia: false };
 
 	pub const DEFAULT_CENTRE: (f64, f64) = (0.0, 0.0);
 	pub const DEFAULT_EXTRA:  (f64, f64) = (0.0, 0.0);

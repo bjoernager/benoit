@@ -21,22 +21,22 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod emerald;
-pub mod fire;
-pub mod greyscale;
-pub mod hsv;
-pub mod lch;
-pub mod ruby;
-pub mod sapphire;
-pub mod simple;
-pub mod twilight;
+use crate::benoit::script::Script;
 
-pub use emerald::*;
-pub use fire::*;
-pub use greyscale::*;
-pub use hsv::*;
-pub use lch::*;
-pub use ruby::*;
-pub use sapphire::*;
-pub use simple::*;
-pub use twilight::*;
+#[cfg(windows)]
+extern crate windows;
+
+#[cfg(windows)]
+use windows::Win32::System::Console::SetConsoleTitleA;
+
+impl Script {
+	#[cfg(unix)]
+	pub(super) fn set_title(title: &str) {
+		eprint!("\u{1B}]0;{title}\u{07}");
+	}
+
+	#[cfg(windows)]
+	pub(super) fn set_title(title: &str) {
+		unsafe { SetConsoleTitleA(title) };
+	}
+}

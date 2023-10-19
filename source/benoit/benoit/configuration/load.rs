@@ -52,20 +52,16 @@ impl Configuration {
 		get_integer(&mut configuration.thread_count, &configuration_table, "thread_count");
 
 		if let Some(name) = get_string(&configuration_table, "fractal") {
-			configuration.fractal.set_kind(match name.as_str() {
-				"burningship" => FractalKind::BurningShip,
-				"mandelbrot"  => FractalKind::Mandelbrot,
-				"multibrot3"  => FractalKind::Multibrot3,
-				"multibrot4"  => FractalKind::Multibrot4,
-				"tricorn"     => FractalKind::Tricorn,
-				name          => panic!("invalid fractal kind \"{name}\""),
-			});
+			configuration.fractal.kind = match FractalKind::from_str(name.as_str()) {
+				Ok(kind)     => kind,
+				Err(message) => panic!("{message}"),
+			};
 		}
 
 		{
 			let mut inverse = false;
 			get_boolean(&mut inverse, &configuration_table, "inverse");
-			configuration.fractal.set_inverse(inverse);
+			configuration.fractal.inverse = inverse;
 		}
 
 		get_integer(&mut configuration.canvas_width,  &configuration_table, "canvas_width");
@@ -82,16 +78,9 @@ impl Configuration {
 		get_integer(&mut configuration.max_iter_count, &configuration_table, "maximum_iteration_count");
 
 		if let Some(name) = get_string(&configuration_table, "palette") {
-			configuration.palette = match name.as_str() {
-				"emerald"   => Palette::Emerald,
-				"fire"      => Palette::Fire,
-				"greyscale" => Palette::Greyscale,
-				"hsv"       => Palette::Hsv,
-				"lch"       => Palette::Lch,
-				"ruby"      => Palette::Ruby,
-				"sapphire"  => Palette::Sapphire,
-				"twilight"  => Palette::Twilight,
-				name        => panic!("invalid palette \"{name}\""),
+			configuration.palette = match Palette::from_str(name.as_str()) {
+				Ok(palette)  => palette,
+				Err(message) => panic!("{message}"),
 			};
 		}
 
@@ -102,10 +91,9 @@ impl Configuration {
 		}
 
 		if let Some(name) = get_string(&configuration_table, "image_format") {
-			configuration.image_format = match name.as_str() {
-				"png"  => ImageFormat::Png,
-				"webp" => ImageFormat::Webp,
-				name   => panic!("invalid image format \"{name}\""),
+			configuration.image_format = match ImageFormat::from_str(name.as_str()) {
+				Ok(format)   => format,
+				Err(message) => panic!("{message}"),
 			};
 		}
 

@@ -32,8 +32,9 @@ use rug::Float;
 
 pub mod animate;
 pub mod configure;
-pub mod dump;
+pub mod dump_frame;
 pub mod run;
+pub mod set_title;
 pub mod still;
 
 pub struct Script {

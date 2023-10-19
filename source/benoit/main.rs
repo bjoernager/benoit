@@ -38,10 +38,10 @@ use std::thread::available_parallelism;
 
 fn main() {
 	println!();
-	println!("\u{1B}[1mBENO\u{CE}T\u{1B}[0m {:X}.{:X}.{:X}", VERSION.0, VERSION.1, VERSION.2);
-	println!("Copyright 2021, 2023 Gabriel Bj\u{F8}rnager Jensen.");
+	println!(" \u{1B}[1mBENO\u{CE}T\u{1B}[0m {:X}.{:X}.{:X}", VERSION.0, VERSION.1, VERSION.2);
+	println!(" Copyright 2021, 2023 Gabriel Bj\u{F8}rnager Jensen.");
 	println!();
-	println!("Le p\u{E8}re cogita et c'est pourquoi il fut.");
+	println!(" \u{1B}[3mLe p\u{E8}re cogita et c'est pourquoi il fut.\u{1B}[0m");
 	println!();
 
 	fill_palettes();

@@ -26,6 +26,8 @@ extern crate enum_iterator;
 use enum_iterator::Sequence;
 use std::mem::transmute;
 
+pub mod from_str;
+
 mod data;
 mod paint;
 
@@ -37,7 +39,7 @@ pub type PaletteData = [(f32, f32, f32); PALETTE_DATA_LENGTH];
 #[derive(Clone, Copy, Sequence)]
 #[repr(u8)]
 pub enum Palette {
-	// Sorted according to date of addition.
+	Simple,
 	Twilight,
 	Fire,
 	Greyscale,
@@ -49,8 +51,7 @@ pub enum Palette {
 }
 
 impl Palette {
-	const MIN: Self = Palette::Twilight;
-	const MAX: Self = Palette::Lch;
+	pub const NUM: usize = Self::Lch as usize + 0x1;
 
 	#[must_use]
 	pub fn name(self) -> &'static str {
@@ -62,6 +63,7 @@ impl Palette {
 			Palette::Lch       => "lch",
 			Palette::Ruby      => "ruby",
 			Palette::Sapphire  => "sapphire",
+			Palette::Simple    => "simple",
 			Palette::Twilight  => "twilight",
 		};
 	}
@@ -72,19 +74,17 @@ impl Palette {
 		return unsafe { &*self.mut_data() };
 	}
 
-	#[must_use]
-	pub fn cycle(&self, direction: i8) -> Self {
-		let raw = *self as i8 + direction;
+	pub fn cycle(&mut self, direction: i8) {
+		let raw = *self as i16 + direction as i16;
 
-		let new: Palette = if raw < 0x0 {
-			Palette::MAX
-		} else if raw > Palette::MAX as i8 {
-			Palette::MIN
-		} else {
-			unsafe { transmute(raw) }
+		const NUM: isize = Palette::NUM as isize;
+		let new: u8 = match raw as isize {
+			-0x1 => (Self::NUM - 0x1) as u8,
+			NUM  => 0x0,
+			_    => raw as u8,
 		};
 
-		return new;
+		*self = unsafe { transmute(new) };
 	}
 
 	#[must_use]
@@ -97,6 +97,7 @@ impl Palette {
 			Palette::Lch       => paint::lch,
 			Palette::Ruby      => paint::ruby,
 			Palette::Sapphire  => paint::sapphire,
+			Palette::Simple    => paint::simple,
 			Palette::Twilight  => paint::twilight,
 		};
 	}

@@ -36,12 +36,12 @@ impl App {
 	pub fn run(mut self) -> i32 {
 		let mut video = Video::initialise(self.canvas_width, self.canvas_height, self.scale);
 
-		self.print_controls();
+		App::print_controls();
 
 		let mut event_pump = video.sdl.event_pump().expect("unable to get event pump");
 
-		let mut image  = Image::allocate( self.canvas_width, self.canvas_height);
 		let mut render = Render::allocate(self.canvas_width, self.canvas_height);
+		let mut image  = Image::allocate( self.canvas_width, self.canvas_height);
 
 		// Used for translation feedback:
 		let mut prev_centre = self.centre.clone();
@@ -63,9 +63,8 @@ impl App {
 
 			image.colour(&render, self.palette, self.max_iter_count, self.colour_range);
 
-			video.draw(&image, self.scale);
+			video.draw_image(&image, self.scale);
 			self.draw_feedback(&mut video, &prev_centre, &prev_zoom);
-
 			video.update();
 
 			video.sync(&frame_start);

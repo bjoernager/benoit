@@ -53,8 +53,8 @@ impl Render {
 			extra.clone(),
 			zoom.clone(),
 			max_iter_count,
-			fractal.inverse(),
-			fractal.julia(),
+			fractal.inverse,
+			fractal.julia,
 		);
 
 		let iterator = fractal.iterator();

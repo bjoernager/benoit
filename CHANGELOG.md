@@ -1,3 +1,14 @@
+# 2.6.0
+
+* Clean up and refactor code
+* Add new palette 'simple'
+* Remove getters and setters for fractal
+* Implement FromStr for types
+* Update messages
+* Set terminal title in script mode
+* Depend on windows (Windows-only)
+* Bump minor version
+
 # 2.5.1
 
 * Fix readme

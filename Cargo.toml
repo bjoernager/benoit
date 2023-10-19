@@ -1,6 +1,6 @@
 [package]
 name        = "benoit"
-version     = "2.5.1"
+version     = "2.6.0"
 authors     = ["Gabriel Bjørnager Jensen"]
 edition     = "2021"
 description = "Multithreaded Mandelbrot renderer with support for PNG and WebP encoding."
@@ -23,3 +23,6 @@ rug           = "1.22.0"
 sdl2          = "0.35.2"
 toml          = "0.8.2"
 webp          = "0.2.6"
+
+[target.'cfg(windows)'.dependencies]
+windows       = "0.51.1"

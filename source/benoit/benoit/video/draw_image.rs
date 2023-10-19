@@ -30,7 +30,7 @@ use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 
 impl Video {
-	pub fn draw(&mut self, image: &Image, scale: u32) {
+	pub fn draw_image(&mut self, image: &Image, scale: u32) {
 		let (canvas_width, canvas_height) = image.size();
 		let canvas_size = canvas_height as usize * canvas_width as usize;
 

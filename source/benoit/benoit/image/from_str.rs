@@ -21,22 +21,25 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod emerald;
-pub mod fire;
-pub mod greyscale;
-pub mod hsv;
-pub mod lch;
-pub mod ruby;
-pub mod sapphire;
-pub mod simple;
-pub mod twilight;
+use crate::benoit::image::ImageFormat;
 
-pub use emerald::*;
-pub use fire::*;
-pub use greyscale::*;
-pub use hsv::*;
-pub use lch::*;
-pub use ruby::*;
-pub use sapphire::*;
-pub use simple::*;
-pub use twilight::*;
+use std::str::FromStr;
+
+impl FromStr for ImageFormat {
+	type Err = String;
+
+	fn from_str(string: &str) -> Result<Self, Self::Err> {
+		use ImageFormat::*;
+
+		let kind = match string {
+			"png"  => Some(Png),
+			"webp" => Some(Webp),
+			_      => None,
+		};
+
+		return match kind {
+			Some(kind) => Ok(kind),
+			_          => Err(format!("invalid image format \"{string}\"")),
+		};
+	}
+}

@@ -27,6 +27,7 @@ use std::slice::from_raw_parts;
 pub mod allocate;
 pub mod colour;
 pub mod dump;
+pub mod from_str;
 
 pub struct Image {
 	width:  u32,
