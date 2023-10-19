@@ -1,3 +1,7 @@
+# 2.6.1
+
+* Update readme
+
 # 2.6.0
 
 * Clean up and refactor code

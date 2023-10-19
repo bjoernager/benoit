@@ -1,24 +1,26 @@
-# BENOÎT
+# BENO&Icirc;T
 
-[*Benoit*](https://mandelbrot.dk/benoit) is a free and open‐source Mandelbrot renderer written in Rust. It is aimed at producing accurate renders at arbitrary positions in the set as fast as possible. Usage:
+[*Benoit*](https://mandelbrot.dk/benoit) is a free and open‐source Mandelbrot renderer written in Rust. Its goal is to render arbitrary positions as performant and accurate as possiple. Usage:
 
 ```
 benoit [path]
 ```
 
-… where *path* denotes the configuration file to read (optional). If no path is provided, the program is run in *interactive* mode, wherein the fractal is rendered in real‐time.
+&hellip; where *path* denotes the configuration file to read (optional). If no path is provided, the program is run in *interactive* mode, wherein the fractal is rendered in real‐time. Otherwise, *script* mode is run using the provided configuration.
 
 # Dependencies
 
 Benoit makes use of the following external libraries:
 
-* [enum-iterator](https://crates.io/crates/enum-iterator) for pre-calculating palettes
-* [PNG](https://crates.io/crates/png) for encoding PNG images
-* [Rayon](https://crates.io/crates/rayon) for threadpooling
-* [Rug](https://crates.io/crates/rug) for multi‐precision
-* [SDL2](https://crates.io/crates/sdl2) for interactive viewports
-* [TOML](https://crates.io/crates/toml) for parsing TOML files
-* [WebP](https://crates.io/crates/webp) for encoding WebP images
+* [`enum-iterator`](https://crates.io/crates/enum-iterator) for pre&hyphen;calculating palettes
+* [`png`](https://crates.io/crates/png) for encoding PNG images
+* [`rayon`](https://crates.io/crates/rayon) for threadpooling
+* [`rug`](https://crates.io/crates/rug) for multi‐precision
+* [`sdl2`](https://crates.io/crates/sdl2) for interactive viewports
+* [`toml`](https://crates.io/crates/toml) for parsing TOML files
+* [`webp`](https://crates.io/crates/webp) for encoding WebP images
+
+Furthermore &ndash; on Windows &ndash; the `windows` package is used for setting the terminal title.
 
 # Mirrors
 

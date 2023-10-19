@@ -1,6 +1,6 @@
 [package]
 name        = "benoit"
-version     = "2.6.0"
+version     = "2.6.1"
 authors     = ["Gabriel Bjørnager Jensen"]
 edition     = "2021"
 description = "Multithreaded Mandelbrot renderer with support for PNG and WebP encoding."
