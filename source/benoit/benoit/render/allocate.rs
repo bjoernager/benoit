@@ -21,26 +21,25 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::configuration::Configuration;
 use crate::benoit::render::Render;
 
 impl Render {
-	pub fn allocate(canvas_width: u32, canvas_height: u32) -> Render {
-		let canvas_size = {
-			let (canvas_size, overflow) = canvas_height.overflowing_mul(canvas_width);
-			if overflow { panic!("overflow when calculating canvas size") };
+	pub fn allocate(width: u32, height: u32) -> Result<Render, String> {
+		if width < Configuration::MIN_CANVAS_WIDTH || height < Configuration::MIN_CANVAS_WIDTH { return Err(format!("width and height may not be more than {}", Configuration::MIN_CANVAS_WIDTH)) };
 
-			canvas_size as usize
-		};
+		let (canvas_size, overflow) = (height as usize).overflowing_mul(width as usize);
+		if overflow { return Err("overflow when calculating canvas size".to_string()) };
 
 		let data: Vec<(u32, f32)> = vec![(0x0, 0.0); canvas_size];
 
-		return Render {
-			canvas_width:  canvas_width,
-			canvas_height: canvas_height,
+		return Ok(Render {
+			width:  width,
+			height: height,
 
 			info: None,
 
 			data: data,
-		};
+		});
 	}
 }

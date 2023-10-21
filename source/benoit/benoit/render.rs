@@ -29,8 +29,8 @@ pub mod render;
 use std::ops::{Index, IndexMut};
 
 pub struct Render {
-	canvas_width:  u32,
-	canvas_height: u32,
+	width:  u32,
+	height: u32,
 
 	info: Option<(Fractal, u32)>,
 
@@ -39,8 +39,8 @@ pub struct Render {
 
 impl Render {
 	#[must_use]
-	pub fn canvas_size(&self) -> (u32, u32) {
-		return (self.canvas_width, self.canvas_height);
+	pub fn size(&self) -> (u32, u32) {
+		return (self.width, self.height);
 	}
 
 	#[must_use]

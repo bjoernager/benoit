@@ -36,8 +36,8 @@ pub mod video;
 
 pub const VERSION: (u32, u32, u32) = (
 	0x2, // Major
-	0x6, // Minor
-	0x3, // Patch
+	0x7, // Minor
+	0x0, // Patch
 );
 
 pub const PRECISION: u32 = 0x80;

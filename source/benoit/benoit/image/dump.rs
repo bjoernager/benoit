@@ -30,19 +30,22 @@ use std::fs::{File, write};
 use std::io::BufWriter;
 
 impl Image {
-	pub fn dump(&self, path: &str, format: ImageFormat) {
+	pub fn dump(&self, path: &str, format: ImageFormat) -> Result<(), String> {
 		use ImageFormat::*;
 
-		match format {
+		return match format {
 			Png  => self.dump_png( path),
 			Webp => self.dump_webp(path),
-		}
+		};
 	}
 
-	fn dump_png(&self, path: &str) {
+	fn dump_png(&self, path: &str) -> Result<(), String> {
 		let path = path.to_owned() + ".png";
 
-		let file        = File::create(path).expect("unable to create file");
+		let file = match File::create(path) {
+			Ok( file) => file,
+			Err(_)    => return Err("unable to create file".to_string()),
+		};
 		let file_buffer = BufWriter::new(file);
 
 		let mut encoder = png::Encoder::new(file_buffer, self.width, self.height);
@@ -51,17 +54,23 @@ impl Image {
 		encoder.set_compression(png::Compression::Fast);
 		encoder.set_srgb(png::SrgbRenderingIntent::Perceptual);
 
-		let mut writer = encoder.write_header().expect("unable to write image");
-		writer.write_image_data(self.raw()).expect("unable to write image");
+		let mut writer = match encoder.write_header() {
+			Ok( writer) => writer,
+			Err(_)      => return Err("unable to write image header".to_string()),
+		};
+		if writer.write_image_data(self.raw()).is_err() { return Err("unable to write image".to_string()) };
+
+		return Ok(());
 	}
 
-	fn dump_webp(&self, path: &str) {
+	fn dump_webp(&self, path: &str) -> Result<(), String> {
 		let path = path.to_owned() + ".webp";
 
 		let encoder = webp::Encoder::from_rgb(self.raw(), self.width, self.height);
+		let data    = encoder.encode_lossless();
 
-		let data = encoder.encode_lossless();
+		if write(path, &*data).is_err() { return Err("unable to write image".to_string()) };
 
-		write(path, &*data).expect("unable to write image");
+		return Ok(());
 	}
 }

@@ -30,15 +30,14 @@ pub fn burning_ship(z: &mut Complex, c: &Complex) {
 	//
 	// z(n+1) = (abs(Re(z(n)))+i*abs(Im(z(n))))^2+c.
 
-	z.real.abs_mut(); // abs(a)
-	z.imag.abs_mut(); // abs(b)
-
+	z.real.abs_mut();                  // abs(a)
 	let za_temporary = z.real.clone(); // abs(a)
 
 	z.real.square_mut();         // abs(a)^2
 	z.real -= &z.imag * &z.imag; // abs(a)^2-abs(b)^2
 	z.real += &c.real;           // abs(a)^2-abs(b)^2+Re(c)
 
+	z.imag.abs_mut();        // abs(b)
 	z.imag *= &za_temporary; // abs(a)
 	z.imag *= 2.0;           // 2*abs(a)
 	z.imag += &c.imag;       // 2*abs(a)+Im(c)

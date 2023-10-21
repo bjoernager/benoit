@@ -32,12 +32,12 @@ impl FromStr for FractalKind {
 		use FractalKind::*;
 
 		let kind = match string {
-			"burningship" => Some(BurningShip),
-			"mandelbrot"  => Some(Mandelbrot),
-			"multibrot3"  => Some(Multibrot3),
-			"multibrot4"  => Some(Multibrot4),
-			"tricorn"     => Some(Tricorn),
-			_             => None,
+			"burning_ship" => Some(BurningShip),
+			"mandelbrot"   => Some(Mandelbrot),
+			"multibrot3"   => Some(Multibrot3),
+			"multibrot4"   => Some(Multibrot4),
+			"tricorn"      => Some(Tricorn),
+			_              => None,
 		};
 
 		return match kind {

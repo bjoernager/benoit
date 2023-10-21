@@ -31,18 +31,31 @@ use sdl2::render::BlendMode;
 
 impl Video {
 	#[must_use]
-	pub fn initialise(canvas_width: u32, canvas_height: u32, scale: u32) -> Video {
-		let sdl       = sdl2::init().expect("unable to initialise sdl2");
-		let sdl_video = sdl.video().expect("unable to initialise video");
+	pub fn initialise(canvas_width: u32, canvas_height: u32, scale: u32) -> Result<Video, String> {
+		let sdl = match sdl2::init() {
+			Ok( sdl) => sdl,
+			Err(_)   => return Err("unable to initialise sdl2".to_string()),
+		};
+
+		let sdl_video = match sdl.video() {
+			Ok( video) => video,
+			Err(_)     => return Err("unable to initialise video".to_string()),
+		};
 
 		let window_title = format!("BENO\u{CE}T {:X}.{:X}.{:X}", VERSION.0, VERSION.1, VERSION.2);
 
 		let mut window_builder = sdl_video.window(window_title.as_str(), canvas_width * scale, canvas_height * scale);
 		window_builder.position_centered();
 
-		let window = window_builder.build().expect("unable to open window");
+		let window = match window_builder.build() {
+			Ok( window) => window,
+			Err(_)      => return Err("unable to open window".to_string()),
+		};
 
-		let mut canvas = window.into_canvas().build().expect("unable to create canvas");
+		let mut canvas = match window.into_canvas().build() {
+			Ok( canvas) => canvas,
+			Err(_)      => return Err("unable to build canvas".to_string()),
+		};
 
 		canvas.set_blend_mode(BlendMode::Blend);
 
@@ -54,10 +67,10 @@ impl Video {
 		canvas.clear();
 		canvas.present();
 
-		return Video {
+		return Ok(Video {
 			sdl:       sdl,
 			sdl_video: sdl_video,
 			canvas:    canvas,
-		};
+		});
 	}
 }

@@ -23,6 +23,7 @@
 
 use crate::benoit::{BAILOUT_DISTANCE, PRECISION};
 use crate::benoit::complex::Complex;
+use crate::benoit::configuration::Configuration;
 use crate::benoit::fractal::{Fractal, IteratorFunction};
 use crate::benoit::render::Render;
 use crate::benoit::render_data::RenderData;
@@ -42,13 +43,14 @@ impl Render {
 		zoom:           &Float,
 		extra:          &Complex,
 		max_iter_count: u32,
-	) {
-		assert!(max_iter_count > 0x0);
+	) -> Result<(), String> {
+		if *zoom <= 0x0 { return Err("zoom may not be negative nor zero".to_string()) };
+		if max_iter_count < Configuration::MIN_MAX_ITER_COUNT { return Err(format!("maximum_iteration_count must be at least {}", Configuration::MIN_MAX_ITER_COUNT)) };
 
 		let data = RenderData::new(
 			&mut self.data[..],
-			self.canvas_width,
-			self.canvas_height,
+			self.width,
+			self.height,
 			centre.clone(),
 			extra.clone(),
 			zoom.clone(),
@@ -65,6 +67,8 @@ impl Render {
 		});
 
 		self.info = Some((fractal, max_iter_count));
+
+		return Ok(());
 	}
 }
 

@@ -28,12 +28,22 @@ use crate::benoit::palette::fill_palettes;
 extern crate rayon;
 
 use rayon::ThreadPoolBuilder;
+use std::thread::available_parallelism;
 
 impl Launcher {
 	pub(super) fn setup(&self, thread_count: u32) {
 		Launcher::set_title(format!("BENO\u{CE}T {:X}.{:X}.{:X}", VERSION.0, VERSION.1, VERSION.2).as_str());
 
 		fill_palettes();
+
+		let thread_count = if thread_count == 0x0 {
+			match available_parallelism() {
+				Ok(ammount) => ammount.get() as u32,
+				_           => 0x2, // We assume at least two threads.
+			}
+		} else {
+			thread_count
+		};
 
 		eprintln!("using {} threads", thread_count);
 		ThreadPoolBuilder::new().num_threads(thread_count as usize).build_global().unwrap();

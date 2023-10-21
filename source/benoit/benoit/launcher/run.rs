@@ -22,39 +22,36 @@
 */
 
 use crate::benoit::app::App;
-use crate::benoit::launcher::Launcher;
+use crate::benoit::launcher::{Launcher, Mode};
 use crate::benoit::script::Script;
-
-use std::thread::available_parallelism;
 
 impl Launcher {
 	#[must_use]
-	pub fn run(self) -> i32 {
+	pub fn run(self) -> Result<(), String> {
 		Launcher::print_message();
 
-		let (mut configuration, interative) = self.parse_arguments();
+		let mode = self.parse_arguments()?;
 
-		configuration.thread_count = if configuration.thread_count == 0x0 {
-			match available_parallelism() {
-				Ok(ammount) => ammount.get() as u32,
-				_           => 0x2, // We assume at least two threads.
-			}
-		} else {
-			configuration.thread_count
+		let thread_count = match &mode {
+			Mode::Script(configuration) => configuration.thread_count,
+			_                           => 0x0,
 		};
 
-		self.setup(configuration.thread_count);
+		self.setup(thread_count);
 
-		return if interative {
-			eprintln!("running in iteractive mode");
+		return match mode {
+			Mode::App(width, height) => {
+				eprintln!("running in iteractive mode");
 
-			let app = App::configure(configuration);
-			app.run()
-		} else {
-			eprintln!("running in script mode");
+				let app = App::new(width, height);
+				app.run()
+			},
+			Mode::Script(configuration) => {
+				eprintln!("running in script mode");
 
-			let script = Script::configure(configuration);
-			script.run()
+				let script = Script::configure(configuration);
+				script.run()
+			},
 		};
 	}
 }

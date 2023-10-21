@@ -26,7 +26,7 @@ use crate::benoit::render::Render;
 use std::time::Instant;
 
 impl App {
-	pub(super) fn render(&self, render: &mut Render) {
+	pub(super) fn render(&self, render: &mut Render) -> Result<(), String> {
 		eprint!("rendering...");
 
 		let time_start = Instant::now();
@@ -37,10 +37,12 @@ impl App {
 			&self.zoom,
 			&self.extra,
 			self.max_iter_count,
-		);
+		)?;
 
 		let render_time = time_start.elapsed();
 
-		eprintln!(" {:.3}ms", render_time.as_micros() as f32 / 1000.0);
+		eprintln!("\rrendered: {:.3}ms", render_time.as_micros() as f32 / 1000.0);
+
+		return Ok(());
 	}
 }

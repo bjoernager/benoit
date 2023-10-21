@@ -25,12 +25,10 @@ use crate::benoit::script::Script;
 
 impl Script {
 	#[must_use]
-	pub fn run(self) -> i32 {
-		let code = match self.frame_stop == 0x0 && self.frame_start == 0x0 {
+	pub fn run(self) -> Result<(), String> {
+		return match self.stop.frame == 0x0 && self.start.frame == 0x0 {
 			false => self.animate(),
 			true  => self.still(),
 		};
-
-		return code;
 	}
 }

@@ -38,25 +38,29 @@ impl Configuration {
 			fractal: Self::DEFAULT_FRACTAL,
 
 			canvas_width:  0x100,
-			canvas_height: 0xC0,
-			scale:         0x2,
-			frame_start:   0x0,
-			frame_stop:    0x0,
-
-			centre_real: Float::with_val(PRECISION, Self::DEFAULT_CENTRE.0),
-			centre_imag: Float::with_val(PRECISION, Self::DEFAULT_CENTRE.1),
-			zoom:        Float::with_val(PRECISION, Self::DEFAULT_ZOOM),
-
-			extra_real: Float::with_val(PRECISION, Self::DEFAULT_EXTRA.0),
-			extra_imag: Float::with_val(PRECISION, Self::DEFAULT_EXTRA.1),
-
-			max_iter_count: Self::DEFAULT_MAX_ITER_COUNT,
-
-			palette:      Self::DEFAULT_PALETTE,
-			colour_range: Self::DEFAULT_COLOUR_RANGE,
+			canvas_height: 0x100,
+			palette:       Self::DEFAULT_PALETTE,
 
 			dump_path:    "./render".to_string(),
 			image_format: ImageFormat::Png,
+
+			start_frame:          0x0,
+			start_centre_real:    Float::with_val(PRECISION, Self::DEFAULT_CENTRE.0),
+			start_centre_imag:    Float::with_val(PRECISION, Self::DEFAULT_CENTRE.1),
+			start_extra_real:     Float::with_val(PRECISION, Self::DEFAULT_EXTRA.0),
+			start_extra_imag:     Float::with_val(PRECISION, Self::DEFAULT_EXTRA.1),
+			start_zoom:           Float::with_val(PRECISION, Self::DEFAULT_ZOOM),
+			start_max_iter_count: Self::DEFAULT_MAX_ITER_COUNT,
+			start_colour_range:   Self::DEFAULT_COLOUR_RANGE,
+
+			stop_frame:          0xF,
+			stop_centre_real:    Float::with_val(PRECISION, Self::DEFAULT_CENTRE.0),
+			stop_centre_imag:    Float::with_val(PRECISION, Self::DEFAULT_CENTRE.1),
+			stop_extra_real:     Float::with_val(PRECISION, Self::DEFAULT_EXTRA.0),
+			stop_extra_imag:     Float::with_val(PRECISION, Self::DEFAULT_EXTRA.1),
+			stop_zoom:           Float::with_val(PRECISION, Self::DEFAULT_ZOOM),
+			stop_max_iter_count: Self::DEFAULT_MAX_ITER_COUNT,
+			stop_colour_range:   Self::DEFAULT_COLOUR_RANGE,
 		};
 	}
 }

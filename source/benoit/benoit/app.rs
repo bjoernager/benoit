@@ -29,10 +29,10 @@ extern crate rug;
 
 use rug::Float;
 
-pub mod configure;
 pub mod draw_feedback;
 pub mod drop;
 pub mod handle_keys;
+pub mod new;
 pub mod poll_events;
 pub mod print_controls;
 pub mod render;

@@ -27,11 +27,22 @@ use crate::benoit::script::Script;
 
 impl Script {
 	#[must_use]
-	pub(super) fn still(&self) -> i32 {
-		let mut render = Render::allocate(self.canvas_width, self.canvas_height);
-		let mut image  = Image::allocate( self.canvas_width, self.canvas_height);
+	pub(super) fn still(&self) -> Result<(), String> {
+		let mut render = Render::allocate(self.canvas_width, self.canvas_height)?;
+		let mut image  = Image::allocate( self.canvas_width, self.canvas_height)?;
 
 		const FRAME_NAME: &str = "render";
+
+		eprintln!("");
+		eprintln!("rendering still: the {}", self.fractal.name());
+		eprintln!("    re(c):           {}", self.stop.centre.real);
+		eprintln!("    im(c):           {}", self.stop.centre.imag);
+		eprintln!("    re(w):           {}", self.stop.extra.real);
+		eprintln!("    im(w):           {}", self.stop.extra.imag);
+		eprintln!("    zoom:            {}", self.stop.zoom);
+		eprintln!("    max. iter count: {}", self.stop.max_iter_count);
+		eprintln!("    col. range:      {}", self.stop.colour_range);
+		eprintln!("");
 
 		Script::dump_frame(
 			self.dump_path.as_str(),
@@ -40,14 +51,14 @@ impl Script {
 			&mut render,
 			self.fractal,
 			self.palette,
-			&self.centre,
-			&self.extra,
-			&self.zoom,
-			self.max_iter_count,
-			self.colour_range,
+			&self.stop.centre,
+			&self.stop.extra,
+			&self.stop.zoom,
+			self.stop.max_iter_count,
+			self.stop.colour_range,
 			self.image_format,
-		);
+		)?;
 
-		return 0x0;
+		return Ok(());
 	}
 }

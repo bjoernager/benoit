@@ -21,21 +21,24 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::configuration::Configuration;
 use crate::benoit::image::Image;
 
 impl Image {
 	#[must_use]
-	pub fn allocate(width: u32, height: u32) -> Image {
+	pub fn allocate(width: u32, height: u32) -> Result<Image, String> {
+		if width < Configuration::MIN_CANVAS_WIDTH || height < Configuration::MIN_CANVAS_WIDTH { return Err(format!("width and height may not be more than {}", Configuration::MIN_CANVAS_WIDTH)) };
+
 		let (canvas_size, overflow) = (height as usize).overflowing_mul(width as usize);
-		if overflow { panic!("overflow when calculating canvas size") };
+		if overflow { return Err("overflow when calculating canvas size".to_string()) };
 
 		let data: Vec::<(u8, u8, u8)> = vec![(0x0, 0x0, 0x0); canvas_size];
 
-		return Image {
+		return Ok(Image {
 			width:  width,
 			height: height,
 
 			data: data,
-		};
+		});
 	}
 }

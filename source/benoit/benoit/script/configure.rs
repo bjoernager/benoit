@@ -23,7 +23,7 @@
 
 use crate::benoit::complex::Complex;
 use crate::benoit::configuration::Configuration;
-use crate::benoit::script::Script;
+use crate::benoit::script::{Keyframe, Script};
 
 impl Script {
 	#[must_use]
@@ -33,21 +33,28 @@ impl Script {
 
 			canvas_width:  configuration.canvas_width,
 			canvas_height: configuration.canvas_height,
-			frame_start:   configuration.frame_start,
-			frame_stop:    configuration.frame_stop,
-
-			centre: Complex::new(configuration.centre_real, configuration.centre_imag),
-			zoom:   configuration.zoom,
-
-			extra: Complex::new(configuration.extra_real, configuration.extra_imag),
-
-			max_iter_count: configuration.max_iter_count,
-
-			palette:      configuration.palette,
-			colour_range: configuration.colour_range,
+			palette:       configuration.palette,
 
 			dump_path:    configuration.dump_path,
 			image_format: configuration.image_format,
+
+			start: Keyframe {
+				frame:          configuration.start_frame,
+				centre:         Complex::new(configuration.start_centre_real, configuration.start_centre_imag),
+				extra:          Complex::new(configuration.start_extra_real,  configuration.start_extra_imag),
+				zoom:           configuration.start_zoom,
+				max_iter_count: configuration.start_max_iter_count,
+				colour_range:   configuration.start_colour_range,
+			},
+
+			stop: Keyframe {
+				frame:          configuration.stop_frame,
+				centre:         Complex::new(configuration.stop_centre_real, configuration.stop_centre_imag),
+				extra:          Complex::new(configuration.stop_extra_real,  configuration.stop_extra_imag),
+				zoom:           configuration.stop_zoom,
+				max_iter_count: configuration.stop_max_iter_count,
+				colour_range:   configuration.stop_colour_range,
+			},
 		};
 	}
 }

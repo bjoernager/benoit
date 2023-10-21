@@ -33,27 +33,30 @@ use std::time::Instant;
 
 impl App {
 	#[must_use]
-	pub fn run(mut self) -> i32 {
-		let mut video = Video::initialise(self.canvas_width, self.canvas_height, self.scale);
+	pub fn run(mut self) -> Result<(), String> {
+		let mut video = Video::initialise(self.canvas_width, self.canvas_height, self.scale)?;
 
 		App::print_controls();
 
-		let mut event_pump = video.sdl.event_pump().expect("unable to get event pump");
+		let mut event_pump = match video.sdl.event_pump() {
+			Ok( pump) => pump,
+			Err(_)    => return Err("unable to get event pump".to_string()),
+		};
 
-		let mut render = Render::allocate(self.canvas_width, self.canvas_height);
-		let mut image  = Image::allocate( self.canvas_width, self.canvas_height);
+		let mut render = Render::allocate(self.canvas_width, self.canvas_height)?;
+		let mut image  = Image::allocate( self.canvas_width, self.canvas_height)?;
 
 		// Used for translation feedback:
 		let mut prev_centre = self.centre.clone();
 		let mut prev_zoom   = self.zoom.clone();
 
 		loop {
-			let frame_start = Instant::now();
+			let start_frame = Instant::now();
 
-			if self.poll_events(&mut event_pump) { break }
+			if self.poll_events(&mut event_pump) { break };
 
 			if self.do_render {
-				self.render(&mut render);
+				self.render(&mut render)?;
 
 				prev_centre.assign(&self.centre);
 				prev_zoom.assign(  &self.zoom);
@@ -61,15 +64,15 @@ impl App {
 				self.do_render = false;
 			};
 
-			image.colour(&render, self.palette, self.max_iter_count, self.colour_range);
+			image.colour(&render, self.palette, self.max_iter_count, self.colour_range)?;
 
 			video.draw_image(&image, self.scale);
 			self.draw_feedback(&mut video, &prev_centre, &prev_zoom);
 			video.update();
 
-			video.sync(&frame_start);
+			video.sync(&start_frame)?;
 		}
 
-		return 0x0;
+		return Ok(());
 	}
 }

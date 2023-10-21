@@ -22,6 +22,7 @@
 */
 
 use crate::benoit::colour_data::ColourData;
+use crate::benoit::configuration::Configuration;
 use crate::benoit::image::Image;
 use crate::benoit::palette::{Palette, PALETTE_DATA_LENGTH};
 use crate::benoit::render::Render;
@@ -31,10 +32,16 @@ extern crate rayon;
 use rayon::prelude::*;
 
 impl Image {
-	pub fn colour(&mut self, render: &Render, palette: Palette, new_max_iter_count: u32, colour_range: f32) {
-		if render.canvas_size() != self.size() { panic!("canvas size mismatch") };
+	pub fn colour(&mut self, render: &Render, palette: Palette, new_max_iter_count: u32, colour_range: f32) -> Result<(), String> {
+		if render.size() != self.size() { return Err(format!("size mismatch - {}*{} (render) vs. {}*{} (image)", render.size().0, render.size().1, self.size().0, self.size().1)) };
 
-		let (fractal, max_iter_count) = render.info().expect("cannot colour before render");
+		if new_max_iter_count < Configuration::MIN_MAX_ITER_COUNT { return Err(format!("maximum_iteration_count must be at least {}", Configuration::MIN_MAX_ITER_COUNT)) };
+		if colour_range < Configuration::MIN_COLOUR_RANGE { return Err(format!("colour range may not be less than {}", Configuration::MIN_COLOUR_RANGE)) };
+
+		let (fractal, max_iter_count) = match render.info() {
+			Some(info) => info,
+			None       => return Err("cannot colour before render".to_string()),
+		};
 
 		let data = ColourData::new(
 			self,
@@ -47,8 +54,11 @@ impl Image {
 		self.data.par_iter_mut().for_each(|point| {
 			let index = data.index(point);
 			let (iter_count, dist) = render[index];
+
 			*point = colour_point(&data, iter_count, dist);
 		});
+
+		return Ok(());
 	}
 }
 

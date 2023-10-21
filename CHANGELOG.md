@@ -1,3 +1,13 @@
+# 2.7.0
+
+* Bump minor version
+* Rework animations (support multiple variables)
+* Rework terminal arguments
+* Improve error handling (avoid panics and assertions)
+* Don't validate configuration immediately
+* Update messages
+* Rename 'burningship' to 'burning_ship' in configuration
+
 # 2.6.3
 
 * Add help

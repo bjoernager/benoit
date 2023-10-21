@@ -39,24 +39,28 @@ pub struct Configuration {
 
 	pub canvas_width:  u32,
 	pub canvas_height: u32,
-	pub scale:         u32,
-	pub frame_start:   u32,
-	pub frame_stop:    u32,
-
-	pub centre_real: Float,
-	pub centre_imag: Float,
-	pub zoom:        Float,
-
-	pub extra_real: Float,
-	pub extra_imag: Float,
-
-	pub max_iter_count: u32,
-
-	pub palette:      Palette,
-	pub colour_range: f32,
+	pub palette:       Palette,
 
 	pub dump_path:    String,
 	pub image_format: ImageFormat,
+
+	pub start_frame:          u32,
+	pub start_centre_real:    Float,
+	pub start_centre_imag:    Float,
+	pub start_extra_real:     Float,
+	pub start_extra_imag:     Float,
+	pub start_zoom:           Float,
+	pub start_max_iter_count: u32,
+	pub start_colour_range:   f32,
+
+	pub stop_frame:          u32,
+	pub stop_centre_real:    Float,
+	pub stop_centre_imag:    Float,
+	pub stop_extra_real:     Float,
+	pub stop_extra_imag:     Float,
+	pub stop_zoom:           Float,
+	pub stop_max_iter_count: u32,
+	pub stop_colour_range:   f32,
 }
 
 impl Configuration {
@@ -70,4 +74,8 @@ impl Configuration {
 
 	pub const DEFAULT_PALETTE:      Palette = Palette::Fire;
 	pub const DEFAULT_COLOUR_RANGE: f32     = 64.0;
+
+	pub const MIN_CANVAS_WIDTH:   u32 = 0x2;
+	pub const MIN_MAX_ITER_COUNT: u32 = 0x1;
+	pub const MIN_COLOUR_RANGE:   f32 = 2.0;
 }

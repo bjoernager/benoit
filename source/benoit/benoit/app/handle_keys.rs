@@ -31,8 +31,6 @@ extern crate sdl2;
 use rug::{Assign, Float};
 use sdl2::keyboard::{KeyboardState, Scancode};
 
-pub const MIN_COLOUR_RANGE: f32 = 2.0;
-
 impl App {
 	#[must_use]
 	pub(super) fn handle_keys(&mut self, scan_code: Scancode, state: KeyboardState) -> bool {
@@ -66,7 +64,7 @@ impl App {
 
 		self.colour_range = match scan_code {
 			Scancode::Up   => self.colour_range * COLOUR_RANGE_FACTOR,
-			Scancode::Down => (self.colour_range / COLOUR_RANGE_FACTOR).max(MIN_COLOUR_RANGE),
+			Scancode::Down => (self.colour_range / COLOUR_RANGE_FACTOR).max(Configuration::MIN_COLOUR_RANGE),
 			_              => self.colour_range,
 		};
 
@@ -161,8 +159,12 @@ impl App {
 
 	fn dump_info(&self) {
 		eprintln!("info dump: the {}", self.fractal.name());
-		eprintln!("  c = {}{:+}i ({}x)", &self.centre.real, &self.centre.imag, &self.zoom);
-		eprintln!("  w = {}{:+}i", &self.extra.real, &self.extra.imag);
-		eprintln!("  max. iter.: {}, col. range: {}", self.max_iter_count, self.colour_range);
+		eprintln!("    re(c):           {}", self.centre.real);
+		eprintln!("    im(c):           {}", self.centre.imag);
+		eprintln!("    re(w):           {}", self.extra.real);
+		eprintln!("    im(w):           {}", self.extra.imag);
+		eprintln!("    zoom:            {}", self.zoom);
+		eprintln!("    max. iter count: {}", self.max_iter_count);
+		eprintln!("    col. range:      {}", self.colour_range);
 	}
 }

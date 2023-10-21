@@ -22,27 +22,62 @@
 */
 
 use crate::benoit::configuration::Configuration;
-use crate::benoit::launcher::Launcher;
+use crate::benoit::launcher::{Launcher, Mode};
 
 use std::env::args;
+use std::str::FromStr;
 
 impl Launcher {
 	#[must_use]
-	pub(super) fn parse_arguments(&self) -> (Configuration, bool) {
-		let mut arguments = args();
+	pub(super) fn parse_arguments(&self) -> Result<Mode, String> {
+		let arguments = args();
 
-		return match arguments.nth(0x1) {
-			Some(argument) => {
-				if argument == "--help" { Launcher::print_help() };
+		let mut width:         Option<u32>           = None;
+		let mut height:        Option<u32>           = None;
+		let mut configuration: Option<Configuration> = None;
 
-				let configuration = match Configuration::load(argument.as_str()) {
-					Ok( configuration) => configuration,
-					Err(message)       => panic!("error parsing configuration: {message}"),
-				};
+		let mut command: Option<String> = None;
 
-				(configuration, false)
-			},
-			_ => (Configuration::default(), true),
+		for argument in arguments.skip(0x1) {
+			match command {
+				Some(_) => {
+					match command.take().unwrap().as_str() {
+						"height" => height        = Some(u32::from_str(argument.as_str()).unwrap()),
+						"width"  => width         = Some(u32::from_str(argument.as_str()).unwrap()),
+						"path"   => configuration = Some(Configuration::load(argument.as_str())?),
+						_        => {},
+					}
+					continue;
+				},
+				_ => {},
+			}
+
+			// Check if command doesn't take a value.
+			match argument.as_str() {
+				"help" => Launcher::print_help(),
+				_      => command = Some(argument.clone()),
+			};
+		}
+
+		if command.is_some() { return Err(format!("missing value to command \"{}\"", command.unwrap())) };
+
+		return if configuration.is_some() {
+			if width.is_some() || height.is_some() { eprintln!("width and height will be overwritten in script mode") };
+
+			Ok(Mode::Script(configuration.unwrap()))
+		} else {
+			// If only one length is specified, the other is
+			// assumed equal.
+
+			let width_val = if let Some(val) = width  { val }
+			else            if let Some(val) = height { val }
+			else                                      { 0x100 };
+
+			let height_val = if let Some(val) = height { val }
+			else             if let Some(val) = width  { val }
+			else                                       { 0xC0 };
+
+			Ok(Mode::App(width_val, height_val))
 		};
 	}
 }

@@ -21,12 +21,19 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::benoit::configuration::Configuration;
+
 pub mod parse_arguments;
 pub mod print_help;
 pub mod print_message;
 pub mod run;
 pub mod set_title;
 pub mod setup;
+
+pub enum Mode {
+	App(   u32, u32),
+	Script(Configuration),
+}
 
 pub struct Launcher {}
 

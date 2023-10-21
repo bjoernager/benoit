@@ -33,31 +33,43 @@ use rug::ops::PowAssign;
 
 impl Script {
 	#[must_use]
-	pub(super) fn animate(&self) -> i32 {
-		let frame_count = self.frame_stop - self.frame_start + 0x1;
+	pub(super) fn animate(&self) -> Result<(), String> {
+		// TO-DO: Proper animation for centre value when zooming.
 
-		let mut render = Render::allocate(self.canvas_width, self.canvas_height);
-		let mut image  = Image::allocate( self.canvas_width, self.canvas_height);
+		let frame_count = self.stop.frame - self.start.frame + 0x1;
+		assert!(frame_count >= 0x2);
 
-		// zoom_start:
-		let mut zoom = Float::with_val(PRECISION, 1.0 / 4.0);
+		let mut render = Render::allocate(self.canvas_width, self.canvas_height)?;
+		let mut image  = Image::allocate( self.canvas_width, self.canvas_height)?;
 
-		let zoom_stop = Float::with_val(PRECISION, &self.zoom);
+		// Variables:
+		let mut centre         = self.start.centre.clone();
+		let mut extra          = self.start.extra.clone();
+		let mut zoom           = self.start.zoom.clone();
+		let mut max_iter_count = self.start.max_iter_count as f32;
+		let mut colour_range   = self.start.colour_range;
 
-		let zoom_factor = get_zoom_factor(&zoom, &zoom_stop, self.frame_stop);
+		// Steps & factors:
+		let centre_real_step    = get_step_bigfloat(self.stop.frame, &self.start.centre.real, &self.stop.centre.real);
+		let centre_imag_step    = get_step_bigfloat(self.stop.frame, &self.start.centre.imag, &self.stop.centre.imag);
+		let extra_real_step     = get_step_bigfloat(self.stop.frame, &self.start.extra.real, &self.stop.extra.real);
+		let extra_imag_step     = get_step_bigfloat(self.stop.frame, &self.start.extra.imag, &self.stop.extra.imag);
+		let zoom_factor         = get_factor_bigfloat(self.stop.frame, &self.start.zoom, &self.stop.zoom);
+		let max_iter_count_step = get_step(self.stop.frame, self.start.max_iter_count as f32, self.stop.max_iter_count as f32);
+		let colour_range_step   = get_step(self.stop.frame, self.start.colour_range, self.stop.colour_range);
 
-		zoom = if self.frame_start > 0x0 {
-			let mut zoom = zoom_factor.clone();
-			zoom.pow_assign(frame_count);
+		eprintln!("");
+		eprintln!("animating {frame_count} frames: the {}", self.fractal.name());
+		eprintln!("    re(c):           {} \u{2192} {} (step: {centre_real_step})",    self.start.centre.real,    self.stop.centre.real);
+		eprintln!("    im(c):           {} \u{2192} {} (step: {centre_imag_step})",    self.start.centre.imag,    self.stop.centre.imag);
+		eprintln!("    re(w):           {} \u{2192} {} (step: {extra_real_step})",     self.start.extra.real,     self.stop.extra.real);
+		eprintln!("    im(w):           {} \u{2192} {} (step: {extra_imag_step})",     self.start.extra.imag,     self.stop.extra.imag);
+		eprintln!("    zoom:            {} \u{2192} {} (fac.: {zoom_factor})",         self.start.zoom,           self.stop.zoom);
+		eprintln!("    max. iter count: {} \u{2192} {} (step: {max_iter_count_step})", self.start.max_iter_count, self.stop.max_iter_count);
+		eprintln!("    col. range:      {} \u{2192} {} (step: {colour_range_step})",   self.start.colour_range,   self.stop.colour_range);
+		eprintln!("");
 
-			zoom
-		} else {
-			zoom
-		};
-
-		eprintln!("animating from #{} to #{} ({} frame(s)) at {}{:+}i to {:.3}x (fac. ~{:.3})", self.frame_start, self.frame_stop, frame_count + 0x1, self.centre.real.to_f32(), self.centre.imag.to_f32(), zoom_stop.to_f32(), zoom_factor.to_f32());
-
-		for frame in 0x0..=frame_count {
+		for frame in 0x0..frame_count {
 			let frame_name = format!("frame{frame:010}");
 
 			Script::dump_frame(
@@ -67,28 +79,71 @@ impl Script {
 				&mut render,
 				self.fractal,
 				self.palette,
-				&self.centre,
-				&self.extra,
+				&centre,
+				&extra,
 				&zoom,
-				self.max_iter_count,
-				self.colour_range,
+				max_iter_count.round() as u32,
+				colour_range,
 				self.image_format,
-			);
+			)?;
 
-			zoom *= &zoom_factor;
+			centre.real    += &centre_real_step;
+			centre.imag    += &centre_imag_step;
+			extra.real     += &extra_real_step;
+			extra.imag     += &extra_imag_step;
+			zoom           *= &zoom_factor;
+			max_iter_count += max_iter_count_step;
+			colour_range   += colour_range_step;
 		}
 
-		return 0x0;
+		return Ok(());
 	}
 }
 
-fn get_zoom_factor(zoom_start: &Float, zoom_stop: &Float, frame_count: u32) -> Float {
-	assert!(frame_count > 0x0);
+#[must_use]
+fn get_step(stop_x: u32, start_y: f32, stop_y: f32) -> f32 {
+	assert!(stop_x - START_X != 0x0);
+
+	const START_X: u32 = 0x1;
+
+	// a = (y1-y0)/(x1-x0)
+	return (stop_y - start_y) / (stop_x as f32 - START_X as f32);
+}
+
+#[allow(dead_code)]
+#[must_use]
+fn get_factor(stop_x: u32, start_y: f32, stop_y: f32) -> f32 {
+	assert!(stop_x - START_X != 0x0);
+
+	const START_X: u32 = 0x1;
+
+	// a = (y1/y0)^(1/(x1-x0))
+	return (stop_y / start_y).powf(1.0 / (stop_x as f32 - START_X as f32));
+}
+
+#[must_use]
+fn get_step_bigfloat(stop_x: u32, start_y: &Float, stop_y: &Float) -> Float {
+	assert!(stop_x - START_X > 0x0);
+
+	const START_X: u32 = 0x1;
+
+	let numerator   = Float::with_val(PRECISION, stop_y - start_y);
+	let denominator = stop_x - START_X;
+
+	return numerator / denominator;
+}
+
+#[must_use]
+fn get_factor_bigfloat(stop_x: u32, start_y: &Float, stop_y: &Float) -> Float {
+	assert!(stop_x - START_X > 0x0);
+	if stop_y == start_y { return Float::with_val(PRECISION, 0x1) };
+
+	const START_X: u32 = 0x1;
 
 	// To get the zoom factor, we first want the 'a'
 	// value of the growth function from (0) to
 	// (frame_count) on the x-dimension and from
-	// (zoom_start) to (zoom_stop) on the y-dimension:
+	// (zoom_start) to (stop_zoom) on the y-dimension:
 	//
 	// a = nroot(x1-x0,y1/y0),
 	//
@@ -99,14 +154,11 @@ fn get_zoom_factor(zoom_start: &Float, zoom_stop: &Float, frame_count: u32) -> F
 	//
 	// making the final equation
 	//
-	// (y1/y0)^(1/(x1-x0)) = (zoom_stop/zoom_start)^(1/(frame_count-1)).
+	// (y1/y0)^(1/(x1-x0)) = (stop_zoom/zoom_start)^(1/(frame_count-1)).
 
-	let frame_start: f32 = 0.0;
-	let frame_stop:  f32 = frame_count as f32;
+	let exponent = 1.0 / (stop_x as f64 - START_X as f64);
 
-	let exponent = Float::with_val(PRECISION, 1.0 / (frame_stop - frame_start));
-
-	let mut factor = Float::with_val(PRECISION, zoom_stop / zoom_start);
+	let mut factor = Float::with_val(PRECISION, stop_y / start_y);
 	factor.pow_assign(exponent);
 
 	return factor;

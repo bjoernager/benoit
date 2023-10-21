@@ -29,7 +29,14 @@ use std::process::exit;
 
 fn main() {
 	let launcher = Launcher::new();
-	let code = launcher.run();
+	let result = launcher.run();
+
+	if let Err(ref error) = result { eprintln!("error: {error}") };
+
+	let code: i32 = match result {
+		Ok( _) => 0x0,
+		Err(_) => 0x1,
+	};
 
 	exit(code);
 }

@@ -36,24 +36,27 @@ pub mod dump_frame;
 pub mod run;
 pub mod still;
 
+pub struct Keyframe {
+	frame:          u32,
+	centre:         Complex,
+	extra:          Complex,
+	zoom:           Float,
+	max_iter_count: u32,
+	colour_range:   f32,
+}
+
 pub struct Script {
 	// Configuration:
 	fractal:  Fractal,
 
 	canvas_width:  u32,
 	canvas_height: u32,
-	frame_start:   u32,
-	frame_stop:    u32,
 
-	centre: Complex,
-	extra:  Complex,
-	zoom:   Float,
-
-	max_iter_count: u32,
-
-	palette:      Palette,
-	colour_range: f32,
+	palette: Palette,
 
 	dump_path:    String,
 	image_format: ImageFormat,
+
+	start: Keyframe,
+	stop:  Keyframe,
 }

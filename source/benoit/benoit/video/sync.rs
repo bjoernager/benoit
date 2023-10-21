@@ -27,20 +27,28 @@ use std::thread::sleep;
 use std::time::{Duration, Instant};
 
 impl Video {
-	pub fn sync(&self, frame_start: &Instant) {
+	pub fn sync(&self, start_frame: &Instant) -> Result<(), String> {
 		let frame_duration = {
-			let index = self.canvas.window().display_index().expect("unable to get display index");
+			let index = match self.canvas.window().display_index() {
+				Ok( index) => index,
+				Err(_)     => return Err("unable to get display index".to_string()),
+			};
 
-			let mode = self.sdl_video.current_display_mode(index).expect("unable to get display mode");
+			let mode = match self.sdl_video.current_display_mode(index) {
+				Ok( mode) => mode,
+				Err(_)    => return Err("unable to get display mode".to_string()),
+			};
 
 			Duration::from_secs(0x1) / mode.refresh_rate as u32
 		};
 
-		let remaining = match frame_duration.checked_sub(frame_start.elapsed()) {
+		let remaining = match frame_duration.checked_sub(start_frame.elapsed()) {
 			Some(value) => value,
 			None        => Duration::from_secs(0x0),
 		};
 
 		sleep(remaining);
+
+		return Ok(());
 	}
 }
