@@ -1,3 +1,8 @@
+# 2.7.1
+
+* Improve info logs
+* Enumerate iterators
+
 # 2.7.0
 
 * Bump minor version

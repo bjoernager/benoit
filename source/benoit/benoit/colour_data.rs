@@ -21,12 +21,7 @@
 	If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::benoit::image::Image;
 use crate::benoit::palette::PaletteData;
-
-use std::mem::size_of;
-use std::num::NonZeroUsize;
-use std::ptr::addr_of;
 
 pub struct ColourData {
 	exponent:       f32,
@@ -34,14 +29,11 @@ pub struct ColourData {
 	colour_range:   f32,
 
 	palette_data: &'static PaletteData,
-
-	image:  NonZeroUsize,
 }
 
 impl ColourData {
 	#[must_use]
 	pub fn new(
-		image:          &Image,
 		exponent:       f32,
 		max_iter_count: u32,
 		colour_range:   f32,
@@ -53,17 +45,7 @@ impl ColourData {
 			colour_range:   colour_range,
 
 			palette_data: palette_data,
-
-			image: NonZeroUsize::new(image.data().as_ptr() as usize).unwrap(),
 		};
-	}
-
-	#[must_use]
-	pub fn index(&self, element: &(u8, u8, u8)) -> usize {
-		let element_addr = addr_of!(*element) as usize;
-
-		let index = (element_addr - self.image.get()) / size_of::<(u8, u8, u8)>();
-		return index;
 	}
 
 	#[must_use]

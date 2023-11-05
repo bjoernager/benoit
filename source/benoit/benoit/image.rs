@@ -49,11 +49,6 @@ impl Image {
 	}
 
 	#[must_use]
-	pub fn data<'a>(&'a self) -> &'a [(u8, u8, u8)] {
-		return &self.data[..];
-	}
-
-	#[must_use]
 	pub fn raw<'a>(&'a self) -> &'a [u8] {
 		let data_pointer = self.data.as_ptr() as *const u8;
 

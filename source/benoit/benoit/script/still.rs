@@ -28,6 +28,9 @@ use crate::benoit::script::Script;
 impl Script {
 	#[must_use]
 	pub(super) fn still(&self) -> Result<(), String> {
+		let frame_count = self.stop.frame - self.start.frame + 0x1;
+		assert!(frame_count == 0x1);
+
 		let mut render = Render::allocate(self.canvas_width, self.canvas_height)?;
 		let mut image  = Image::allocate( self.canvas_width, self.canvas_height)?;
 
@@ -35,6 +38,8 @@ impl Script {
 
 		eprintln!("");
 		eprintln!("rendering still: the {}", self.fractal.name());
+		eprintln!("    width:           {}", self.canvas_width);
+		eprintln!("    height:          {}", self.canvas_height);
 		eprintln!("    re(c):           {}", self.stop.centre.real);
 		eprintln!("    im(c):           {}", self.stop.centre.imag);
 		eprintln!("    re(w):           {}", self.stop.extra.real);

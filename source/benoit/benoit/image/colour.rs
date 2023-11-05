@@ -44,15 +44,13 @@ impl Image {
 		};
 
 		let data = ColourData::new(
-			self,
 			fractal.exponent(),
 			max_iter_count.min(new_max_iter_count),
 			colour_range,
 			palette.data(),
 		);
 
-		self.data.par_iter_mut().for_each(|point| {
-			let index = data.index(point);
+		self.data.par_iter_mut().enumerate().for_each(|(index, point)| {
 			let (iter_count, dist) = render[index];
 
 			*point = colour_point(&data, iter_count, dist);
