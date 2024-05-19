@@ -1,3 +1,12 @@
+# 3.0.2
+
+* Add per-crate readmes
+* Bump dependencies
+
+## `benoit`
+
+* Remove `num-traits` as depedency
+
 # 3.0.1
 
 * Set Cargo metadata
