@@ -1,3 +1,9 @@
+# 3.0.3
+
+## `benoit`
+
+* Fix version docs
+
 # 3.0.2
 
 * Add per-crate readmes

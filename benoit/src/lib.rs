@@ -43,10 +43,10 @@ pub mod palette;
 pub mod render;
 pub mod stopwatch;
 
-/// The version number of benoit, currently being `3.0.0`.
+/// The version number of the Benoit project.
 ///
 /// The version numbers of `benoit-cli` and `benoit-gui` match this value.
-pub const VERSION: (u32, u32, u32) = (0x3, 0x0, 0x2);
+pub const VERSION: (u32, u32, u32) = (0x3, 0x0, 0x3);
 
 /// The precision used for arbitrary precision computations, in bits.
 ///
