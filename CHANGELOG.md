@@ -1,3 +1,38 @@
+# 3.0.0
+
+* Bump major version
+* Rewrite project
+* Update copyright years
+* Improve commenting
+* Update gitignore
+* Avoid unsafety
+* Divide project into library and executables (CLI and GUI, latter currently unsupported)
+* Create new logo
+* Add installation script
+* Add documentation
+* Configure lints
+* Add to-do list
+
+## `benoit`
+
+* Support palettes with alpha
+* Remove WebP-support (support only PNG frames)
+* Add new palette(s): `ink`, `mask`, `thunder`, `glacier`
+* Support interior palettes
+* Export images with 16 bits per channel
+* Use 64 (in reality 63) bits for iteration counts
+* Use our own complex data type
+* Add new fractal(s): `antibrot`
+* Define our own error type
+
+## `benoit-cli`
+
+* Register terminate
+* Rework CLI
+* Rework configuration
+* Support resuming animations
+* Define our own error type
+
 # 2.7.1
 
 * Improve info logs

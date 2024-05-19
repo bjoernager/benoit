@@ -1,7 +1,9 @@
+*.ico
 *.png
 *.webp
-/old
+/benoit-gui
+/manual
 /render
 /target
-Benoit.toml
+benoit.toml
 Cargo.lock

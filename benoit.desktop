@@ -1,5 +1,5 @@
 [Desktop Entry]
 Type=Application
 Name=Benoit
-Exec=/usr/bin/benoit
+Exec=/usr/bin/benoit-gui
 Icon=benoit

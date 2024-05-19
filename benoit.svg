@@ -1,18 +1,31 @@
 <svg height="96" width="96" xmlns="http://www.w3.org/2000/svg">
-	<!-- gradients -->
-	<linearGradient id="backgroundColour" x1="0" x2="1" y1="0" y2="1">
-		<stop offset="0%" stop-color="#252525" />
-		<stop offset="100%" stop-color="#1E1E1E" />
-	</linearGradient>
-	<!-- masks -->
-	<mask id="background">
-		<polygon fill="white" points="21,21 75,21 75,57.243 57.243,75 21,75" />
+	<!-- gradients: -->
+
+	<!-- clips: -->
+
+	<!-- masks: -->
+
+	<mask id="eye">
+		<ellipse cx="48" cy="48" fill="white" rx="36" ry="24" />
+		<ellipse cx="48" cy="48" fill="black" rx="33" ry="21" />
+
+		<ellipse cx="48" cy="48" fill="white" rx="30" ry="24" />
+		<ellipse cx="48" cy="48" fill="black" rx="27" ry="21" />
+
+		<ellipse cx="48" cy="48" fill="white" rx="24" wry="24" />
+		<ellipse cx="48" cy="48" fill="black" rx="21" ry="21" />
 	</mask>
-	<mask id="foreground">
-		<polygon fill="white" points="24,24 40,24 48,37.856 56,24 72,24 72,56 56,72 56,51.713 48,65.569 40,51.713 40,72 24,72" />
-	</mask>
-	<!-- fills -->
-	<rect fill="url(#backgroundColour)" height="96" width="96" x="0" y="0" />
-	<rect fill="#EAEAEA" height="96" mask="url(#background)" width="96" x="0" y="0" />
-	<rect fill="#B2223B" height="48" mask="url(#foreground)" width="48" x="24" y="24" />
+
+	<!-- fills: -->
+
+	<polygon fill="#BA0035" points="0,0 96,0 96,96 0,96" />        <!-- oklch(50% 0.199 17.860) "red" -->
+	<polygon fill="#CD0325" points="0,0 96,0 96,96 19.096,96" />
+	<polygon fill="#DC1D02" points="0,0 96,0 96,96 39.765,96" />
+	<polygon fill="#E04400" points="0,0 96,0 96,96 64.145,96" />
+	<polygon fill="#E55C04" points="0,0 96,0 96,96 96,96" />
+	<polygon fill="#EB6F02" points="0,0 96,0       143.674,96" />
+	<polygon fill="#F18103" points="0,0 96,0       231.766,96" />
+	<polygon fill="#F79204" points="0,0 96,0       482.625,96" /> <!-- oklch(75% 0.170 63.220) "yellow" -->
+
+	<rect fill="#FFF9F4" mask="url(#eye)" height="96" width="96" x="0" y="0" />
 </svg>

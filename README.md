@@ -1,26 +1,21 @@
-# BENO&Icirc;T
+# About
 
-[*Benoit*](https://mandelbrot.dk/benoit) is a free and open‐source Mandelbrot renderer written in Rust. Its goal is to render arbitrary positions as performant and accurate as possiple. Usage:
+[*Benoit*](https://mandelbrot.dk/benoit) is a free and open‐source Mandelbrot renderer written in Rust.
+
+The project is structured around the main `benoit` library, of which front-ends can make use of.
+
+The official front-ends currently include `benoit-cli` and `benoit-gui`, although the latter is currently not present in this repository.
+
+# Usage
 
 ```
-benoit [--help] [path]
+benoit-cli <path>
+benoit-gui
 ```
 
-&hellip; where *path* denotes the configuration file to read (optional). If no path is provided, the program is run in *interactive* mode, wherein the fractal is rendered in real‐time. Otherwise, *script* mode is run using the provided configuration.
+The thread count may be specified using the environment variable `RAYON_NUM_THREADS`.
 
-# Dependencies
-
-Benoit makes use of the following external libraries:
-
-* [`enum-iterator`](https://crates.io/crates/enum-iterator) for pre&hyphen;calculating palettes
-* [`png`](https://crates.io/crates/png) for encoding PNG images
-* [`rayon`](https://crates.io/crates/rayon) for threadpooling
-* [`rug`](https://crates.io/crates/rug) for multi‐precision
-* [`sdl2`](https://crates.io/crates/sdl2) for interactive viewports
-* [`toml`](https://crates.io/crates/toml) for parsing TOML files
-* [`webp`](https://crates.io/crates/webp) for encoding WebP images
-
-Furthermore &ndash; on Windows &ndash; the `windows` package is used for setting the terminal title.
+See [Docs.rs](https://docs.rs/benoit/latest/benoit/) for documentation.
 
 # Mirrors
 
@@ -32,10 +27,28 @@ Benoit is officially hosted on the following mirrors:
 
 # Copyright & License
 
-Copyright 2021, 2023 Gabriel Bjørnager Jensen.
+Also see individual files for their licenses.
+
+Note that the section *`benoit`* does **NOT** represent the entirety of the Benoit project, instead only the `benoit` library found in the `benoit` directory.
+
+The contents of this readme are released under a Creative Commons Attribution-ShareAlike 4.0 International license, see <https://creativecommons.org/licenses/by-sa/4.0/> for more information.
+
+## `benoit`
+
+Copyright 2021, 2023-2024 Gabriel Bjørnager Jensen.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+## `benoit-cli` and `benoit-gui`
+
+Copyright 2021, 2023-2024 Gabriel Bjørnager Jensen.
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.

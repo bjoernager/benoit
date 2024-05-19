@@ -1,0 +1,25 @@
+<svg height="96" width="96" xmlns="http://www.w3.org/2000/svg">
+	<!-- gradients: -->
+
+	<!-- clips: -->
+
+	<clipPath id="icon">
+		<rect fill="white" height="96" rx="12" width="96" x="0" y="0" />
+	</clipPath>
+
+	<!-- masks: -->
+
+	<mask id="eye">
+		<ellipse cx="48" cy="48" fill="white" rx="36" ry="24" />
+		<ellipse cx="48" cy="48" fill="black" rx="30" ry="18" />
+
+		<ellipse cx="48" cy="48" fill="white" rx="24" ry="24" />
+		<ellipse cx="48" cy="48" fill="black" rx="18" ry="18" />
+	</mask>
+
+	<!-- fills: -->
+
+	<rect clip-path="url(#icon)" fill="#BA0035" height="96" width="96" x="0" y="0" />
+
+	<rect mask="url(#eye)" fill="#FFF9F4" height="96" width="96" x="0" y="0" />
+</svg>
