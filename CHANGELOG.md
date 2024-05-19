@@ -1,3 +1,7 @@
+# 3.0.1
+
+* Set Cargo metadata
+
 # 3.0.0
 
 * Bump major version

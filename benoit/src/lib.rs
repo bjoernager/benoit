@@ -46,7 +46,7 @@ pub mod stopwatch;
 /// The version number of benoit, currently being `3.0.0`.
 ///
 /// The version numbers of `benoit-cli` and `benoit-gui` match this value.
-pub const VERSION: (u32, u32, u32) = (0x3, 0x0, 0x0); // After 76 days of work.
+pub const VERSION: (u32, u32, u32) = (0x3, 0x0, 0x1);
 
 /// The precision used for arbitrary precision computations, in bits.
 ///
