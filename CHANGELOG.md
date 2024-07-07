@@ -1,3 +1,9 @@
+# 3.0.4
+
+## `benoit`
+
+* Update package metadata
+
 # 3.0.3
 
 ## `benoit`
