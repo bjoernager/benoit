@@ -7,7 +7,7 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version    = "3.0.4"
+version    = "3.0.5"
 authors    = ["Gabriel Bjørnager Jensen"]
 homepage   = "https://achernar.dk/html/benoit.html"
 repository = "https://mandelbrot.dk/benoit"

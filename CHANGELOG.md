@@ -1,3 +1,9 @@
+# 3.0.5
+
+## `benoit`
+
+* Fix non-square renders
+
 # 3.0.4
 
 ## `benoit`

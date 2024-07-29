@@ -86,10 +86,20 @@ impl Render {
 		//
 		// At default zoom (i.e. a factor of one), the
 		// width of the entire set is (4) in natural units.
-		// In pixels, this corresponds to render width (e.
-		// g. 256 pixel).
-		let x_factor = 4.0 / f64::from(self.size.0) * width_ratio;
-		let y_factor = 4.0 / f64::from(self.size.1) * height_ratio;
+		// In pixels, this corresponds to the render width
+		// (e.g. 256 pixel).
+		//
+		// Also Remember that pixel coordinates grow "down-
+		// wards," whilst euclidian coordinates grop up-
+		// wards.
+		let x_factor =  4.0 / f64::from(self.size.0) * width_ratio;
+		let y_factor = -4.0 / f64::from(self.size.1) * height_ratio;
+
+		// Offset the pixel origin so that it by default
+		// lies on (-2+2i) instead of the natural origin
+		// (0).
+		let x_offset = -2.0 * width_ratio;
+		let y_offset =  2.0 * height_ratio;
 
 		data
 			.par_iter_mut()
@@ -99,9 +109,9 @@ impl Render {
 				let x = u32::try_from(index % self.size.0 as usize).unwrap();
 				let y = u32::try_from(index / self.size.0 as usize).unwrap();
 
-				// Convert the pixel coordinates to natural units.
-				let x = f64::from(x).mul_add(x_factor, -2.0);
-				let y = f64::from(y).mul_add(y_factor, -2.0);
+				// Map pixel coordinate to natural units.
+				let x = f64::from(x).mul_add(x_factor, x_offset);
+				let y = f64::from(y).mul_add(y_factor, y_offset);
 
 				*point = generate_at_pixel(x, y, &cache);
 
@@ -120,12 +130,8 @@ fn generate_at_pixel(x: f64, y: f64, cache: &GenerationCache) -> RawElement {
 
 	let mut c = Complex::with_val(PRECISION, x / cache.zoom, y / cache.zoom);
 
-	// Remember that pixel coordinates grow "down-
-	// wards," whilst euclidian coordinates grop up-
-	// wards.
-
 	c.real += &cache.centre.real;
-	c.imag -= &cache.centre.imag;
+	c.imag += &cache.centre.imag;
 
 	if cache.inverse {
 		let factor = Float::with_val(PRECISION, &c.real * &c.real + &c.imag * &c.imag).recip();
